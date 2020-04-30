@@ -9,7 +9,9 @@ import pojos.Player;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FantasyProsScraper extends WebScraper{
 
@@ -30,7 +32,6 @@ public class FantasyProsScraper extends WebScraper{
         }
 
         String css = "#rank-data > tbody:nth-child(3)";
-
         Element table = doc.select(css).get(0);
         Elements rows = table.children();
 
@@ -51,21 +52,53 @@ public class FantasyProsScraper extends WebScraper{
      * @param row- the html row that contains the player
      * @return- a new player to be added to the list
      */
-    protected Player getPlayer(Element row){
+    private Player getPlayer(Element row){
+
         int rank = Integer.parseInt(row.child(0).ownText());    //get the rank
-
-        Element player = row.child(2);
-        String name = player.children().get(0).children().get(0).ownText(); //get name--might be better way to do this
-        String team = player.children().get(1).ownText();   //get team
-
+        String name = row.child(2).children().get(0).children().get(0).ownText(); //get name--might be better way to do this
+        String team = row.child(2).children().get(1).ownText();   //get team
         String position = row.child(3).ownText();   //get position
 
-        System.out.println(rank+": "+name+", "+team+", "+position);
+        String link = row.child(2).child(0).attr("href");
+        Map<String, Double> projections =  getProjections(link);   //must go to player page to get projections
 
-        return new Player(rank, name, position, team);
+        return new Player(rank, name, position, team, projections);
     }
 
+    private Map<String, Double> getProjections(String link){
 
+        String domain = "https://www.fantasypros.com";
+        String path = domain + link;
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(path).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String css = ".pills > li:nth-child(8) > a:nth-child(1)";
+        link = doc.select(css).get(0).attr("href");
+        path = domain + link;
+        try {
+            doc = Jsoup.connect(path).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        css = "div.subsection:nth-child(3) > div:nth-child(2) > div:nth-child(1) > table:nth-child(1)";
+        Element table = doc.select(css).get(0);
+
+        int size = table.child(1).child(0).childNodeSize();
+
+        Map<String, Double> projections = new HashMap<String, Double>();
+        for(int i=0;i<size;i++){
+            String stat = table.child(1).child(0).child(i).ownText();
+            Double value = Double.parseDouble(table.child(2).child(0).child(i).ownText());
+            projections.put(stat, value);
+        }
+
+        return projections;
+    }
 
 
 
@@ -75,7 +108,8 @@ public class FantasyProsScraper extends WebScraper{
     public static void main(String[] args){
 
         FantasyProsScraper fps = new FantasyProsScraper();
-        fps.getPlayers(10);
+
+        fps.getPlayers(20);
 
     }
 

@@ -80,7 +80,13 @@ public class FantasyProsScraper extends WebScraper {
 
         //must go to player page to get their projections
         String link = row.child(2).child(0).attr("href");
-        Map<String, Double> projections = getProjections(link);
+
+        Map<String, Double> projections;
+        if(position.startsWith("K")||position.startsWith("D")){ //don't get projections for kickers or defense
+            projections = new HashMap<String, Double>();
+        } else {
+            projections = getProjections(link);
+        }
 
         return new Player(rank, name, position, team, projections);
     }
@@ -92,7 +98,6 @@ public class FantasyProsScraper extends WebScraper {
      * @return map of player projections
      */
     private Map<String, Double> getProjections(String link) {
-
         //go to the player page
         String domain = "https://www.fantasypros.com";
         String path = domain + link;

@@ -9,12 +9,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 
 public class SQLStorer extends DataStorer {
 
     private Connection connection;
     private Statement statement;
-    private String query = "";
 
     public SQLStorer(Site site, ScoreType scoreType){
         super(site, scoreType);
@@ -22,10 +22,15 @@ public class SQLStorer extends DataStorer {
     
     
     @Override
+    /**
+     * Store the list of players from the website in an sql database
+     */
     public void storeData() {
-        List<Player> players = webScraper.getPlayers(5);
+        //get the list of players by web scraping
+        //limit will eventually be determined by league size
+        List<Player> players = webScraper.getPlayers(30);
 
-        establishConnection();
+        establishConnection();  //establish connection to the sql database
 
         for(int i=0;i<players.size();i++){
             Player player = players.get(i);
@@ -34,12 +39,45 @@ public class SQLStorer extends DataStorer {
 
     }
 
+    /**
+     * Add a player to the players table
+     * @param player- player to be added
+     */
     private void addPlayer(Player player){
-
+        Map<String, Double> projections = player.getProjections();
+        String s = "insert into players values ("+
+                player.getRank()+", \""+
+                player.getLastName()+"\", \""+
+                player.getFirstName()+"\", \""+
+                player.getPosition()+"\", \""+
+                player.getTeam()+"\", "+
+                projections.get("Points")+", "+
+                projections.get("Rush Att")+", "+
+                projections.get("Rush Yds")+", "+
+                projections.get("Rush Tds")+", "+
+                projections.get("Recs")+", "+
+                projections.get("Rec Yds")+", "+
+                projections.get("Rec Tds")+", "+
+                projections.get("Pass Cmp")+", "+
+                projections.get("Pass Att")+", "+
+                projections.get("Pass Yds")+", "+
+                projections.get("Pass Tds")+", "+
+                projections.get("Pass Ints")+", "+
+                projections.get("Fumbles")+
+                ");";
+        System.out.println(s);
+        try {
+            statement.executeUpdate(s);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
+    /**
+     * Establish local connection to sql database
+     */
     private void establishConnection(){
-        String url = "jdbc:mysql://localhost:3306/data?useTimezone=true&serverTimezone=UTC";
+        String url = "jdbc:mysql://localhost:3306/mockdraft?useTimezone=true&serverTimezone=UTC";
         String user = "root";
         String password = "root";
 

@@ -2,9 +2,6 @@ package webscraping.scrapers;
 
 import pojos.ScoreType;
 import webscraping.Site;
-import webscraping.scrapers.ESPNScraper;
-import webscraping.scrapers.FantasyProsScraper;
-import webscraping.scrapers.WebScraper;
 
 public class WebScraperFactory {
 

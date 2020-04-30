@@ -16,18 +16,8 @@ import java.util.Map;
 
 public class FantasyProsScraper extends WebScraper {
 
-    private final String url;
-
     public FantasyProsScraper(ScoreType type) {
-        if(type==ScoreType.STANDARD){
-            this.url="https://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php";
-        } else if(type==ScoreType.HALF){
-            this.url="https://www.fantasypros.com/nfl/rankings/half-point-ppr-cheatsheets.php";
-        } else if(type==ScoreType.PPR){
-            this.url="https://www.fantasypros.com/nfl/rankings/ppr-cheatsheets.php";
-        } else{
-            throw new IllegalArgumentException("Must include scoring type");
-        }
+        super(type);
     }
 
     /**
@@ -59,6 +49,7 @@ public class FantasyProsScraper extends WebScraper {
             if (!type.endsWith("player-row")) continue;  //1st row and tier rows invalid
             Player player = getPlayer(row);
             players.add(player);
+            System.out.println(player);
         }
 
         return players;
@@ -128,8 +119,13 @@ public class FantasyProsScraper extends WebScraper {
         Map<String, Double> projections = new HashMap<>();
         for (int i = 0; i < size; i++) {
             String stat = table.child(1).child(0).child(i).ownText();
-            Double value = Double.parseDouble(table.child(2).child(0).child(i).ownText());
-            projections.put(stat, value);
+            try {
+                Double value = Double.parseDouble(table.child(2).child(0).child(i).ownText());
+                projections.put(stat, value);
+            } catch(NumberFormatException | IndexOutOfBoundsException e){
+
+            }
+
         }
 
         return projections;

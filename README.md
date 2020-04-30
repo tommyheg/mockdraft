@@ -35,3 +35,4 @@ use come fantasy football season.
 
     org.json:json:20190722
     org.jsoup:jsoup:1.13.1
+    mysql:mysql-connector-java:8.0.13

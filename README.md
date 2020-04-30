@@ -19,7 +19,8 @@ Maybe include something to determine the best
 pick available. Use adp and standard deviations 
 to run simulations for the user pick. This works
 by running separate simulations for the next X 
-players and returning the one with the best average 
+players (maybe the players on the user's queue?) 
+and returning the one with the best average 
 adp. Simulations work recursively (this would be 
 exponential so whatever is done calculation wise 
 must be trivial).

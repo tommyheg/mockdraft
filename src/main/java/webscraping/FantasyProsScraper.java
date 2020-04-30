@@ -24,6 +24,7 @@ public class FantasyProsScraper extends WebScraper{
      */
     public List<Player> getPlayers(int limit) {
 
+        //connect to page with all the player data
         Document doc = null;
         try {
             doc = Jsoup.connect(url).get();
@@ -35,11 +36,12 @@ public class FantasyProsScraper extends WebScraper{
         Element table = doc.select(css).get(0);
         Elements rows = table.children();
 
+        //add each player
         List<Player> players = new ArrayList<Player>();
         for(int i=0;i<limit;i++){
             Element row = rows.get(i);
             String type = row.className();
-            if(!type.endsWith("player-row")) continue;
+            if(!type.endsWith("player-row")) continue;  //1st row and tier rows invalid
             Player player = getPlayer(row);
             players.add(player);
         }
@@ -54,19 +56,27 @@ public class FantasyProsScraper extends WebScraper{
      */
     private Player getPlayer(Element row){
 
-        int rank = Integer.parseInt(row.child(0).ownText());    //get the rank
-        String name = row.child(2).children().get(0).children().get(0).ownText(); //get name--might be better way to do this
-        String team = row.child(2).children().get(1).ownText();   //get team
-        String position = row.child(3).ownText();   //get position
+        //get player information
+        int rank = Integer.parseInt(row.child(0).ownText());
+        String name = row.child(2).children().get(0).children().get(0).ownText();
+        String team = row.child(2).children().get(1).ownText();
+        String position = row.child(3).ownText();
 
+        //must go to player page to get their projections
         String link = row.child(2).child(0).attr("href");
-        Map<String, Double> projections =  getProjections(link);   //must go to player page to get projections
+        Map<String, Double> projections =  getProjections(link);
 
         return new Player(rank, name, position, team, projections);
     }
 
+    /**
+     * Get the projections for each stat of the player
+     * @param link- link of player page
+     * @return- map of player projections
+     */
     private Map<String, Double> getProjections(String link){
 
+        //go to the player page
         String domain = "https://www.fantasypros.com";
         String path = domain + link;
         Document doc = null;
@@ -76,6 +86,7 @@ public class FantasyProsScraper extends WebScraper{
             e.printStackTrace();
         }
 
+        //go to the projections page within player page
         String css = ".pills > li:nth-child(8) > a:nth-child(1)";
         link = doc.select(css).get(0).attr("href");
         path = domain + link;
@@ -90,6 +101,7 @@ public class FantasyProsScraper extends WebScraper{
 
         int size = table.child(1).child(0).childNodeSize();
 
+        //get all of the projections of the player
         Map<String, Double> projections = new HashMap<String, Double>();
         for(int i=0;i<size;i++){
             String stat = table.child(1).child(0).child(i).ownText();
@@ -109,7 +121,7 @@ public class FantasyProsScraper extends WebScraper{
 
         FantasyProsScraper fps = new FantasyProsScraper();
 
-        fps.getPlayers(20);
+        fps.getPlayers(5);
 
     }
 

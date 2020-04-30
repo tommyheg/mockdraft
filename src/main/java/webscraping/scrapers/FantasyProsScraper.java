@@ -1,4 +1,4 @@
-package webscraping;
+package webscraping.scrapers;
 
 
 import org.jsoup.Jsoup;
@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import pojos.Player;
+import pojos.ScoreType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,8 +18,16 @@ public class FantasyProsScraper extends WebScraper {
 
     private final String url;
 
-    public FantasyProsScraper(String url) {
-        this.url = url;
+    public FantasyProsScraper(ScoreType type) {
+        if(type==ScoreType.STANDARD){
+            this.url="https://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php";
+        } else if(type==ScoreType.HALF){
+            this.url="https://www.fantasypros.com/nfl/rankings/half-point-ppr-cheatsheets.php";
+        } else if(type==ScoreType.PPR){
+            this.url="https://www.fantasypros.com/nfl/rankings/ppr-cheatsheets.php";
+        } else{
+            throw new IllegalArgumentException("Must include scoring type");
+        }
     }
 
     /**
@@ -120,16 +129,4 @@ public class FantasyProsScraper extends WebScraper {
 
         return projections;
     }
-
-
-    public static void main(String[] args) {
-
-        String url = "https://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php";
-        FantasyProsScraper fps = new FantasyProsScraper(url);
-
-        fps.getPlayers(5);
-
-    }
-
-
 }

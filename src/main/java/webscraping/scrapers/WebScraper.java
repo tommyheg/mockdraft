@@ -1,4 +1,4 @@
-package webscraping;
+package webscraping.scrapers;
 
 import pojos.Player;
 

@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class FantasyProsScraper extends WebScraper {
 
-    private String url;
+    private final String url;
 
     public FantasyProsScraper(String url) {
         this.url = url;
@@ -25,7 +25,7 @@ public class FantasyProsScraper extends WebScraper {
      * Loop through the list of players at fantasypros.com
      *
      * @param limit- number of players you want to get (roughly)
-     * @return- list of players to be added to database
+     * @return  list of players to be added to database
      */
     public List<Player> getPlayers(int limit) {
 
@@ -37,12 +37,13 @@ public class FantasyProsScraper extends WebScraper {
             e.printStackTrace();
         }
 
+        assert doc != null;
         String css = "#rank-data > tbody:nth-child(3)";
         Element table = doc.select(css).get(0);
         Elements rows = table.children();
 
         //add each player
-        List<Player> players = new ArrayList<Player>();
+        List<Player> players = new ArrayList<>();
         for (int i = 0; i < limit; i++) {
             Element row = rows.get(i);
             String type = row.className();
@@ -58,7 +59,7 @@ public class FantasyProsScraper extends WebScraper {
      * Create a new player with the data from the row
      *
      * @param row- the html row that contains the player
-     * @return- a new player to be added to the list
+     * @return a new player to be added to the list
      */
     private Player getPlayer(Element row) {
 
@@ -79,7 +80,7 @@ public class FantasyProsScraper extends WebScraper {
      * Get the projections for each stat of the player
      *
      * @param link- link of player page
-     * @return- map of player projections
+     * @return map of player projections
      */
     private Map<String, Double> getProjections(String link) {
 
@@ -94,6 +95,7 @@ public class FantasyProsScraper extends WebScraper {
         }
 
         //go to the projections page within player page
+        assert doc != null;
         String css = ".pills > li:nth-child(8) > a:nth-child(1)";
         link = doc.select(css).get(0).attr("href");
         path = domain + link;
@@ -109,7 +111,7 @@ public class FantasyProsScraper extends WebScraper {
         int size = table.child(1).child(0).childNodeSize();
 
         //get all of the projections of the player
-        Map<String, Double> projections = new HashMap<String, Double>();
+        Map<String, Double> projections = new HashMap<>();
         for (int i = 0; i < size; i++) {
             String stat = table.child(1).child(0).child(i).ownText();
             Double value = Double.parseDouble(table.child(2).child(0).child(i).ownText());

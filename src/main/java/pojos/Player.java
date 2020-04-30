@@ -4,9 +4,9 @@ import java.util.Map;
 
 public class Player {
 
-    private int rank;
-    private String name, position;
-    private String team;
+    private final int rank;
+    private final String name, position;
+    private final String team;
     private Map<String, Double> projections;
 
 

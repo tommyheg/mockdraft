@@ -15,19 +15,19 @@ public class Player {
         this.projections = projections;
     }
 
-    public Player(int rank, String name, String position, String team){
+    public Player(int rank, String name, String position, String team) {
         this.rank = rank;
         this.name = name;
         this.position = position;
         this.team = team;
     }
 
-    public void addProjection(String stat, Double value){
+    public void addProjection(String stat, Double value) {
         projections.put(stat, value);
     }
 
-    public String toString(){
-        return rank+": "+name+", "+team+", "+position;
+    public String toString() {
+        return rank + ": " + name + ", " + team + ", " + position;
     }
 
     public int getRank() {
@@ -46,5 +46,7 @@ public class Player {
         return team;
     }
 
-    public Map<String, Double> getProjections(){ return projections; }
+    public Map<String, Double> getProjections() {
+        return projections;
+    }
 }

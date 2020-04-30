@@ -12,11 +12,11 @@ public class NFLTeam {
         this.players = players;
     }
 
-    public NFLTeam(String name){
+    public NFLTeam(String name) {
         this.name = name;
     }
 
-    public void addPlayer(Player player){
+    public void addPlayer(Player player) {
         this.players.add(player);
     }
 

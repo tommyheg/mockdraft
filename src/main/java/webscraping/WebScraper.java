@@ -1,6 +1,5 @@
 package webscraping;
 
-import org.jsoup.nodes.Element;
 import pojos.Player;
 
 import java.util.List;

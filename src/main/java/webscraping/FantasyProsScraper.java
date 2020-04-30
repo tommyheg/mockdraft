@@ -13,12 +13,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FantasyProsScraper extends WebScraper{
+public class FantasyProsScraper extends WebScraper {
 
-    private final static String url="https://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php";
+    private String url;
+
+    public FantasyProsScraper(String url) {
+        this.url = url;
+    }
 
     /**
      * Loop through the list of players at fantasypros.com
+     *
      * @param limit- number of players you want to get (roughly)
      * @return- list of players to be added to database
      */
@@ -38,10 +43,10 @@ public class FantasyProsScraper extends WebScraper{
 
         //add each player
         List<Player> players = new ArrayList<Player>();
-        for(int i=0;i<limit;i++){
+        for (int i = 0; i < limit; i++) {
             Element row = rows.get(i);
             String type = row.className();
-            if(!type.endsWith("player-row")) continue;  //1st row and tier rows invalid
+            if (!type.endsWith("player-row")) continue;  //1st row and tier rows invalid
             Player player = getPlayer(row);
             players.add(player);
         }
@@ -51,10 +56,11 @@ public class FantasyProsScraper extends WebScraper{
 
     /**
      * Create a new player with the data from the row
+     *
      * @param row- the html row that contains the player
      * @return- a new player to be added to the list
      */
-    private Player getPlayer(Element row){
+    private Player getPlayer(Element row) {
 
         //get player information
         int rank = Integer.parseInt(row.child(0).ownText());
@@ -64,17 +70,18 @@ public class FantasyProsScraper extends WebScraper{
 
         //must go to player page to get their projections
         String link = row.child(2).child(0).attr("href");
-        Map<String, Double> projections =  getProjections(link);
+        Map<String, Double> projections = getProjections(link);
 
         return new Player(rank, name, position, team, projections);
     }
 
     /**
      * Get the projections for each stat of the player
+     *
      * @param link- link of player page
      * @return- map of player projections
      */
-    private Map<String, Double> getProjections(String link){
+    private Map<String, Double> getProjections(String link) {
 
         //go to the player page
         String domain = "https://www.fantasypros.com";
@@ -103,7 +110,7 @@ public class FantasyProsScraper extends WebScraper{
 
         //get all of the projections of the player
         Map<String, Double> projections = new HashMap<String, Double>();
-        for(int i=0;i<size;i++){
+        for (int i = 0; i < size; i++) {
             String stat = table.child(1).child(0).child(i).ownText();
             Double value = Double.parseDouble(table.child(2).child(0).child(i).ownText());
             projections.put(stat, value);
@@ -113,13 +120,10 @@ public class FantasyProsScraper extends WebScraper{
     }
 
 
+    public static void main(String[] args) {
 
-
-
-
-    public static void main(String[] args){
-
-        FantasyProsScraper fps = new FantasyProsScraper();
+        String url = "https://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php";
+        FantasyProsScraper fps = new FantasyProsScraper(url);
 
         fps.getPlayers(5);
 

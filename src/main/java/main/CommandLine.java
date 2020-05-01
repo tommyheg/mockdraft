@@ -3,11 +3,14 @@ package main;
 import controllers.Controller;
 import data.DataType;
 import pojos.ScoreType;
+import pojos.teams.cpu.Difficulty;
 import webscraping.Site;
 
 import java.util.Scanner;
 
 public class CommandLine {
+
+    private static Controller controller;
 
     /**
      * Ask the user what site to get the data from
@@ -92,8 +95,92 @@ public class CommandLine {
         return DataType.SQL;
     }
 
-    private static void setupDraft(){
+    /**
+     * Get the size of the league from the user
+     * @return size of the league
+     */
+    private static int getLeagueSize(){
+        System.out.println("How large is your league? 8, 10, or 12?");
+        Scanner scanner = new Scanner(System.in);
+        int size;
+        try{
+            size = scanner.nextInt();
+        } catch(NumberFormatException e){
+            System.out.println("Must enter a valid league size.");
+            size = getLeagueSize();
+        }
+        if(size!=8 || size!=10 || size!=12){
+            System.out.println("Must enter a valid league size.");
+            size = getLeagueSize();
+        }
+        return size;
+    }
 
+    /**
+     * Get the pick that the user wants to have
+     * @param leagueSize- size of the league
+     * @return the user's pick
+     */
+    private static int getUserPick(int leagueSize){
+        System.out.println("Which pick would you like in a "+leagueSize+" team draft?");
+        Scanner scanner = new Scanner(System.in);
+        int pick;
+        try{
+            pick = scanner.nextInt();
+        } catch(NumberFormatException e){
+            System.out.println("Must enter a valid pick.");
+            pick = getUserPick(leagueSize);
+        }
+        if(pick<1 || pick>leagueSize){
+            System.out.println("Must enter a valid pick");
+            pick = getUserPick(leagueSize);
+        }
+        return pick;
+    }
+
+    /**
+     * Get the CPU difficulty
+     * @return difficulty of CPU
+     */
+    private static Difficulty getCPUDifficulty(){
+        System.out.println("How difficult would you like the CPU to be?");
+        System.out.println("1. Stupid");
+        System.out.println("2. Random");
+        System.out.println("3. Smart");
+//        int choice = getCPUDifficultyChoice();
+        int choice = 1; //stub for getCPUDifficultChoice()
+        switch (choice){
+            case 1: return Difficulty.STUPID;
+            case 2: return Difficulty.RANDOM;
+            case 3: return Difficulty.SMART;
+            default: return null;
+        }
+    }
+
+    /**
+     * Keep asking for the CPU's difficulty until a valid choice is selected.
+     * @return CPU difficulty choice
+     */
+    private static int getCPUDifficultyChoice(){
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+        try{
+            choice = scanner.nextInt();
+        } catch (NumberFormatException e){
+            System.out.println("Must choose one of the options presented.");
+            choice = getSiteChoice();
+        }
+        if(choice<1 || choice >3){
+            System.out.println("Must choose one of the options presented.");
+            choice = getSiteChoice();
+        }
+        return choice;
+    }
+
+    public static void draft(){
+        while(!controller.finished()){
+            controller.draft();
+        }
     }
 
     public static void main(String[] args){
@@ -101,11 +188,13 @@ public class CommandLine {
         Site site = getSite();
         ScoreType scoreType = getScoreType();
         DataType dataType = getDataType();
+        int leagueSize = getLeagueSize();
+        int userPick = getUserPick(leagueSize);
+        Difficulty difficulty = getCPUDifficulty();
 
-        Controller controller = new Controller(site, scoreType, dataType);
+        controller = new Controller(site, scoreType, dataType, leagueSize, userPick, difficulty);
 
         controller.setData();
 
-        setupDraft();
     }
 }

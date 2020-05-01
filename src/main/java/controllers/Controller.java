@@ -14,8 +14,11 @@ public class Controller {
         this.dataStorer = new DataStorerFactory().getDataStorer(site, scoreType, dataType);
     }
 
+    public void draft(){
+        storeData();
+    }
 
-    public void storeData(){
+    private void storeData(){
         dataStorer.storeData();
     }
 }

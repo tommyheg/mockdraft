@@ -44,6 +44,6 @@ public class CommandLine {
 
         Controller controller = new Controller(site, scoreType, dataType);
 
-        controller.storeData();
+        controller.draft();
     }
 }

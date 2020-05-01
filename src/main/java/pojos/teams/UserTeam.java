@@ -3,8 +3,8 @@ package pojos.teams;
 public class UserTeam extends Team{
 
 
-    public UserTeam(){
-
+    public UserTeam(int position){
+        super(position);
     }
 
     @Override

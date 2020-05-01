@@ -4,6 +4,12 @@ import pojos.Player;
 import pojos.ScoreType;
 import webscraping.Site;
 
+import org.apache.ibatis.jdbc.ScriptRunner;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -27,16 +33,18 @@ public class SQLStorer extends DataStorer {
      */
     public void storeData() {
         //get the list of players by web scraping
-        //limit will eventually be determined by league size
-        List<Player> players = webScraper.getPlayers(30);
+        //limit will eventually be determined by league size and propogate down
+        List<Player> players = webScraper.getPlayers(15);
 
         establishConnection();  //establish connection to the sql database
+        clearDatabase();        //first clear database
 
         for(int i=0;i<players.size();i++){
             Player player = players.get(i);
             addPlayer(player);
         }
 
+        closeConnection();  //close connection to the sql database
     }
 
     /**
@@ -65,7 +73,6 @@ public class SQLStorer extends DataStorer {
                 projections.get("Pass Ints")+", "+
                 projections.get("Fumbles")+
                 ");";
-        System.out.println(s);
         try {
             statement.executeUpdate(s);
         } catch (SQLException throwables) {
@@ -74,9 +81,26 @@ public class SQLStorer extends DataStorer {
     }
 
     /**
-     * Establish local connection to sql database
+     * Clear the database and create tables.
+     * Use create_draft.sql
+     */
+    private void clearDatabase(){
+        ScriptRunner scriptRunner = new ScriptRunner(connection);
+        Reader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader("create_draft.sql"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        assert reader != null;
+        scriptRunner.runScript(reader);
+    }
+
+    /**
+     * Establish connection to sql database
      */
     private void establishConnection(){
+        //this is just a local connection but it could eventually be to a server or something
         String url = "jdbc:mysql://localhost:3306/mockdraft?useTimezone=true&serverTimezone=UTC";
         String user = "root";
         String password = "root";
@@ -90,6 +114,17 @@ public class SQLStorer extends DataStorer {
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Close connection to sql database
+     */
+    private void closeConnection(){
+        try {
+            connection.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 }

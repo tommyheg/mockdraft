@@ -92,6 +92,9 @@ public class CommandLine {
         return DataType.SQL;
     }
 
+    private static void setupDraft(){
+
+    }
 
     public static void main(String[] args){
 
@@ -101,6 +104,8 @@ public class CommandLine {
 
         Controller controller = new Controller(site, scoreType, dataType);
 
-        controller.draft();
+        controller.setData();
+
+        setupDraft();
     }
 }

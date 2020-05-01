@@ -25,6 +25,8 @@ adp. Simulations work recursively (this would be
 exponential so whatever is done calculation wise 
 must be trivial).
 
+## Note
+The sql is only local now
 
 ## Purpose
 To gain experience in java web scraping, SQL, JSON, 

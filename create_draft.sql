@@ -26,5 +26,3 @@ create table players(
     Fumbles decimal(2, 1)
 
 );
-
---set autocommit = 0;

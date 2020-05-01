@@ -1,15 +1,14 @@
 package data.storage;
 
+import org.springframework.core.io.FileUrlResource;
+import org.springframework.core.io.support.EncodedResource;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
+
 import pojos.Player;
 import pojos.ScoreType;
 import webscraping.Site;
 
-import org.apache.ibatis.jdbc.ScriptRunner;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
+import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -34,10 +33,10 @@ public class SQLStorer extends DataStorer {
     public void storeData() {
         //get the list of players by web scraping
         //limit will eventually be determined by league size and propogate down
-        List<Player> players = webScraper.getPlayers(15);
+        List<Player> players = webScraper.getPlayers(5);
 
         establishConnection();  //establish connection to the sql database
-        clearDatabase();        //first clear database
+        createDatabase();        //first clear and create database
 
         for(int i=0;i<players.size();i++){
             Player player = players.get(i);
@@ -84,16 +83,13 @@ public class SQLStorer extends DataStorer {
      * Clear the database and create tables.
      * Use create_draft.sql
      */
-    private void clearDatabase(){
-        ScriptRunner scriptRunner = new ScriptRunner(connection);
-        Reader reader = null;
+    private void createDatabase(){
         try {
-            reader = new BufferedReader(new FileReader("create_draft.sql"));
-        } catch (FileNotFoundException e) {
+            ScriptUtils.executeSqlScript(connection,
+                    new EncodedResource(new FileUrlResource("create_draft.sql")));
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        assert reader != null;
-        scriptRunner.runScript(reader);
     }
 
     /**

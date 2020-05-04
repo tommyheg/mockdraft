@@ -1,10 +1,13 @@
 package pojos.teams;
 
+import pojos.Player;
+
 public class UserTeam extends Team{
 
 
     public UserTeam(int position){
         super(position);
+        this.user = true;
     }
 
     @Override
@@ -12,7 +15,7 @@ public class UserTeam extends Team{
      * Select player for the user. Must notify someone who is chosen
      * so they are taken off of data.
      */
-    public void selectPlayer() {
-
+    public Player selectPlayer() {
+        return null;
     }
 }

@@ -9,6 +9,7 @@ public abstract class Team {
 
     protected List<Player> players;
     protected int position;
+    protected boolean user = false;
     //maybe use a data structure for these...?
     protected int qbs, rbs, wrs, tes, dsts, ks;
     protected int qbLimit, rbLimit, wrLimit, teLimit, dstLimit, kLimit;
@@ -31,7 +32,7 @@ public abstract class Team {
         kLimit = 2;
     }
 
-    public abstract void selectPlayer();
+    public abstract Player selectPlayer();
 
     protected boolean roomForPlayer(String position){
         if(position.startsWith("QB")){
@@ -48,5 +49,9 @@ public abstract class Team {
             return kLimit>ks;
         }
         return false;
+    }
+
+    public boolean isUser(){
+        return user;
     }
 }

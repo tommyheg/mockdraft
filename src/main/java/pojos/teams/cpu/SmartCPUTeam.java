@@ -1,5 +1,7 @@
 package pojos.teams.cpu;
 
+import pojos.Player;
+
 public class SmartCPUTeam extends CPUTeam{
 
 
@@ -14,7 +16,7 @@ public class SmartCPUTeam extends CPUTeam{
      * Maybe randomly choose a strategy in the constructor
      * to base this off of (stream qbs, bpa, etc).
      */
-    public void selectPlayer() {
-
+    public Player selectPlayer() {
+        return null;
     }
 }

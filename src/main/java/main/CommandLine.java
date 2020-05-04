@@ -2,10 +2,12 @@ package main;
 
 import controllers.Controller;
 import data.DataType;
+import pojos.Player;
 import pojos.ScoreType;
 import pojos.teams.cpu.Difficulty;
 import webscraping.Site;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class CommandLine {
@@ -104,12 +106,13 @@ public class CommandLine {
         Scanner scanner = new Scanner(System.in);
         int size;
         try{
-            size = scanner.nextInt();
+//            size = scanner.nextInt();
+            size = 10;
         } catch(NumberFormatException e){
             System.out.println("Must enter a valid league size.");
             size = getLeagueSize();
         }
-        if(size!=8 || size!=10 || size!=12){
+        if(size!=8 && size!=10 && size!=12){
             System.out.println("Must enter a valid league size.");
             size = getLeagueSize();
         }
@@ -126,7 +129,8 @@ public class CommandLine {
         Scanner scanner = new Scanner(System.in);
         int pick;
         try{
-            pick = scanner.nextInt();
+//            pick = scanner.nextInt();
+            pick = 5;
         } catch(NumberFormatException e){
             System.out.println("Must enter a valid pick.");
             pick = getUserPick(leagueSize);
@@ -177,9 +181,40 @@ public class CommandLine {
         return choice;
     }
 
-    public static void draft(){
+    private static void presentPlayers(List<Player> players){
+        for(int i=0;i<players.size();i++){
+            System.out.println(i+": "+players.get(i));
+        }
+    }
+
+    private static int getPlayerChoice(int size){
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+        try{
+            choice = scanner.nextInt();
+        } catch (NumberFormatException e){
+            System.out.println("Must choose one of the players presented.");
+            choice = getSiteChoice();
+        }
+        if(choice<1 || choice >size){
+            System.out.println("Must choose one of the players presented.");
+            choice = getSiteChoice();
+        }
+        return choice;
+    }
+
+    private static void draft(){
         while(!controller.finished()){
-            controller.draft();
+            if(controller.userTurn()){
+                presentPlayers(controller.nextAvailablePlayers(10));
+            }
+            Player player = controller.draftPlayer();
+            while(player==null) {
+                System.out.println("Must choose an available player. Try again");
+                player = controller.draftPlayer();
+            }
+            controller.removePlayer(player);
+            controller.advanceTurn();
         }
     }
 
@@ -196,5 +231,6 @@ public class CommandLine {
 
         controller.setData();
 
+        draft();
     }
 }

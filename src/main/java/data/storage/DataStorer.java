@@ -1,9 +1,13 @@
 package data.storage;
 
+import logger.Logger;
+import pojos.Player;
 import pojos.ScoreType;
 import webscraping.Site;
 import webscraping.scrapers.WebScraperFactory;
 import webscraping.scrapers.WebScraper;
+
+import java.util.List;
 
 
 public abstract class DataStorer {
@@ -14,7 +18,11 @@ public abstract class DataStorer {
         this.webScraper = new WebScraperFactory().getWebScraper(site, scoreType);
     }
 
-    public abstract void storeData();
+    public abstract void storeData(int limit);
+
+    public abstract List<Player> nextAvailablePlayers(int limit);
+
+    public abstract void removePlayer(Player player);
 
 
 }

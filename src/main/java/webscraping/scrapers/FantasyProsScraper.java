@@ -22,7 +22,6 @@ public class FantasyProsScraper extends WebScraper {
 
     /**
      * Loop through the list of players at fantasypros.com
-     *
      * @param limit- number of players you want to get (roughly)
      * @return  list of players to be added to database
      */

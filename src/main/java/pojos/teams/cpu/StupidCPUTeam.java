@@ -1,5 +1,7 @@
 package pojos.teams.cpu;
 
+import pojos.Player;
+
 public class StupidCPUTeam extends CPUTeam{
 
 
@@ -11,7 +13,7 @@ public class StupidCPUTeam extends CPUTeam{
     /**
      * Just choose the next available player
      */
-    public void selectPlayer() {
-
+    public Player selectPlayer() {
+        return null;
     }
 }

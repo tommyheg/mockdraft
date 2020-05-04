@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,15 +26,37 @@ public class SQLStorer extends DataStorer {
         super(site, scoreType);
     }
     
-    
+
+    @Override
+    /**
+     * Remove a player from the sql database after he's been drafted
+     */
+    public void removePlayer(Player player){
+        //TODO: remove the player from the sql
+        //not sure how to do this
+    }
+
+    @Override
+    /**
+     * Get the next X players from the sql database
+     * @param limit- number of players to get
+     * @return a list of the next X players
+     */
+    public List<Player> nextAvailablePlayers(int limit){
+        List<Player> players = new ArrayList<Player>();
+        //TODO: use ResultSet to add players to the list
+        //if limit exceeds number of available players, add less than limit
+        //unless I just keep a running list of available players in this class
+        return players;
+    }
+
     @Override
     /**
      * Store the list of players from the website in an sql database
      */
-    public void storeData() {
+    public void storeData(int limit) {
         //get the list of players by web scraping
-        //limit will eventually be determined by league size and propogate down
-        List<Player> players = webScraper.getPlayers(5);
+        List<Player> players = webScraper.getPlayers(limit);
 
         establishConnection();  //establish connection to the sql database
         createDatabase();        //first clear and create database

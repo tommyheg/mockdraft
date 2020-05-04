@@ -1,5 +1,6 @@
 package main;
 
+import controllers.ChoiceDecider;
 import controllers.Controller;
 import data.DataType;
 import pojos.Player;
@@ -13,17 +14,23 @@ import java.util.Scanner;
 public class CommandLine {
 
     private static Controller controller;
+    private static ChoiceDecider choiceDecider = new ChoiceDecider();
+    private static Scanner scanner = new Scanner(System.in);
 
     /**
      * Ask the user what site to get the data from
      * @return site to get data
      */
-    private static Site getSite(){
+    private static Site promptSite(){
         System.out.println("\nWhich website would you like the ADP data from?");
         System.out.println("1. FantasyPros");
         System.out.println("2. ESPN");
-//        int choice = getSiteChoice();
-        int choice = 1; //stub for getSiteChoice()
+        String response = scanner.next();
+        while(!choiceDecider.validSite(response,2)){
+            System.out.println("Must choose one of the options presented.");
+            response = scanner.next();
+        }
+        int choice = Integer.parseInt(response);
         switch(choice){
             case 1: return Site.FANTASYPROS;
             case 2: return Site.ESPN;
@@ -32,36 +39,20 @@ public class CommandLine {
     }
 
     /**
-     * Keep asking for user's choice until a valid one is selected
-     * @return choice the user selected
-     */
-    private static int getSiteChoice(){
-        Scanner scanner = new Scanner(System.in);
-        int choice;
-        try{
-            choice = scanner.nextInt();
-        } catch (NumberFormatException e){
-            System.out.println("Must choose one of the options presented.");
-            choice = getSiteChoice();
-        }
-        if(choice<1 || choice >2){
-            System.out.println("Must choose one of the options presented.");
-            choice = getSiteChoice();
-        }
-        return choice;
-    }
-
-    /**
      * Ask the user what type of scoring they want
      * @return scoring type
      */
-    private static ScoreType getScoreType(){
+    private static ScoreType promptScoreType(){
         System.out.println("\nWhich scoring type is this draft?");
         System.out.println("1. Standard");
         System.out.println("2. Half-PPR");
         System.out.println("3. PPR");
-//        int choice = getScoreTypeChoice();
-        int choice = 1; //stub for getScoreTypeChoice()
+        String response = scanner.next();
+        while(!choiceDecider.validScoreType(response)){
+            System.out.println("Must choose one of the options presented.");
+            response = scanner.next();
+        }
+        int choice = Integer.parseInt(response);
         switch (choice){
             case 1: return ScoreType.STANDARD;
             case 2: return ScoreType.HALF;
@@ -70,30 +61,16 @@ public class CommandLine {
         }
     }
 
-    private static int getScoreTypeChoice(){
-        Scanner scanner = new Scanner(System.in);
-        int choice;
-        try{
-            choice = scanner.nextInt();
-        } catch (NumberFormatException e){
-            System.out.println("Must choose one of the options presented.");
-            choice = getSiteChoice();
-        }
-        if(choice<1 || choice >3){
-            System.out.println("Must choose one of the options presented.");
-            choice = getSiteChoice();
-        }
-        return choice;
-    }
-
     /**
      * Get what data type the players should be stored in
      * This might not be worth doing.
      * @return data type
      */
-    private static DataType getDataType(){
+    private static DataType promptDataType(){
         //just a stub for now
         //thinking we could use sql, json, or excel data types
+        String response = scanner.next();
+        choiceDecider.validDataType(response, 3);
         return DataType.SQL;
     }
 
@@ -101,22 +78,14 @@ public class CommandLine {
      * Get the size of the league from the user
      * @return size of the league
      */
-    private static int getLeagueSize(){
+    private static int promptLeagueSize(){
         System.out.println("How large is your league? 8, 10, or 12?");
-        Scanner scanner = new Scanner(System.in);
-        int size;
-        try{
-//            size = scanner.nextInt();
-            size = 10;
-        } catch(NumberFormatException e){
-            System.out.println("Must enter a valid league size.");
-            size = getLeagueSize();
+        String response = scanner.next();
+        while(!choiceDecider.validLeagueSize(response)){
+            System.out.println("Must choose a valid league size (8, 10, or 12).");
+            response = scanner.next();
         }
-        if(size!=8 && size!=10 && size!=12){
-            System.out.println("Must enter a valid league size.");
-            size = getLeagueSize();
-        }
-        return size;
+        return Integer.parseInt(response);
     }
 
     /**
@@ -124,61 +93,37 @@ public class CommandLine {
      * @param leagueSize- size of the league
      * @return the user's pick
      */
-    private static int getUserPick(int leagueSize){
+    private static int promptUserPick(int leagueSize){
         System.out.println("Which pick would you like in a "+leagueSize+" team draft?");
-        Scanner scanner = new Scanner(System.in);
-        int pick;
-        try{
-//            pick = scanner.nextInt();
-            pick = 5;
-        } catch(NumberFormatException e){
+        String response = scanner.next();
+        while(!choiceDecider.validUserPick(response, leagueSize)){
             System.out.println("Must enter a valid pick.");
-            pick = getUserPick(leagueSize);
+            response = scanner.next();
         }
-        if(pick<1 || pick>leagueSize){
-            System.out.println("Must enter a valid pick");
-            pick = getUserPick(leagueSize);
-        }
-        return pick;
+        return Integer.parseInt(response);
     }
 
     /**
      * Get the CPU difficulty
      * @return difficulty of CPU
      */
-    private static Difficulty getCPUDifficulty(){
+    private static Difficulty promptCPUDifficulty(){
         System.out.println("How difficult would you like the CPU to be?");
         System.out.println("1. Stupid");
         System.out.println("2. Random");
         System.out.println("3. Smart");
-//        int choice = getCPUDifficultyChoice();
-        int choice = 1; //stub for getCPUDifficultChoice()
+        String response = scanner.next();
+        while(!choiceDecider.validCPUDifficulty(response, 3)){
+            System.out.println("Must choose a valid difficulty.");
+            response = scanner.next();
+        }
+        int choice = Integer.parseInt(response);
         switch (choice){
             case 1: return Difficulty.STUPID;
             case 2: return Difficulty.RANDOM;
             case 3: return Difficulty.SMART;
             default: return null;
         }
-    }
-
-    /**
-     * Keep asking for the CPU's difficulty until a valid choice is selected.
-     * @return CPU difficulty choice
-     */
-    private static int getCPUDifficultyChoice(){
-        Scanner scanner = new Scanner(System.in);
-        int choice;
-        try{
-            choice = scanner.nextInt();
-        } catch (NumberFormatException e){
-            System.out.println("Must choose one of the options presented.");
-            choice = getSiteChoice();
-        }
-        if(choice<1 || choice >3){
-            System.out.println("Must choose one of the options presented.");
-            choice = getSiteChoice();
-        }
-        return choice;
     }
 
     private static void presentPlayers(List<Player> players){
@@ -194,15 +139,18 @@ public class CommandLine {
             choice = scanner.nextInt();
         } catch (NumberFormatException e){
             System.out.println("Must choose one of the players presented.");
-            choice = getSiteChoice();
+            choice = getPlayerChoice(size);
         }
         if(choice<1 || choice >size){
             System.out.println("Must choose one of the players presented.");
-            choice = getSiteChoice();
+            choice = getPlayerChoice(size);
         }
         return choice;
     }
 
+    /**
+     * Begin the draft
+     */
     private static void draft(){
         while(!controller.finished()){
             if(controller.userTurn()){
@@ -220,12 +168,12 @@ public class CommandLine {
 
     public static void main(String[] args){
 
-        Site site = getSite();
-        ScoreType scoreType = getScoreType();
-        DataType dataType = getDataType();
-        int leagueSize = getLeagueSize();
-        int userPick = getUserPick(leagueSize);
-        Difficulty difficulty = getCPUDifficulty();
+        Site site = promptSite();
+        ScoreType scoreType = promptScoreType();
+        DataType dataType = promptDataType();
+        int leagueSize = promptLeagueSize();
+        int userPick = promptUserPick(leagueSize);
+        Difficulty difficulty = promptCPUDifficulty();
 
         controller = new Controller(site, scoreType, dataType, leagueSize, userPick, difficulty);
 

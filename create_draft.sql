@@ -24,5 +24,5 @@ create table players(
     PassTds decimal(3, 1),
     PassInts decimal(3, 1),
     Fumbles decimal(2, 1)
-
 );
+

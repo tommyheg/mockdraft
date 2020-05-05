@@ -7,6 +7,7 @@ import pojos.Player;
 import pojos.ScoreType;
 import pojos.teams.Team;
 import pojos.teams.UserTeam;
+import pojos.teams.cpu.CPUTeam;
 import pojos.teams.cpu.CPUTeamFactory;
 import pojos.teams.cpu.Difficulty;
 import webscraping.Site;
@@ -32,11 +33,40 @@ public class Controller {
     }
 
     /**
-     * Draft a player
-     * @return the player drafted
+     * Add the player to the team, advance the turn, and remove the player from database
+     * @param player- player to be added
+     * @return whether the player was added or not
      */
-    public Player draftPlayer(){
-        Player player = currentTeam.selectPlayer();
+    public boolean draft(Player player){
+        if(userTurn()){
+            if(!currentTeam.addPlayer(player)){
+                return false;
+            }
+        }
+        advanceTurn();
+        removePlayer(player);
+        return true;
+    }
+
+    /**
+     * get the player from the database
+     * @param name- name of the player to get
+     * @return the player (null if he isn't available)
+     */
+    public Player draftPlayer(String name){
+        return dataStorer.getPlayer(name);
+    }
+
+    /**
+     * Keep selecting players for the cpu until they select a valid one.
+     * @return the player the cpu team drafted
+     */
+    public Player draftPlayerCPU(){
+        CPUTeam cpuTeam = (CPUTeam) currentTeam;
+        Player player = cpuTeam.selectPlayer();
+        while(!cpuTeam.addPlayer(player)){
+            player = cpuTeam.selectPlayer();
+        }
         return player;
     }
 
@@ -44,7 +74,7 @@ public class Controller {
      * Remove a player from the database
      * @param player- the player to remove
      */
-    public void removePlayer(Player player){
+    private void removePlayer(Player player){
         dataStorer.removePlayer(player);
     }
 
@@ -90,14 +120,6 @@ public class Controller {
     }
 
     /**
-     * Check to see if the draft is complete
-     * @return whether or not the draft is complete
-     */
-    public boolean finished(){
-        return pickNumber>totalPicks;
-    }
-
-    /**
      * Have the data storer get the data, but only if not done that day
      */
     public void setData(){
@@ -108,5 +130,13 @@ public class Controller {
 //        int limit = rounds * leagueSize;  //this will be done later
         int limit = 20;
         dataStorer.storeData(limit);
+    }
+
+    /**
+     * Check to see if the draft is complete
+     * @return whether or not the draft is complete
+     */
+    public boolean finished(){
+        return pickNumber>totalPicks;
     }
 }

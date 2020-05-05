@@ -25,7 +25,20 @@ public class SQLStorer extends DataStorer {
     public SQLStorer(Site site, ScoreType scoreType){
         super(site, scoreType);
     }
-    
+
+
+
+    @Override
+    /**
+     * Get the player from the sql if he exists, otherwise return null
+     * @param- name of the player to get
+     * @return the player from the database
+     */
+    public Player getPlayer(String name) {
+        //TODO: get the player from the database with his name
+        // if he doesn't exist, return null
+        return null;
+    }
 
     @Override
     /**
@@ -33,7 +46,6 @@ public class SQLStorer extends DataStorer {
      */
     public void removePlayer(Player player){
         //TODO: remove the player from the sql
-        //not sure how to do this
     }
 
     @Override

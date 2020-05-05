@@ -14,8 +14,8 @@ import java.util.Scanner;
 public class CommandLine {
 
     private static Controller controller;
-    private static ChoiceDecider choiceDecider = new ChoiceDecider();
-    private static Scanner scanner = new Scanner(System.in);
+    private static final ChoiceDecider choiceDecider = new ChoiceDecider();
+    private static final Scanner scanner = new Scanner(System.in);
 
     /**
      * Ask the user what site to get the data from
@@ -132,20 +132,29 @@ public class CommandLine {
         }
     }
 
-    private static int getPlayerChoice(int size){
-        Scanner scanner = new Scanner(System.in);
-        int choice;
-        try{
-            choice = scanner.nextInt();
-        } catch (NumberFormatException e){
-            System.out.println("Must choose one of the players presented.");
-            choice = getPlayerChoice(size);
+    private static Player userDraft(){
+        presentPlayers(controller.nextAvailablePlayers(10));
+        System.out.println("Enter the name of the player you want: ");
+        String name = scanner.nextLine();
+        Player player = controller.draftPlayer(name);
+        while(player == null){
+            System.out.println("Must choose an available player. Try again");
+            name = scanner.nextLine();
+            player = controller.draftPlayer(name);
         }
-        if(choice<1 || choice >size){
-            System.out.println("Must choose one of the players presented.");
-            choice = getPlayerChoice(size);
+        return player;
+    }
+
+    private static Player cpuDraft(){
+        return controller.draftPlayerCPU();
+    }
+
+    private static Player draftPlayer(){
+        if(controller.userTurn()){
+            return userDraft();
+        } else{
+            return cpuDraft();
         }
-        return choice;
     }
 
     /**
@@ -153,16 +162,11 @@ public class CommandLine {
      */
     private static void draft(){
         while(!controller.finished()){
-            if(controller.userTurn()){
-                presentPlayers(controller.nextAvailablePlayers(10));
+            Player player = draftPlayer();
+            while(!controller.draft(player)){
+                System.out.println("Must choose an available player.");
+                player = draftPlayer();
             }
-            Player player = controller.draftPlayer();
-            while(player==null) {
-                System.out.println("Must choose an available player. Try again");
-                player = controller.draftPlayer();
-            }
-            controller.removePlayer(player);
-            controller.advanceTurn();
         }
     }
 

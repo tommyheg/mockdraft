@@ -12,7 +12,7 @@ public class Player {
     private final String lastName, firstName;
     private final String team;
     private Map<String, Double> projections;
-    private List<String> keys;
+    private final List<String> keys;
 
     public Player(int rank, String name, String position, String team, Map<String, Double> projections) {
         this.rank = rank;

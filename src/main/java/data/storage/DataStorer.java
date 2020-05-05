@@ -24,5 +24,7 @@ public abstract class DataStorer {
 
     public abstract void removePlayer(Player player);
 
+    public abstract Player getPlayer(String name);
+
 
 }

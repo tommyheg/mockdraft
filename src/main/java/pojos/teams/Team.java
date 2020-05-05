@@ -32,7 +32,9 @@ public abstract class Team {
         kLimit = 2;
     }
 
-    public abstract Player selectPlayer();
+    public boolean addPlayer(Player player){
+        return false;
+    }
 
     protected boolean roomForPlayer(String position){
         if(position.startsWith("QB")){

@@ -17,8 +17,9 @@ import java.util.List;
 
 public class Controller {
 
-    private DataStorer dataStorer;
-    private int leagueSize, rounds, totalPicks, pickNumber = 1, currentPick = 1, currentRound = 1;
+    private final DataStorer dataStorer;
+    private final int leagueSize, rounds, totalPicks;
+    private int pickNumber = 1, currentPick = 1, currentRound = 1;
     private List<Team> teams;
     private Team currentTeam;
 
@@ -38,10 +39,8 @@ public class Controller {
      * @return whether the player was added or not
      */
     public boolean draft(Player player){
-        if(userTurn()){
-            if(!currentTeam.addPlayer(player)){
-                return false;
-            }
+        if(!currentTeam.addPlayer(player)){
+            return false;
         }
         advanceTurn();
         removePlayer(player);
@@ -58,16 +57,12 @@ public class Controller {
     }
 
     /**
-     * Keep selecting players for the cpu until they select a valid one.
+     * Select a player for the cpu team
      * @return the player the cpu team drafted
      */
     public Player draftPlayerCPU(){
         CPUTeam cpuTeam = (CPUTeam) currentTeam;
-        Player player = cpuTeam.selectPlayer();
-        while(!cpuTeam.addPlayer(player)){
-            player = cpuTeam.selectPlayer();
-        }
-        return player;
+        return cpuTeam.selectPlayer(dataStorer);
     }
 
     /**
@@ -124,7 +119,7 @@ public class Controller {
      */
     public void setData(){
         //TODO: have a way to check if I have gotten the data for that day
-        //use a .txt file who's only purpose is to store the time of data retrieval
+        // use a .txt file who's only purpose is to store the time of data retrieval?
 
 
 //        int limit = rounds * leagueSize;  //this will be done later

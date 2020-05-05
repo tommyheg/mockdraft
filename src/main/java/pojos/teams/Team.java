@@ -32,10 +32,36 @@ public abstract class Team {
         kLimit = 2;
     }
 
+    /**
+     * Add a player to the team if there is room
+     * @param player- player to be added
+     * @return whether or not the player was added
+     */
     public boolean addPlayer(Player player){
-        return false;
+        String position = player.getPosition();
+        if(!roomForPlayer(position)) return false;  //this may be used somewhere else and be unnecessary
+        if(position.startsWith("QB")){
+            qbLimit++;
+        } else if(position.startsWith("RB")){
+            rbLimit++;
+        } else if(position.startsWith("WR")){
+            wrLimit++;
+        } else if(position.startsWith("TE")){
+            teLimit++;
+        } else if(position.startsWith("D")){
+            dstLimit++;
+        } else if(position.startsWith("K")){
+            kLimit++;
+        }
+        players.add(player);
+        return true;
     }
 
+    /**
+     * Check if there is room for the player on the team
+     * @param position- position of the player
+     * @return whether or not there is room for the player
+     */
     protected boolean roomForPlayer(String position){
         if(position.startsWith("QB")){
             return qbLimit>qbs;

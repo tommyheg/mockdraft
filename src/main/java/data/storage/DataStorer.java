@@ -1,6 +1,5 @@
 package data.storage;
 
-import logger.Logger;
 import pojos.Player;
 import pojos.ScoreType;
 import webscraping.Site;
@@ -26,5 +25,8 @@ public abstract class DataStorer {
 
     public abstract Player getPlayer(String name);
 
+    public abstract Player getRandomPlayer(int range);
+
+    public abstract Player getNextPlayer(int count);
 
 }

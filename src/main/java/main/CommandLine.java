@@ -126,12 +126,20 @@ public class CommandLine {
         }
     }
 
+    /**
+     * Present the next few players for the user
+     * @param players- list of players
+     */
     private static void presentPlayers(List<Player> players){
         for(int i=0;i<players.size();i++){
             System.out.println(i+": "+players.get(i));
         }
     }
 
+    /**
+     * Get the player selection from the user
+     * @return- the player that the user selected
+     */
     private static Player userDraft(){
         presentPlayers(controller.nextAvailablePlayers(10));
         System.out.println("Enter the name of the player you want: ");
@@ -145,10 +153,18 @@ public class CommandLine {
         return player;
     }
 
+    /**
+     * Get the player the cpu drafts
+     * @return the player the cpu drafts
+     */
     private static Player cpuDraft(){
         return controller.draftPlayerCPU();
     }
 
+    /**
+     * Get the player that is drafted
+     * @return the player that is drafted
+     */
     private static Player draftPlayer(){
         if(controller.userTurn()){
             return userDraft();

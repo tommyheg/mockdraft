@@ -26,7 +26,21 @@ public class SQLStorer extends DataStorer {
         super(site, scoreType);
     }
 
+    @Override
+    public Player getNextPlayer(int count){
+        //TODO: get the next available player
+        return null;
+    }
 
+    @Override
+    /**
+     * Select one of the next X available players
+     * @param- the range of players to select from
+     */
+    public Player getRandomPlayer(int range){
+        //TODO: randomly choose a player from sql
+        return null;
+    }
 
     @Override
     /**

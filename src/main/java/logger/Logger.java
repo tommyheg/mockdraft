@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Logger {
 
@@ -49,6 +52,21 @@ public class Logger {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public void logWebScrape(int limit){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date();
+        String stamp = dateFormat.format(date);
+        System.out.println(stamp);
+        try {
+            FileWriter logWriter = new FileWriter("web_scraping.txt");
+            logWriter.append(stamp);
+            logWriter.append("\n");
+            logWriter.append(Integer.toString(limit));
+            logWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

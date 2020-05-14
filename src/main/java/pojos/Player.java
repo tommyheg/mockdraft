@@ -34,6 +34,7 @@ public class Player {
         initializeProjections();
 
         //update player's projections
+        if(projections == null) return;
         for(String stat: projections.keySet()){
             this.projections.put(stat, projections.get(stat));
         }

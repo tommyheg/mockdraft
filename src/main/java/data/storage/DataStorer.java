@@ -29,4 +29,6 @@ public abstract class DataStorer {
 
     public abstract Player getNextPlayer(int count);
 
+    public abstract void cleanUp();
+
 }

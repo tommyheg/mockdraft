@@ -3,6 +3,7 @@ package controllers;
 import data.DataType;
 import data.storage.DataStorer;
 import data.storage.DataStorerFactory;
+import logger.Logger;
 import pojos.Player;
 import pojos.ScoreType;
 import pojos.teams.Team;
@@ -12,8 +13,9 @@ import pojos.teams.cpu.CPUTeamFactory;
 import pojos.teams.cpu.Difficulty;
 import webscraping.Site;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
 
 public class Controller {
 
@@ -22,6 +24,7 @@ public class Controller {
     private int pickNumber = 1, currentPick = 1, currentRound = 1;
     private List<Team> teams;
     private Team currentTeam;
+    private Logger logger = Logger.getLogger();
 
     public Controller(Site site, ScoreType scoreType, DataType dataType,
                       int leagueSize, int userPick, Difficulty difficulty){
@@ -79,9 +82,16 @@ public class Controller {
     public void advanceTurn(){
         //TODO: make this a snake method
         pickNumber += 1;
-        currentRound = pickNumber % leagueSize;
-        currentPick = (currentPick+1) % leagueSize;
+        currentRound = pickNumber / leagueSize + 1;
+        if(currentRound%2==1){
+            currentPick += 1;
+            if(currentPick > leagueSize) currentPick-=1;
+        } else{
+            currentPick -= 1;
+            if(currentPick == 0) currentPick+=1;
+        }
         currentTeam = teams.get(currentPick);
+        System.out.println("Current pick: "+currentPick);
     }
 
     /**
@@ -118,13 +128,56 @@ public class Controller {
      * Have the data storer get the data, but only if not done that day
      */
     public void setData(){
-        //TODO: have a way to check if I have gotten the data for that day
-        // use a .txt file who's only purpose is to store the time of data retrieval?
+        int limit = rounds * leagueSize;  //this will be done later
+        limit = 30;
+        GregorianCalendar lastDate = lastDate();
+        if(updateNeeded(lastDate, limit)){
+            System.out.println("Update needed.");
+            logger.logWebScrape(limit);
+            dataStorer.storeData(limit);
+        }
+    }
 
+    /**
+     * Decide whether an update of the data is required. Update if the
+     * last update is over a day old or I am updating more players.
+     * @param date- previous update date
+     * @param limit- roughly how many players that will be gotten
+     * @return whether or not an update is required
+     */
+    private boolean updateNeeded(GregorianCalendar date, int limit){
+        GregorianCalendar currentDate = new GregorianCalendar();
+        if(currentDate.get(Calendar.YEAR) > date.get(Calendar.YEAR)) return true;
+        if(currentDate.get(Calendar.MONTH) > date.get(Calendar.MONTH)) return true;
+        if(currentDate.get(Calendar.DAY_OF_MONTH) > date.get(Calendar.DAY_OF_MONTH)) return true;
 
-//        int limit = rounds * leagueSize;  //this will be done later
-        int limit = 20;
-        dataStorer.storeData(limit);
+        int lastLimit = -1;
+        try{
+            Scanner fileReader = new Scanner(new File("web_scraping.txt"));
+            fileReader.nextLine();
+            lastLimit = fileReader.nextInt();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return limit > lastLimit;
+    }
+
+    /**
+     * Get the last date that the data was updated
+     * @return the date from web_scraping.txt
+     */
+    private GregorianCalendar lastDate(){
+        GregorianCalendar date = null;
+        try{
+            Scanner fileReader = new Scanner(new File("web_scraping.txt"));
+            String line = fileReader.next();
+            String[] contents = line.split("/");
+            date = new GregorianCalendar(Integer.parseInt(contents[0]), Integer.parseInt(contents[1])-1, Integer.parseInt(contents[2]));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 
     /**
@@ -133,5 +186,12 @@ public class Controller {
      */
     public boolean finished(){
         return pickNumber>totalPicks;
+    }
+
+    /**
+     * Clean up all loose ends (connections, etc)
+     */
+    public void cleanUp(){
+        dataStorer.cleanUp();
     }
 }

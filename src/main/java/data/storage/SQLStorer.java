@@ -9,10 +9,7 @@ import pojos.ScoreType;
 import webscraping.Site;
 
 import java.net.MalformedURLException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +26,24 @@ public class SQLStorer extends DataStorer {
     @Override
     public Player getNextPlayer(int count){
         //TODO: get the next available player
-        return null;
+        if(connection == null) establishConnection();
+        String s = "select * from players limit "+count+", 1";
+        Player player = null;
+        try{
+            ResultSet rs = statement.executeQuery(s);
+            rs.next();
+            int rank = rs.getInt(1);
+            String lastName = rs.getString(2);
+            String firstName = rs.getString(3);
+            String fullName = firstName+" "+lastName;
+            String position = rs.getString(4);
+            String team = rs.getString(5);
+            player = new Player(rank, fullName, position, team, null);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return player;
     }
 
     @Override
@@ -38,8 +52,10 @@ public class SQLStorer extends DataStorer {
      * @param- the range of players to select from
      */
     public Player getRandomPlayer(int range){
-        //TODO: randomly choose a player from sql
-        return null;
+        //TODO: test this
+        int random = (int) (Math.random()*range) + 1;
+        System.out.println(random);
+        return getNextPlayer(random);
     }
 
     @Override
@@ -51,7 +67,25 @@ public class SQLStorer extends DataStorer {
     public Player getPlayer(String name) {
         //TODO: get the player from the database with his name
         // if he doesn't exist, return null
-        return null;
+
+        if(connection == null) establishConnection();
+        String s = "select * from players where FullName = \""+name+"\";";
+        Player player = null;
+        try{
+            ResultSet rs = statement.executeQuery(s);
+            rs.next();
+            int rank = rs.getInt(1);
+            String lastName = rs.getString(2);
+            String firstName = rs.getString(3);
+            String fullName = firstName+" "+lastName;
+            String position = rs.getString(4);
+            String team = rs.getString(5);
+            player = new Player(rank, fullName, position, team, null);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return player;
     }
 
     @Override
@@ -60,6 +94,14 @@ public class SQLStorer extends DataStorer {
      */
     public void removePlayer(Player player){
         //TODO: remove the player from the sql
+
+        if(connection == null) establishConnection();
+        String s = "delete from players where FullName = \""+player.getName()+"\";";
+        try{
+            statement.executeUpdate(s);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override
@@ -69,10 +111,18 @@ public class SQLStorer extends DataStorer {
      * @return a list of the next X players
      */
     public List<Player> nextAvailablePlayers(int limit){
-        List<Player> players = new ArrayList<Player>();
         //TODO: use ResultSet to add players to the list
         //if limit exceeds number of available players, add less than limit
         //unless I just keep a running list of available players in this class
+        List<Player> players = new ArrayList<Player>();
+
+        Player player = getNextPlayer(1);
+        players.add(player);
+        for(int i=2;i<=limit && player!=null;i++){
+            player = getNextPlayer(i);
+            if(player!=null) players.add(player);
+        }
+
         return players;
     }
 
@@ -91,8 +141,6 @@ public class SQLStorer extends DataStorer {
             Player player = players.get(i);
             addPlayer(player);
         }
-
-        closeConnection();  //close connection to the sql database
     }
 
     /**
@@ -119,8 +167,9 @@ public class SQLStorer extends DataStorer {
                 projections.get("Pass Yds")+", "+
                 projections.get("Pass Tds")+", "+
                 projections.get("Pass Ints")+", "+
-                projections.get("Fumbles")+
-                ");";
+                projections.get("Fumbles")+", \""+
+                player.getName()+
+                "\");";
         try {
             statement.executeUpdate(s);
         } catch (SQLException throwables) {
@@ -153,9 +202,9 @@ public class SQLStorer extends DataStorer {
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            connection= DriverManager.getConnection(url, user, password);
+            connection = DriverManager.getConnection(url, user, password);
 
-            statement=connection.createStatement();
+            statement = connection.createStatement();
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
@@ -171,5 +220,13 @@ public class SQLStorer extends DataStorer {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    @Override
+    /**
+     * Clean up all loose ends (close connection, etc)
+     */
+    public void cleanUp(){
+        closeConnection();
     }
 }

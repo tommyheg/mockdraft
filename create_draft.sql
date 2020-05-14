@@ -5,7 +5,7 @@ drop table if exists players;
 set autocommit = 1;
 
 create table players(
-	Rank int(3) PRIMARY KEY NOT NULL,
+	ID int(3) PRIMARY KEY NOT NULL,
     LastName VarChar(255) NOT NULL,
     FirstName VarChar(255) NOT NULL,
     Position VarChar(5) NOT NULL,
@@ -23,6 +23,7 @@ create table players(
     PassYds decimal(5, 1),
     PassTds decimal(3, 1),
     PassInts decimal(3, 1),
-    Fumbles decimal(2, 1)
+    Fumbles decimal(2, 1),
+    FullName VarChar(255) NOT NULL
 );
 

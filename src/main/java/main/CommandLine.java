@@ -25,7 +25,8 @@ public class CommandLine {
         System.out.println("\nWhich website would you like the ADP data from?");
         System.out.println("1. FantasyPros");
         System.out.println("2. ESPN");
-        String response = scanner.next();
+//        String response = scanner.next();
+        String response = "1";
         while(!choiceDecider.validSite(response,2)){
             System.out.println("Must choose one of the options presented.");
             response = scanner.next();
@@ -47,7 +48,8 @@ public class CommandLine {
         System.out.println("1. Standard");
         System.out.println("2. Half-PPR");
         System.out.println("3. PPR");
-        String response = scanner.next();
+//        String response = scanner.next();
+        String response = "1";
         while(!choiceDecider.validScoreType(response)){
             System.out.println("Must choose one of the options presented.");
             response = scanner.next();
@@ -69,7 +71,8 @@ public class CommandLine {
     private static DataType promptDataType(){
         //just a stub for now
         //thinking we could use sql, json, or excel data types
-        String response = scanner.next();
+//        String response = scanner.next();
+        String response = "1";
         choiceDecider.validDataType(response, 3);
         return DataType.SQL;
     }
@@ -80,7 +83,8 @@ public class CommandLine {
      */
     private static int promptLeagueSize(){
         System.out.println("How large is your league? 8, 10, or 12?");
-        String response = scanner.next();
+//        String response = scanner.next();
+        String response = "8";
         while(!choiceDecider.validLeagueSize(response)){
             System.out.println("Must choose a valid league size (8, 10, or 12).");
             response = scanner.next();
@@ -95,7 +99,8 @@ public class CommandLine {
      */
     private static int promptUserPick(int leagueSize){
         System.out.println("Which pick would you like in a "+leagueSize+" team draft?");
-        String response = scanner.next();
+//        String response = scanner.next();
+        String response = "2";
         while(!choiceDecider.validUserPick(response, leagueSize)){
             System.out.println("Must enter a valid pick.");
             response = scanner.next();
@@ -112,7 +117,8 @@ public class CommandLine {
         System.out.println("1. Stupid");
         System.out.println("2. Random");
         System.out.println("3. Smart");
-        String response = scanner.next();
+//        String response = scanner.next();
+        String response = "1";
         while(!choiceDecider.validCPUDifficulty(response, 3)){
             System.out.println("Must choose a valid difficulty.");
             response = scanner.next();
@@ -132,7 +138,7 @@ public class CommandLine {
      */
     private static void presentPlayers(List<Player> players){
         for(int i=0;i<players.size();i++){
-            System.out.println(i+": "+players.get(i));
+            System.out.println(players.get(i));
         }
     }
 
@@ -200,5 +206,7 @@ public class CommandLine {
         controller.setData();
 
         draft();
+
+        controller.cleanUp();
     }
 }

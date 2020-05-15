@@ -25,6 +25,7 @@ public class FantasyProsScraper extends WebScraper {
      * @param limit- number of players you want to get (roughly)
      * @return  list of players to be added to database
      */
+    @Override
     public List<Player> getPlayers(int limit) {
 
         //connect to page with all the player data
@@ -40,6 +41,7 @@ public class FantasyProsScraper extends WebScraper {
         Element table = doc.select(css).get(0);
         Elements rows = table.children();
 
+        System.out.println();
         //add each player
         List<Player> players = new ArrayList<>();
         for (int i = 0; i < limit; i++) {
@@ -50,13 +52,13 @@ public class FantasyProsScraper extends WebScraper {
             players.add(player);
             System.out.println(player);
         }
+        System.out.println();
 
         return players;
     }
 
     /**
      * Create a new player with the data from the row
-     *
      * @param row- the html row that contains the player
      * @return a new player to be added to the list
      */
@@ -73,7 +75,7 @@ public class FantasyProsScraper extends WebScraper {
 
         Map<String, Double> projections;
         if(position.startsWith("K")||position.startsWith("D")){ //don't get projections for kickers or defense
-            projections = new HashMap<String, Double>();
+            projections = new HashMap<>();
         } else {
             projections = getProjections(link);
         }
@@ -121,7 +123,7 @@ public class FantasyProsScraper extends WebScraper {
             try {
                 Double value = Double.parseDouble(table.child(2).child(0).child(i).ownText());
                 projections.put(stat, value);
-            } catch(NumberFormatException | IndexOutOfBoundsException e){
+            } catch(NumberFormatException | IndexOutOfBoundsException ignored){
 
             }
 

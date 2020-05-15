@@ -23,14 +23,19 @@ public class SQLStorer extends DataStorer {
         super(site, scoreType);
     }
 
+    /**
+     * Get the next X player available from the database
+     * @param count- the X player available
+     * @return the X player
+     */
     @Override
     public Player getNextPlayer(int count){
-        //TODO: get the next available player
         if(connection == null) establishConnection();
         String s = "select * from players limit "+count+", 1";
         Player player = null;
         try{
             ResultSet rs = statement.executeQuery(s);
+            if(!rs.isBeforeFirst()) return null;
             rs.next();
             int rank = rs.getInt(1);
             String lastName = rs.getString(2);
@@ -46,33 +51,30 @@ public class SQLStorer extends DataStorer {
         return player;
     }
 
-    @Override
     /**
      * Select one of the next X available players
-     * @param- the range of players to select from
+     * @param range- the range of players to select from
      */
+    @Override
     public Player getRandomPlayer(int range){
-        //TODO: test this
         int random = (int) (Math.random()*range) + 1;
         System.out.println(random);
         return getNextPlayer(random);
     }
 
-    @Override
     /**
      * Get the player from the sql if he exists, otherwise return null
-     * @param- name of the player to get
+     * @param name- name of the player to get
      * @return the player from the database
      */
+    @Override
     public Player getPlayer(String name) {
-        //TODO: get the player from the database with his name
-        // if he doesn't exist, return null
-
         if(connection == null) establishConnection();
         String s = "select * from players where FullName = \""+name+"\";";
         Player player = null;
         try{
             ResultSet rs = statement.executeQuery(s);
+            if(!rs.isBeforeFirst()) return null;
             rs.next();
             int rank = rs.getInt(1);
             String lastName = rs.getString(2);
@@ -88,13 +90,11 @@ public class SQLStorer extends DataStorer {
         return player;
     }
 
-    @Override
     /**
      * Remove a player from the sql database after he's been drafted
      */
+    @Override
     public void removePlayer(Player player){
-        //TODO: remove the player from the sql
-
         if(connection == null) establishConnection();
         String s = "delete from players where FullName = \""+player.getName()+"\";";
         try{
@@ -104,21 +104,19 @@ public class SQLStorer extends DataStorer {
         }
     }
 
-    @Override
     /**
-     * Get the next X players from the sql database
+     * Get the next X players from the sql database.
+     * This could maybe be optimized (just store a list
+     * of available players or something).
      * @param limit- number of players to get
      * @return a list of the next X players
      */
+    @Override
     public List<Player> nextAvailablePlayers(int limit){
-        //TODO: use ResultSet to add players to the list
-        //if limit exceeds number of available players, add less than limit
-        //unless I just keep a running list of available players in this class
-        List<Player> players = new ArrayList<Player>();
+        List<Player> players = new ArrayList<>();
 
-        Player player = getNextPlayer(1);
-        players.add(player);
-        for(int i=2;i<=limit && player!=null;i++){
+        Player player = new Player();
+        for(int i=0;i<limit && player!=null;i++){
             player = getNextPlayer(i);
             if(player!=null) players.add(player);
         }
@@ -126,10 +124,24 @@ public class SQLStorer extends DataStorer {
         return players;
     }
 
+    /**
+     * Copy the full players table copy over to the players table
+     */
     @Override
+    public void copyData(){
+        if(connection == null) establishConnection();
+        try {
+            ScriptUtils.executeSqlScript(connection,
+                    new EncodedResource(new FileUrlResource("move_copy.sql")));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Store the list of players from the website in an sql database
      */
+    @Override
     public void storeData(int limit) {
         //get the list of players by web scraping
         List<Player> players = webScraper.getPlayers(limit);
@@ -137,10 +149,11 @@ public class SQLStorer extends DataStorer {
         establishConnection();  //establish connection to the sql database
         createDatabase();        //first clear and create database
 
-        for(int i=0;i<players.size();i++){
-            Player player = players.get(i);
+        for (Player player : players) {
             addPlayer(player);
         }
+
+        createCopy();
     }
 
     /**
@@ -191,6 +204,18 @@ public class SQLStorer extends DataStorer {
     }
 
     /**
+     * Create the copy database (only right after getting players)
+     */
+    private void createCopy(){
+        try {
+            ScriptUtils.executeSqlScript(connection,
+                    new EncodedResource(new FileUrlResource("create_copy.sql")));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Establish connection to sql database
      */
     private void establishConnection(){
@@ -222,10 +247,10 @@ public class SQLStorer extends DataStorer {
         }
     }
 
-    @Override
     /**
      * Clean up all loose ends (close connection, etc)
      */
+    @Override
     public void cleanUp(){
         closeConnection();
     }

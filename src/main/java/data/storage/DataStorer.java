@@ -19,6 +19,8 @@ public abstract class DataStorer {
 
     public abstract void storeData(int limit);
 
+    public abstract void copyData();
+
     public abstract List<Player> nextAvailablePlayers(int limit);
 
     public abstract void removePlayer(Player player);
@@ -30,5 +32,6 @@ public abstract class DataStorer {
     public abstract Player getNextPlayer(int count);
 
     public abstract void cleanUp();
+
 
 }

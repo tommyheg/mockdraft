@@ -25,6 +25,17 @@ public class Player {
         setProjections(projections);
     }
 
+    public Player(){
+        this.rank = 0;
+        this.name = "Sentinel Name";
+        this.position = "";
+        this.team = "";
+        this.keys = new ArrayList<String>();
+        this.firstName = name.split(" ")[0];
+        this.lastName = name.split(" ")[1];
+        setProjections(null);
+    }
+
     /**
      * Set the player's projections
      * @param projections- projections to be added

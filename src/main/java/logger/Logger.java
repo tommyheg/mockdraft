@@ -58,7 +58,6 @@ public class Logger {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         Date date = new Date();
         String stamp = dateFormat.format(date);
-        System.out.println(stamp);
         try {
             FileWriter logWriter = new FileWriter("web_scraping.txt");
             logWriter.append(stamp);

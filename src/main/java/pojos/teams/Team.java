@@ -82,4 +82,54 @@ public abstract class Team {
     public boolean isUser(){
         return user;
     }
+
+    /**
+     * Maybe format teams later
+     * @return a string of the team
+     */
+    public String toString(){
+//        StringBuilder sb = new StringBuilder("");
+//        sb.append("\nQB: ");
+//        sb.append(getPlayer("QB", 1));
+//        sb.append("\nRB: ");
+//        sb.append(getPlayer("RB", 1));
+//        sb.append("\nRB: ");
+//        sb.append(getPlayer("RB", 2));
+//        sb.append("\nWR: ");
+//        sb.append(getPlayer("WR", 1));
+//        sb.append("\nWR: ");
+//        sb.append(getPlayer("WR", 2));
+//        sb.append("\nTE: ");
+//        sb.append(getPlayer("TE", 1));
+//        sb.append("\nFLEX: ");
+//        sb.append(getPlayer("FLEX", 1));
+//        sb.append("\nDST: ");
+//        sb.append(getPlayer("DST", 1));
+//        sb.append("\nK: ");
+//        sb.append(getPlayer("K", 1));
+//        for(int i=0;i<players.size()-9;i++) {
+//            sb.append("\nBench: ");
+//            sb.append(getBench(i+1));
+//        }
+//        return sb.toString();
+        StringBuilder sb = new StringBuilder("");
+
+        for(Player player: players){
+            sb.append(player.toString());
+        }
+
+        return sb.toString();
+    }
+
+    //stub for formatting teams later
+    private String getPlayer(String position, int num){
+        return "";
+    }
+
+    //stub for formatting teams later
+    private String getBench(int num){
+        return "";
+    }
+
+
 }

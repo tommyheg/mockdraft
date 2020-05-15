@@ -5,6 +5,7 @@ import controllers.Controller;
 import data.DataType;
 import pojos.Player;
 import pojos.ScoreType;
+import pojos.teams.Team;
 import pojos.teams.cpu.Difficulty;
 import webscraping.Site;
 
@@ -82,7 +83,7 @@ public class CommandLine {
      * @return size of the league
      */
     private static int promptLeagueSize(){
-        System.out.println("How large is your league? 8, 10, or 12?");
+        System.out.println("\nHow large is your league? 8, 10, or 12?");
 //        String response = scanner.next();
         String response = "8";
         while(!choiceDecider.validLeagueSize(response)){
@@ -98,7 +99,7 @@ public class CommandLine {
      * @return the user's pick
      */
     private static int promptUserPick(int leagueSize){
-        System.out.println("Which pick would you like in a "+leagueSize+" team draft?");
+        System.out.println("\nWhich pick would you like in a "+leagueSize+" team draft?");
 //        String response = scanner.next();
         String response = "2";
         while(!choiceDecider.validUserPick(response, leagueSize)){
@@ -113,7 +114,7 @@ public class CommandLine {
      * @return difficulty of CPU
      */
     private static Difficulty promptCPUDifficulty(){
-        System.out.println("How difficult would you like the CPU to be?");
+        System.out.println("\nHow difficult would you like the CPU to be?");
         System.out.println("1. Stupid");
         System.out.println("2. Random");
         System.out.println("3. Smart");
@@ -137,14 +138,14 @@ public class CommandLine {
      * @param players- list of players
      */
     private static void presentPlayers(List<Player> players){
-        for(int i=0;i<players.size();i++){
-            System.out.println(players.get(i));
+        for (Player player : players) {
+            System.out.println(player);
         }
     }
 
     /**
      * Get the player selection from the user
-     * @return- the player that the user selected
+     * @return the player that the user selected
      */
     private static Player userDraft(){
         presentPlayers(controller.nextAvailablePlayers(10));
@@ -180,6 +181,21 @@ public class CommandLine {
     }
 
     /**
+     * Print out all of the teams
+     */
+    private static void presentTeams(){
+        List<Team> teams = controller.getTeams();
+
+        for(Team team: teams){
+            System.out.println();
+            if(team.isUser()){
+                System.out.println("-----USER TEAM-----");
+            }
+            System.out.println(team);
+        }
+    }
+
+    /**
      * Begin the draft
      */
     private static void draft(){
@@ -206,6 +222,8 @@ public class CommandLine {
         controller.setData();
 
         draft();
+
+        presentTeams();
 
         controller.cleanUp();
     }

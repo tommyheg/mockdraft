@@ -21,10 +21,10 @@ public class Controller {
 
     private final DataStorer dataStorer;
     private final int leagueSize, rounds, totalPicks;
-    private int pickNumber = 1, currentPick = 1, currentRound = 1;
+    private int pickNumber = 1, currentPick = 1, currentRound = 1, roundPick = 1;
     private List<Team> teams;
     private Team currentTeam;
-    private Logger logger = Logger.getLogger();
+    private final Logger logger = Logger.getLogger();
 
     public Controller(Site site, ScoreType scoreType, DataType dataType,
                       int leagueSize, int userPick, Difficulty difficulty){
@@ -80,18 +80,22 @@ public class Controller {
      * Advance to the next team after a player is selected
      */
     public void advanceTurn(){
-        //TODO: make this a snake method
+//        System.out.println("\nRound "+currentRound+", Pick "+roundPick+", Team "+currentPick);
+
         pickNumber += 1;
-        currentRound = pickNumber / leagueSize + 1;
-        if(currentRound%2==1){
+
+        if(currentRound % 2 == 1){
             currentPick += 1;
-            if(currentPick > leagueSize) currentPick-=1;
+            if(currentPick > leagueSize) currentPick -= 1;
         } else{
             currentPick -= 1;
-            if(currentPick == 0) currentPick+=1;
+            if(currentPick == 0) currentPick += 1;
         }
-        currentTeam = teams.get(currentPick);
-        System.out.println("Current pick: "+currentPick);
+
+        currentRound = (pickNumber-1) / leagueSize + 1;
+        if(currentRound % 2 == 0) roundPick = (leagueSize + 1) - currentPick;
+        else roundPick = currentPick;
+        currentTeam = teams.get(currentPick-1);
     }
 
     /**
@@ -117,11 +121,11 @@ public class Controller {
      * @param userPick- the pick that the user holds
      */
     private void initializeTeams(Difficulty difficulty, int userPick){
-        this.teams = new ArrayList<Team>(leagueSize);
+        this.teams = new ArrayList<>(leagueSize);
         for(int i=0;i<leagueSize;i++){
             teams.add(new CPUTeamFactory().getCPUTeam(i+1, difficulty));
         }
-        teams.set(userPick, new UserTeam(userPick));
+        teams.set(userPick-1, new UserTeam(userPick));
     }
 
     /**
@@ -132,10 +136,10 @@ public class Controller {
         limit = 30;
         GregorianCalendar lastDate = lastDate();
         if(updateNeeded(lastDate, limit)){
-            System.out.println("Update needed.");
             logger.logWebScrape(limit);
             dataStorer.storeData(limit);
         }
+        dataStorer.copyData();
     }
 
     /**
@@ -161,6 +165,7 @@ public class Controller {
         }
 
         return limit > lastLimit;
+//        return false;
     }
 
     /**
@@ -194,4 +199,6 @@ public class Controller {
     public void cleanUp(){
         dataStorer.cleanUp();
     }
+
+    public List<Team> getTeams() { return teams; }
 }

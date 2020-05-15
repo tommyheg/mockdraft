@@ -50,7 +50,7 @@ public class FantasyProsScraper extends WebScraper {
             if (!type.endsWith("player-row")) continue;  //1st row and tier rows invalid
             Player player = getPlayer(row);
             players.add(player);
-            System.out.println(player);
+//            System.out.println(player);
         }
         System.out.println();
 

@@ -69,7 +69,12 @@ public class SQLStorer extends DataStorer {
     @Override
     public Player getPlayer(String name) {
         if(connection == null) establishConnection();
-        String s = "select * from players where FullName = \""+name+"\";";
+        String first = name.split(" ")[0];
+        String last = name.split(" ")[1];
+        //must include or condition for players like Mark Ingram II or Odell Beckham Jr.
+        String s = "select * from players where FullName = \""+name+"\"" +
+                " or (FirstName = \""+first+"\" and LastName = \"" +
+                last+"\");";
         Player player = null;
         try{
             ResultSet rs = statement.executeQuery(s);

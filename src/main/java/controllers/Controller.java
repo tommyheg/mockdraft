@@ -133,7 +133,7 @@ public class Controller {
      */
     public void setData(){
         int limit = rounds * leagueSize;  //this will be done later
-        limit = 30;
+        limit = 250;
         GregorianCalendar lastDate = lastDate();
         if(updateNeeded(lastDate, limit)){
             logger.logWebScrape(limit);

@@ -119,7 +119,7 @@ public class CommandLine {
         System.out.println("2. Random");
         System.out.println("3. Smart");
 //        String response = scanner.next();
-        String response = "1";
+        String response = "2";
         while(!choiceDecider.validCPUDifficulty(response, 3)){
             System.out.println("Must choose a valid difficulty.");
             response = scanner.next();

@@ -58,7 +58,6 @@ public class SQLStorer extends DataStorer {
     @Override
     public Player getRandomPlayer(int range){
         int random = (int) (Math.random()*range) + 1;
-        System.out.println(random);
         return getNextPlayer(random);
     }
 

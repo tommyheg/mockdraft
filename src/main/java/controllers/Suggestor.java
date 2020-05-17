@@ -160,7 +160,7 @@ public class Suggestor {
         }
         else {
             NormalDistribution nd = new NormalDistribution(adp, sdv);
-            return nd.cumulativeProbability(pick)*(pick-adp);
+            return (1-nd.cumulativeProbability(pick))*(pick-adp);
         }
     }
 

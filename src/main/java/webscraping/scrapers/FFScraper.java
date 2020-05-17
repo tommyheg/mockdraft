@@ -17,9 +17,9 @@ public class FFScraper extends WebScraper{
     public FFScraper(ScoreType scoreType, int leagueSize){
         String type = "";
         switch (scoreType){
-            case STANDARD: type = ""; break;
-            case HALF: type = ""; break;
-            case PPR: type = ""; break;
+            case STANDARD: type = "standard"; break;
+            case HALF: type = "half-ppr"; break;
+            case PPR: type = "ppr"; break;
         }
 
         url = "https://fantasyfootballcalculator.com/api/v1/adp/"+type+"?teams="+leagueSize+"&year=2020&position=all";
@@ -38,8 +38,7 @@ public class FFScraper extends WebScraper{
         Response response = invocationBuilder.get(Response.class);
         String json = response.readEntity(String.class);
         storeJSON(json);
-        System.out.println(url);
-        System.out.println(json);
+
         return null;
     }
 

@@ -14,6 +14,7 @@ public class Simulator extends Thread {
     public Simulator(Player player, List<Player> availablePlayers, int pick){
         this.player = player;
         this.availablePlayers = availablePlayers;
+        this.availablePlayers.remove(player);
         this.pick = pick;
     }
 
@@ -26,7 +27,12 @@ public class Simulator extends Thread {
      * Simulate 5 rounds deep and return the value you get with that player
      */
     private void simulate(){
-        //TODO: simulate and update val
+        //TODO: run a bfs to get all paths
+        // update the total val along the way
+        // --not sure how this is done yet
+        // store player maxes when done with them
+        // --in a json file
+        // --for dynamic programming purposes
 
     }
 

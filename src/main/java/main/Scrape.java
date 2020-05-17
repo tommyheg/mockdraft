@@ -82,10 +82,11 @@ public class Scrape {
 
     public static void main(String[] args){
 
+        int leagueSize = 12;
         Site site = promptSite();
         ScoreType scoreType = promptScoreType();    //eventually scoretype will be obsolete here because we will use all 3. but not now
         DataType dataType = promptDataType();
-        DataStorer dataStorer = new DataStorerFactory().getDataStorer(site, scoreType, dataType);
+        DataStorer dataStorer = new DataStorerFactory().getDataStorer(site, scoreType, dataType, leagueSize);
         int limit = 50;
 //        dataStorer.storeData(limit);
 //        dataStorer.copyData();

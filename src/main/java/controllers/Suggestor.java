@@ -31,20 +31,6 @@ public class Suggestor {
     }
 
     /**
-     * Simulate the next 5 rounds for selecting this player.
-     * This method will be difficult
-     * @param player- player to be selected
-     * @return the value of taking that player
-     */
-    private double simulate(Player player){
-        //TODO: simulate the next 5 rounds of a player
-        // We might need a list of available players
-        // maybe have another dataset so we don't alter the first one
-        // maybe run these in parallel with each other for each player
-        return Math.random()*10+1;
-    }
-
-    /**
      * Get suggestions for the next few players.
      * Loop through the available players,
      * add the next few players at each position,
@@ -53,7 +39,7 @@ public class Suggestor {
      * @param dataGetter- used to get the list of players
      * @return the map of player suggestions
      */
-    public Map<String, Double> getSuggestions(DataGetter dataGetter){
+    public Map<String, Double> getSuggestions(DataGetter dataGetter, int pick){
         Map<String, Double> suggestions = new HashMap<String, Double>();    //final suggestions
         List<Player> players = dataGetter.nextAvailablePlayers(numPlayers);    //next available players
         List<Player> tempPlayers = new ArrayList<Player>();                 //add the players here temporarily
@@ -71,9 +57,27 @@ public class Suggestor {
             i++;
         }
 
-        for(Player player: tempPlayers){
-            double val = simulate(player);
-            suggestions.put(player.getName(), val);
+        //TODO: make this part concurrent
+        // thinking each simulator is a thread
+        Simulator[] sims = new Simulator[tempPlayers.size()];
+        for(int j=0;j<sims.length;j++){
+            List<Player> availablePlayers = new ArrayList<Player>(players);
+            availablePlayers.remove(tempPlayers.get(j));
+            sims[j] = new Simulator(tempPlayers.get(j), players, pick);
+            sims[j].run();
+            double val = sims[j].getVal();
+            suggestions.put(tempPlayers.get(j).getName(), val);
+        }
+
+        //TODO: wait until all threads are done before finishing method
+        // not sure how this is done
+        //https://stackoverflow.com/questions/1252190/how-to-wait-for-a-number-of-threads-to-complete
+        for(int j=0;j<sims.length;j++){
+            try {
+                sims[j].join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         rb = 0; wr = 0; qb = 0; te = 0;

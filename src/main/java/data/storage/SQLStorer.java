@@ -18,8 +18,8 @@ public class SQLStorer extends DataStorer {
     private Connection connection;
     private Statement statement;
 
-    public SQLStorer(Site site, ScoreType scoreType){
-        super(site, scoreType, -1);
+    public SQLStorer(Site site, ScoreType scoreType, int leagueSize){
+        super(site, scoreType, leagueSize);
     }
 
     /**

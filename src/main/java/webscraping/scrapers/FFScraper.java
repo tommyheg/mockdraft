@@ -1,24 +1,25 @@
 package webscraping.scrapers;
 
-import org.json.JSONObject;
 import pojos.Player;
 import pojos.ScoreType;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
-
 public class FFScraper extends WebScraper{
 
     public FFScraper(ScoreType scoreType, int leagueSize){
         String type = "";
         switch (scoreType){
-            case STANDARD: type = "standard"; break;
-            case HALF: type = "half-ppr"; break;
-            case PPR: type = "ppr"; break;
+            case STANDARD: type = ""; break;
+            case HALF: type = ""; break;
+            case PPR: type = ""; break;
         }
 
         url = "https://fantasyfootballcalculator.com/api/v1/adp/"+type+"?teams="+leagueSize+"&year=2020&position=all";
@@ -48,7 +49,12 @@ public class FFScraper extends WebScraper{
      * @param json- the json text
      */
     private void storeJSON(String json){
-        //TODO: store the json file locally
-        // this method will be used in getPlayers()
+        try {
+            FileWriter fw = new FileWriter("players.json");
+            fw.write(json);
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

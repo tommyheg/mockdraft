@@ -18,9 +18,9 @@ public class Suggestor {
 
     double[][] probs;
     int numPlayers = 213, picks = 213;
+    int rb, wr, qb, te;
 
     public Suggestor(){
-        //TODO: parse the json file and store a 2-D array
         probs = new double[numPlayers][picks];
         for(int i=0;i<numPlayers;i++){
             for(int j = 0; j< picks; j++){
@@ -50,20 +50,21 @@ public class Suggestor {
      * add the next few players at each position,
      * start a sim for each player,
      * add that player's value to the map.
+     * @param dataGetter- used to get the list of players
      * @return the map of player suggestions
      */
     public Map<String, Double> getSuggestions(DataGetter dataGetter){
         Map<String, Double> suggestions = new HashMap<String, Double>();    //final suggestions
-        List<Player> players = dataGetter.nextAvailablePlayers(100);    //next available players
+        List<Player> players = dataGetter.nextAvailablePlayers(numPlayers);    //next available players
         List<Player> tempPlayers = new ArrayList<Player>();                 //add the players here temporarily
 
         int i = 0;
         boolean complete = false;
         //loop through players until 3 rbs gotten, 3 wrs, 2 qbs, 2 tes, etc
         while(!complete){     //repeat until all those requirements met
-            //stubbish for now
             Player player = players.get(i);
             if(roomForPlayer(player, tempPlayers)) {
+                updatePositions(player.getPosition());
                 tempPlayers.add(player);
                 complete = gottenPlayers(tempPlayers);
             }
@@ -75,6 +76,7 @@ public class Suggestor {
             suggestions.put(player.getName(), val);
         }
 
+        rb = 0; wr = 0; qb = 0; te = 0;
         return suggestions;
     }
 
@@ -85,7 +87,8 @@ public class Suggestor {
      * @return whether the requirements are met
      */
     private boolean gottenPlayers(List<Player> players){
-        //TODO: loop through list and see if all requirements are met
+        //TODO: discuss position and position limits
+//        return rb == 3 && wr == 3 && qb == 2 && te == 2;
         return players.size()>8;
     }
 
@@ -97,30 +100,39 @@ public class Suggestor {
      * @return if there is room for the player
      */
     private boolean roomForPlayer(Player player, List<Player> tempPlayers){
+        //TODO: discuss positions and position limits
         String position = player.getPosition();
-        int count = 0;
-        for(Player p: tempPlayers){
-            if(p.getPosition().charAt(0) == position.charAt(0)){
-                count++;
-                if(count==3){
-                    if(position.startsWith("RB") || position.startsWith("WR")) return false;
-                } else if(count == 2){
-                    if(position.startsWith("QB") || position.startsWith("TE")) return false;
-                }
-                //TODO: include DST and K here. Not sure what we want to do with this
-            }
+        if(position.startsWith("RB")){
+            return rb < 3;
+        } else if(position.startsWith("WR")){
+            return wr < 3;
+        } else if(position.startsWith("QB")){
+            return qb < 2;
+        } else if(position.startsWith("TE")){
+            return te < 2;
         }
         return true;
     }
 
+    private void updatePositions(String position){
+        if(position.startsWith("RB")){
+            rb++;
+        } else if(position.startsWith("WR")){
+            wr++;
+        } else if(position.startsWith("QB")){
+            qb++;
+        } else if(position.startsWith("TE")){
+            te++;
+        }
+    }
+
     /**
-     * Fill the probs 2-D array by parsing json file
+     * Fill the probs 2-D array by parsing json file and doing math
      */
     private void fillProbs(){
-        BufferedReader br= null;
         String text = "";
         try {
-            br = new BufferedReader(new FileReader("players.json"));
+            BufferedReader br = new BufferedReader(new FileReader("players.json"));
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
             while (line != null) {
@@ -148,11 +160,13 @@ public class Suggestor {
     }
 
     /**
-     * Do the math here
+     * Calculate the prob that the player will be available at that pick
+     * @param adp- adp of the player
+     * @param sdv- sdv of the player
+     * @param pick- current pick number to calculate prob for
      * @return the prob for that position
      */
     private double algo(double adp, double sdv, int pick){
-        //TODO: do the math here
         if(pick==1){
             return pick-adp;
         }

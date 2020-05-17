@@ -1,4 +1,4 @@
-package webscraping;
+package main;
 
 import controllers.ChoiceDecider;
 import controllers.Suggestor;
@@ -7,6 +7,7 @@ import data.storage.DataStorer;
 import data.storage.DataStorerFactory;
 import logger.Logger;
 import pojos.ScoreType;
+import webscraping.Site;
 
 import java.util.Scanner;
 

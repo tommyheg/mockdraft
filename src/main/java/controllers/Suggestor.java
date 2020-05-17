@@ -1,12 +1,12 @@
 package controllers;
 
 import data.getters.DataGetter;
+import org.apache.commons.math3.distribution.NormalDistribution;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import pojos.Player;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,13 +17,13 @@ import java.util.Map;
 public class Suggestor {
 
     double[][] probs;
-    int players = 213, rounds = 213;
+    int players = 213, picks = 213;
 
     public Suggestor(){
         //TODO: parse the json file and store a 2-D array
-        probs = new double[players][rounds];
+        probs = new double[players][picks];
         for(int i=0;i<players;i++){
-            for(int j=0;j<rounds;j++){
+            for(int j = 0; j< picks; j++){
                 probs[i][j]=0;
             }
         }
@@ -135,14 +135,15 @@ public class Suggestor {
 
         JSONObject root = new JSONObject(text);
         JSONArray players = root.getJSONArray("players");
-        for(int i=0;i<1;i++){
+        for(int i=0;i<players.length();i++){
             JSONObject player = players.getJSONObject(i);
             System.out.println(player);
             double adp = player.getDouble("adp");
-            double sdev = player.getDouble("sdev");
+            double sdv = player.getDouble("sdev");
             double val = 100;
-            for(int j=1;j<rounds && val != 0;j++){
-                val = algo(adp, sdev);
+            double thresh = .0001;
+            for(int j = 1; j< picks && val > 0 && val < thresh; j++){
+                val = algo(adp, sdv);
                 probs[i][j] = val;
             }
         }
@@ -152,9 +153,10 @@ public class Suggestor {
      * Do the math here
      * @return the prob for that position
      */
-    private double algo(double adp, double sdev){
+    private double algo(double adp, double sdv){
         //TODO: do the math here
-        return 0;
+        NormalDistribution nd = new NormalDistribution(adp, sdv);
+        return nd.cumulativeProbability(adp);
     }
 
 }

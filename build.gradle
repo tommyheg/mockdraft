@@ -16,7 +16,7 @@ dependencies {
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
     compile group: 'org.springframework', name: 'spring-test', version: '4.2.4.RELEASE'
     compile group: 'org.springframework', name: 'spring-jdbc', version: '5.2.6.RELEASE'
-
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
 
 
 

@@ -155,8 +155,13 @@ public class Suggestor {
      */
     private double algo(double adp, double sdv, int pick){
         //TODO: do the math here
-        NormalDistribution nd = new NormalDistribution(adp, sdv);
-        return nd.cumulativeProbability(pick);
+        if(pick==1){
+            return pick-adp;
+        }
+        else {
+            NormalDistribution nd = new NormalDistribution(adp, sdv);
+            return nd.cumulativeProbability(pick)*(pick-adp);
+        }
     }
 
 }

@@ -23,9 +23,10 @@ public class Scrape {
         System.out.println("\nWhich website would you like the ADP data from?");
         System.out.println("1. FantasyPros");
         System.out.println("2. ESPN");
+        System.out.println("3. FantasyFootball Calculator");
 //        String response = scanner.next();
-        String response = "1";
-        while(!choiceDecider.validSite(response,2)){
+        String response = "3";
+        while(!choiceDecider.validSite(response,3)){
             System.out.println("Must choose one of the options presented.");
             response = scanner.next();
         }
@@ -33,6 +34,7 @@ public class Scrape {
         switch(choice){
             case 1: return Site.FANTASYPROS;
             case 2: return Site.ESPN;
+            case 3: return Site.FFCALCULATOR;
             default: return null;
         }
     }

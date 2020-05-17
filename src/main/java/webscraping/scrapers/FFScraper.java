@@ -15,7 +15,7 @@ public class FFScraper extends WebScraper{
             case PPR: type = ""; break;
         }
 
-        String url = "https://fantasyfootballcalculator.com/api/v1/adp/"+type+"?teams="+leagueSize+"&year=2020&position=all";
+        url = "https://fantasyfootballcalculator.com/api/v1/adp/"+type+"?teams="+leagueSize+"&year=2020&position=all";
     }
 
     /**
@@ -25,6 +25,7 @@ public class FFScraper extends WebScraper{
      */
     @Override
     public List<Player> getPlayers(int limit) {
+
         return null;
     }
 

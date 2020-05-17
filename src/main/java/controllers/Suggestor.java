@@ -139,11 +139,11 @@ public class Suggestor {
             JSONObject player = players.getJSONObject(i);
             System.out.println(player);
             double adp = player.getDouble("adp");
-            double sdv = player.getDouble("sdev");
+            double sdv = player.getDouble("stdev");
             double val = 100;
             double thresh = .0001;
             for(int j = 1; j< picks && val > 0 && val < thresh; j++){
-                val = algo(adp, sdv);
+                val = algo(adp, sdv, j);
                 probs[i][j] = val;
             }
         }
@@ -153,10 +153,10 @@ public class Suggestor {
      * Do the math here
      * @return the prob for that position
      */
-    private double algo(double adp, double sdv){
+    private double algo(double adp, double sdv, int pick){
         //TODO: do the math here
         NormalDistribution nd = new NormalDistribution(adp, sdv);
-        return nd.cumulativeProbability(adp);
+        return nd.cumulativeProbability(pick);
     }
 
 }

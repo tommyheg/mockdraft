@@ -5,6 +5,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import pojos.Player;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,10 +17,16 @@ import java.util.Map;
 public class Suggestor {
 
     double[][] probs;
+    int players = 213, rounds = 213;
 
     public Suggestor(){
         //TODO: parse the json file and store a 2-D array
-        probs = new double[213][213];
+        probs = new double[players][rounds];
+        for(int i=0;i<players;i++){
+            for(int j=0;j<rounds;j++){
+                probs[i][j]=0;
+            }
+        }
         fillProbs();
     }
 
@@ -24,7 +34,7 @@ public class Suggestor {
      * Simulate the next 5 rounds for selecting this player.
      * This method will be difficult
      * @param player- player to be selected
-     * @return the value of taking that plaeyr
+     * @return the value of taking that player
      */
     private double simulate(Player player){
         //TODO: simulate the next 5 rounds of a player
@@ -108,15 +118,43 @@ public class Suggestor {
      */
     private void fillProbs(){
         //TODO: parse json file and do math
-//        JSONObject root = new JSONObject("players.json");
-//        JSONArray players = root.getJSONObject("meta").getJSONArray("players");
-//
-//        for(int i=0;i<players.length();i++){
-//
-//        }
+        BufferedReader br= null;
+        String text = "";
+        try {
+            br = new BufferedReader(new FileReader("players.json"));
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+            while (line != null) {
+                sb.append(line).append('\n');
+                line = br.readLine();
+            }
+            text = sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        JSONObject root = new JSONObject(text);
+        JSONArray players = root.getJSONArray("players");
+        for(int i=0;i<1;i++){
+            JSONObject player = players.getJSONObject(i);
+            System.out.println(player);
+            double adp = player.getDouble("adp");
+            double sdev = player.getDouble("sdev");
+            double val = 100;
+            for(int j=1;j<rounds && val != 0;j++){
+                val = algo(adp, sdev);
+                probs[i][j] = val;
+            }
+        }
+    }
 
-
+    /**
+     * Do the math here
+     * @return the prob for that position
+     */
+    private double algo(double adp, double sdev){
+        //TODO: do the math here
+        return 0;
     }
 
 }

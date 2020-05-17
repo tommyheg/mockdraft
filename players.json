@@ -1,5 +1,6 @@
 {"status": "Success", "meta":
-{"type": "Non-PPR", "teams": 8, "rounds": 15, "total_drafts": 257, "start_date": "2020-02-20", "end_date": "2020-05-17"},
+{"type": "Non-PPR", "teams": 8, "rounds": 15, "total_drafts": 257, "start_date": "2020-02-20",
+  "end_date": "2020-05-17"},
   "players": [{
     "player_id": 2434, "name": "Christian McCaffrey", "position": "RB", "team": "CAR", "adp": 1.1, "adp_formatted": "1.01",
     "times_drafted": 33, "high": 1, "low": 2, "stdev": 0.3, "bye": 13}

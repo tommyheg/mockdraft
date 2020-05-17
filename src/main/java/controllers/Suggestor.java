@@ -60,9 +60,8 @@ public class Suggestor {
         //TODO: make this part concurrent
         // thinking each simulator is a thread
         Simulator[] sims = new Simulator[tempPlayers.size()];
+        List<Player> availablePlayers = new ArrayList<Player>(players);
         for(int j=0;j<sims.length;j++){
-            List<Player> availablePlayers = new ArrayList<Player>(players);
-            availablePlayers.remove(tempPlayers.get(j));
             sims[j] = new Simulator(tempPlayers.get(j), players, pick);
             sims[j].run();
             double val = sims[j].getVal();

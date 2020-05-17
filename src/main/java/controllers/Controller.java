@@ -24,7 +24,7 @@ public class Controller {
 
     private DataGetter dataGetter;
     private Suggestor suggestor;
-    private final int leagueSize, rounds, totalPicks;
+    private final int leagueSize, rounds, totalPicks, userPick;
     private int pickNumber = 1, currentPick = 1, currentRound = 1, roundPick = 1;
     private List<Team> teams;
     private Team currentTeam;
@@ -33,6 +33,7 @@ public class Controller {
     public Controller(ScoreType scoreType, int leagueSize, int userPick, Difficulty difficulty){
         this.leagueSize = leagueSize;
         this.rounds = 16;
+        this.userPick = userPick;
         this.totalPicks = rounds * leagueSize;
         initializeTeams(difficulty, userPick);
         this.currentTeam = teams.get(0);
@@ -46,12 +47,12 @@ public class Controller {
      */
     private void setData(){
         DataStorer dataStorer = new DataStorerFactory().getDataStorer(Site.FFCALCULATOR,
-                ScoreType.STANDARD, DataType.SQL);
+                ScoreType.STANDARD, DataType.SQL, leagueSize);
         dataStorer.copyData();
     }
 
     public Map<String, Double> getSuggestions(){
-        return suggestor.getSuggestions(dataGetter);
+        return suggestor.getSuggestions(dataGetter, userPick);
     }
 
     /**

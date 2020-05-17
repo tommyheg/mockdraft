@@ -1,9 +1,6 @@
 package pojos;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Player {
 
@@ -104,5 +101,22 @@ public class Player {
 
     public Map<String, Double> getProjections() {
         return projections;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return name.equals(player.name) &&
+                position.equals(player.position) &&
+                lastName.equals(player.lastName) &&
+                firstName.equals(player.firstName) &&
+                team.equals(player.team);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, position, lastName, firstName, team);
     }
 }

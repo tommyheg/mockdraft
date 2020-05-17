@@ -17,12 +17,12 @@ import java.util.Map;
 public class Suggestor {
 
     double[][] probs;
-    int players = 213, picks = 213;
+    int numPlayers = 213, picks = 213;
 
     public Suggestor(){
         //TODO: parse the json file and store a 2-D array
-        probs = new double[players][picks];
-        for(int i=0;i<players;i++){
+        probs = new double[numPlayers][picks];
+        for(int i=0;i<numPlayers;i++){
             for(int j = 0; j< picks; j++){
                 probs[i][j]=0;
             }
@@ -117,7 +117,6 @@ public class Suggestor {
      * Fill the probs 2-D array by parsing json file
      */
     private void fillProbs(){
-        //TODO: parse json file and do math
         BufferedReader br= null;
         String text = "";
         try {
@@ -137,12 +136,11 @@ public class Suggestor {
         JSONArray players = root.getJSONArray("players");
         for(int i=0;i<players.length();i++){
             JSONObject player = players.getJSONObject(i);
-            System.out.println(player);
             double adp = player.getDouble("adp");
             double sdv = player.getDouble("stdev");
             double val = 100;
-            double thresh = .0001;
-            for(int j = 1; j< picks && val > 0 && val < thresh; j++){
+            double thresh = .001;
+            for(int j = 1; j<picks && (val<0 || (val > 0 && val > thresh)); j++){
                 val = algo(adp, sdv, j);
                 probs[i][j] = val;
             }

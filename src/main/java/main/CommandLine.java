@@ -89,7 +89,7 @@ public class CommandLine {
     private static int promptLeagueSize(){
         System.out.println("\nHow large is your league? 8, 10, or 12?");
 //        String response = scanner.next();
-        String response = "8";
+        String response = "12";
         while(!choiceDecider.validLeagueSize(response)){
             System.out.println("Must choose a valid league size (8, 10, or 12).");
             response = scanner.next();

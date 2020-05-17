@@ -3,6 +3,8 @@ package webscraping.scrapers;
 import pojos.Player;
 import pojos.ScoreType;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 public class FFScraper extends WebScraper{
@@ -35,7 +37,12 @@ public class FFScraper extends WebScraper{
      * @param json- the json text
      */
     private void storeJSON(String json){
-        //TODO: store the json file locally
-        // this method will be used in getPlayers()
+        try {
+            FileWriter fw = new FileWriter("players.json");
+            fw.write(json);
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

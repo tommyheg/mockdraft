@@ -82,7 +82,7 @@ public class Scrape {
     public static void main(String[] args){
 
         Site site = promptSite();
-        ScoreType scoreType = promptScoreType();    //eventually scoretype will be obsolete because we will use all 3. but not now
+        ScoreType scoreType = promptScoreType();    //eventually scoretype will be obsolete here because we will use all 3. but not now
         DataType dataType = promptDataType();
         DataStorer dataStorer = new DataStorerFactory().getDataStorer(site, scoreType, dataType);
         int limit = 50;

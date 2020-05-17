@@ -56,6 +56,7 @@ public class Controller {
      * @return the player (null if he isn't available)
      */
     public Player draftPlayer(String name){
+        if(name.split(" ").length < 2) return null;
         return dataStorer.getPlayer(name);
     }
 
@@ -133,7 +134,7 @@ public class Controller {
      */
     public void setData(){
         int limit = rounds * leagueSize;  //this will be done later
-        limit = 250;
+        limit = 50;
         GregorianCalendar lastDate = lastDate();
         if(updateNeeded(lastDate, limit)){
             logger.logWebScrape(limit);

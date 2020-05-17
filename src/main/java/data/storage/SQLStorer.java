@@ -100,7 +100,13 @@ public class SQLStorer extends DataStorer {
     @Override
     public void removePlayer(Player player){
         if(connection == null) establishConnection();
-        String s = "delete from players where FullName = \""+player.getName()+"\";";
+        String name = player.getName();
+        String first = player.getFirstName();
+        String last = player.getLastName();
+        String s = "delete from players where FullName = \""+name+"\"" +
+                " or (FirstName = \""+first+"\" and LastName = \"" +
+                last+"\");";
+        System.out.println(s);
         try{
             statement.executeUpdate(s);
         } catch (SQLException throwables) {

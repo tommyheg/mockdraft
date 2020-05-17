@@ -86,8 +86,8 @@ public class Scrape {
         DataType dataType = promptDataType();
         DataStorer dataStorer = new DataStorerFactory().getDataStorer(site, scoreType, dataType);
         int limit = 50;
-//        dataStorer.storeData(limit);
-//        dataStorer.copyData();
+        dataStorer.storeData(limit);
+        dataStorer.copyData();
 //        logger.logWebScrape(limit);
         Suggestor suggestor = new Suggestor();
     }

@@ -1,6 +1,8 @@
 package controllers;
 
 import data.getters.DataGetter;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import pojos.Player;
 
 import java.util.ArrayList;
@@ -106,6 +108,14 @@ public class Suggestor {
      */
     private void fillProbs(){
         //TODO: parse json file and do math
+//        JSONObject root = new JSONObject("players.json");
+//        JSONArray players = root.getJSONObject("meta").getJSONArray("players");
+//
+//        for(int i=0;i<players.length();i++){
+//
+//        }
+
+
 
     }
 

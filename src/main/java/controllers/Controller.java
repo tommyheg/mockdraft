@@ -5,6 +5,7 @@ import data.getters.DataGetter;
 import data.getters.SQLGetter;
 import data.storage.DataStorer;
 import data.storage.DataStorerFactory;
+import data.storage.SQLStorer;
 import logger.Logger;
 import pojos.Player;
 import pojos.ScoreType;
@@ -37,6 +38,16 @@ public class Controller {
         this.currentTeam = teams.get(0);
         this.dataGetter = new SQLGetter(scoreType);
         this.suggestor = new Suggestor();
+        setData();
+    }
+
+    /**
+     * Copy over the data at the very beginning
+     */
+    private void setData(){
+        DataStorer dataStorer = new DataStorerFactory().getDataStorer(Site.FFCALCULATOR,
+                ScoreType.STANDARD, DataType.SQL);
+        dataStorer.copyData();
     }
 
     public Map<String, Double> getSuggestions(){

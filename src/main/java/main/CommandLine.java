@@ -2,6 +2,7 @@ package main;
 
 import controllers.ChoiceDecider;
 import controllers.Controller;
+import controllers.Suggestor;
 import data.DataType;
 import pojos.Player;
 import pojos.ScoreType;
@@ -10,6 +11,7 @@ import pojos.teams.cpu.Difficulty;
 import webscraping.Site;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class CommandLine {
@@ -17,28 +19,30 @@ public class CommandLine {
     private static Controller controller;
     private static final ChoiceDecider choiceDecider = new ChoiceDecider();
     private static final Scanner scanner = new Scanner(System.in);
+    private static Suggestor suggestor = new Suggestor();
+    private static boolean suggestions = false;
 
-    /**
-     * Ask the user what site to get the data from
-     * @return site to get data
-     */
-    private static Site promptSite(){
-        System.out.println("\nWhich website would you like the ADP data from?");
-        System.out.println("1. FantasyPros");
-        System.out.println("2. ESPN");
-//        String response = scanner.next();
-        String response = "1";
-        while(!choiceDecider.validSite(response,2)){
-            System.out.println("Must choose one of the options presented.");
-            response = scanner.next();
-        }
-        int choice = Integer.parseInt(response);
-        switch(choice){
-            case 1: return Site.FANTASYPROS;
-            case 2: return Site.ESPN;
-            default: return null;
-        }
-    }
+//    /**
+//     * Ask the user what site to get the data from
+//     * @return site to get data
+//     */
+//    private static Site promptSite(){
+//        System.out.println("\nWhich website would you like the ADP data from?");
+//        System.out.println("1. FantasyPros");
+//        System.out.println("2. ESPN");
+////        String response = scanner.next();
+//        String response = "1";
+//        while(!choiceDecider.validSite(response,2)){
+//            System.out.println("Must choose one of the options presented.");
+//            response = scanner.next();
+//        }
+//        int choice = Integer.parseInt(response);
+//        switch(choice){
+//            case 1: return Site.FANTASYPROS;
+//            case 2: return Site.ESPN;
+//            default: return null;
+//        }
+//    }
 
     /**
      * Ask the user what type of scoring they want
@@ -64,19 +68,19 @@ public class CommandLine {
         }
     }
 
-    /**
-     * Get what data type the players should be stored in
-     * This might not be worth doing.
-     * @return data type
-     */
-    private static DataType promptDataType(){
-        //just a stub for now
-        //thinking we could use sql, json, or excel data types
-//        String response = scanner.next();
-        String response = "1";
-        choiceDecider.validDataType(response, 3);
-        return DataType.SQL;
-    }
+//    /**
+//     * Get what data type the players should be stored in
+//     * This might not be worth doing.
+//     * @return data type
+//     */
+//    private static DataType promptDataType(){
+//        //just a stub for now
+//        //thinking we could use sql, json, or excel data types
+////        String response = scanner.next();
+//        String response = "1";
+//        choiceDecider.validDataType(response, 3);
+//        return DataType.SQL;
+//    }
 
     /**
      * Get the size of the league from the user
@@ -119,7 +123,7 @@ public class CommandLine {
         System.out.println("2. Random");
         System.out.println("3. Smart");
 //        String response = scanner.next();
-        String response = "2";
+        String response = "1";
         while(!choiceDecider.validCPUDifficulty(response, 3)){
             System.out.println("Must choose a valid difficulty.");
             response = scanner.next();
@@ -131,6 +135,22 @@ public class CommandLine {
             case 3: return Difficulty.SMART;
             default: return null;
         }
+    }
+
+    /**
+     * Ask whether the user wants suggestions or not
+     * @return whether they want suggestions or not
+     */
+    private static boolean promptSuggestions(){
+        System.out.println("Would you like suggestions for your picks?");
+        System.out.println("1 for yes, 2 for no.");
+//        String response = scanner.next();
+        String response = "2";
+        while(!choiceDecider.validSuggestions(response)){
+            System.out.println("Must enter 1 for yes or 2 for no.");
+            response = scanner.next();
+        }
+        return Integer.parseInt(response) == 1;
     }
 
     /**
@@ -148,7 +168,17 @@ public class CommandLine {
      * @return the player that the user selected
      */
     private static Player userDraft(){
-        presentPlayers(controller.nextAvailablePlayers(10));
+        if(suggestions){
+            //TODO: make the suggestor simulate and shit
+            // return a list of players and values of those players
+            // maybe a map of players to values, then sort them
+            Map<String, Double> suggestions = controller.getSuggestions();
+            List<String> sorted = controller.sortSuggestions(suggestions);
+            System.out.println("Here are the player suggestions: ");
+            for(String s: sorted){
+                System.out.println(s+": "+suggestions.get(s));
+            }
+        } else presentPlayers(controller.nextAvailablePlayers(10));
         System.out.println("Enter the name of the player you want: ");
         String name = scanner.nextLine();
         Player player = controller.draftPlayer(name);
@@ -210,21 +240,17 @@ public class CommandLine {
 
     public static void main(String[] args){
 
-        Site site = promptSite();
+        suggestions = promptSuggestions();
         ScoreType scoreType = promptScoreType();
-        DataType dataType = promptDataType();
         int leagueSize = promptLeagueSize();
         int userPick = promptUserPick(leagueSize);
         Difficulty difficulty = promptCPUDifficulty();
 
-        controller = new Controller(site, scoreType, dataType, leagueSize, userPick, difficulty);
-
-        controller.setData();
+        controller = new Controller(scoreType, leagueSize, userPick, difficulty);
 
         draft();
 
         presentTeams();
 
-        controller.cleanUp();
     }
 }

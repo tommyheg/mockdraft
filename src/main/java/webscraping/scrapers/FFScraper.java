@@ -5,17 +5,20 @@ import pojos.ScoreType;
 
 import java.util.List;
 
-public class ESPNScraper extends WebScraper{
+public class FFScraper extends WebScraper{
 
-    public ESPNScraper(ScoreType scoreType){
+    public FFScraper(ScoreType scoreType){
         switch (scoreType){
             case STANDARD: url = ""; break;
             case HALF: url = ""; break;
             case PPR: url = ""; break;
-        }    }
+        }
+    }
 
     /**
-     * Loop through the players on ESPN
+     * This one doesn't actually webscrape. Use the
+     * site's API to get a JSON file, then parse the
+     * JSON file.
      */
     @Override
     public List<Player> getPlayers(int limit) {

@@ -1,5 +1,6 @@
 package pojos.teams.cpu;
 
+import data.getters.DataGetter;
 import data.storage.DataStorer;
 import pojos.Player;
 import pojos.teams.Team;
@@ -16,5 +17,5 @@ public abstract class CPUTeam extends Team {
         unavailablePlayers = new HashMap<String, Boolean>();
     }
 
-    public abstract Player selectPlayer(DataStorer dataStorer);
+    public abstract Player selectPlayer(DataGetter dataGetter);
 }

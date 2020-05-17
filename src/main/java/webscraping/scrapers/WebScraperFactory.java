@@ -10,6 +10,8 @@ public class WebScraperFactory {
             return new FantasyProsScraper(scoreType);
         } else if(site==Site.ESPN){
             return new ESPNScraper(scoreType);
+        } else if(site == Site.FFCALCULATOR){
+            return new FFScraper(scoreType);
         }
 
         return null;

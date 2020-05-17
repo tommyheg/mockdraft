@@ -16,8 +16,12 @@ import java.util.Map;
 
 public class FantasyProsScraper extends WebScraper {
 
-    public FantasyProsScraper(ScoreType type) {
-        super(type);
+    public FantasyProsScraper(ScoreType scoreType) {
+        switch (scoreType){
+            case STANDARD: url = "https://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php"; break;
+            case HALF: url = "https://www.fantasypros.com/nfl/rankings/half-point-ppr-cheatsheets.php"; break;
+            case PPR: url = "https://www.fantasypros.com/nfl/rankings/ppr-cheatsheets.php"; break;
+        }
     }
 
     /**

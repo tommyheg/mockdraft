@@ -1,5 +1,6 @@
 package pojos.teams.cpu;
 
+import data.getters.DataGetter;
 import data.storage.DataStorer;
 import pojos.Player;
 
@@ -17,7 +18,7 @@ public class SmartCPUTeam extends CPUTeam{
      * Maybe randomly choose a strategy in the constructor
      * to base this off of (stream qbs, bpa, etc).
      */
-    public Player selectPlayer(DataStorer dataStorer) {
+    public Player selectPlayer(DataGetter dataGetter) {
         //TODO: smartly select a player
         // this is more complicated
         // also must check if player is draftable- use loop

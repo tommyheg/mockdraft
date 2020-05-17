@@ -92,4 +92,14 @@ public class ChoiceDecider {
         return choice>0 && choice<=options;
     }
 
+    public boolean validSuggestions(String response){
+        int choice;
+        try{
+            choice = Integer.parseInt(response);
+        } catch(NumberFormatException e){
+            return false;
+        }
+        return choice == 1 || choice == 2;
+    }
+
 }

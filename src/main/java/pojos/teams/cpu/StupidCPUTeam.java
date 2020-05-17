@@ -1,5 +1,6 @@
 package pojos.teams.cpu;
 
+import data.getters.DataGetter;
 import data.storage.DataStorer;
 import pojos.Player;
 
@@ -16,12 +17,12 @@ public class StupidCPUTeam extends CPUTeam{
      * @param dataStorer- database connector
      * @return the player selected
      */
-    public Player selectPlayer(DataStorer dataStorer) {
+    public Player selectPlayer(DataGetter dataGetter) {
         int count = 0;
-        Player player = dataStorer.getNextPlayer(count);
+        Player player = dataGetter.getNextPlayer(count);
         while(!roomForPlayer(player.getPosition()) || unavailablePlayers.containsKey(player.getName())){
             count++;
-            player = dataStorer.getNextPlayer(count);
+            player = dataGetter.getNextPlayer(count);
         }
         unavailablePlayers.clear();
         return player;

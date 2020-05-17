@@ -7,12 +7,15 @@ import java.util.List;
 
 public class FFScraper extends WebScraper{
 
-    public FFScraper(ScoreType scoreType){
+    public FFScraper(ScoreType scoreType, int leagueSize){
+        String type = "";
         switch (scoreType){
-            case STANDARD: url = ""; break;
-            case HALF: url = ""; break;
-            case PPR: url = ""; break;
+            case STANDARD: type = ""; break;
+            case HALF: type = ""; break;
+            case PPR: type = ""; break;
         }
+
+        String url = "https://fantasyfootballcalculator.com/api/v1/adp/"+type+"?teams="+leagueSize+"&year=2020&position=all";
     }
 
     /**
@@ -23,5 +26,15 @@ public class FFScraper extends WebScraper{
     @Override
     public List<Player> getPlayers(int limit) {
         return null;
+    }
+
+    /**
+     * Store the json file locally so it can be
+     * used later when storing probs
+     * @param json- the json text
+     */
+    private void storeJSON(String json){
+        //TODO: store the json file locally
+        // this method will be used in getPlayers()
     }
 }

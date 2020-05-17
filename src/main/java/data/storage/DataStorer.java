@@ -1,5 +1,6 @@
 package data.storage;
 
+import controllers.Suggestor;
 import pojos.Player;
 import pojos.ScoreType;
 import webscraping.Site;
@@ -13,8 +14,8 @@ public abstract class DataStorer {
 
     protected WebScraper webScraper;
 
-    public DataStorer(Site site, ScoreType scoreType){
-        this.webScraper = new WebScraperFactory().getWebScraper(site, scoreType);
+    public DataStorer(Site site, ScoreType scoreType, int leagueSize){
+        this.webScraper = new WebScraperFactory().getWebScraper(site, scoreType, leagueSize);
     }
 
     public abstract void storeData(int limit);

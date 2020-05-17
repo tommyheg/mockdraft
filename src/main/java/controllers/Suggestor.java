@@ -10,8 +10,12 @@ import java.util.Map;
 
 public class Suggestor {
 
-    public Suggestor(){
+    double[][] probs;
 
+    public Suggestor(){
+        //TODO: parse the json file and store a 2-D array
+        probs = new double[213][213];
+        fillProbs();
     }
 
     /**
@@ -21,7 +25,10 @@ public class Suggestor {
      * @return the value of taking that plaeyr
      */
     private double simulate(Player player){
-        //stub
+        //TODO: simulate the next 5 rounds of a player
+        // We might need a list of available players
+        // maybe have another dataset so we don't alter the first one
+        // maybe run these in parallel with each other for each player
         return Math.random()*10+1;
     }
 
@@ -66,7 +73,7 @@ public class Suggestor {
      * @return whether the requirements are met
      */
     private boolean gottenPlayers(List<Player> players){
-        //stub for now
+        //TODO: loop through list and see if all requirements are met
         return players.size()>8;
     }
 
@@ -92,6 +99,14 @@ public class Suggestor {
             }
         }
         return true;
+    }
+
+    /**
+     * Fill the probs 2-D array by parsing json file
+     */
+    private void fillProbs(){
+        //TODO: parse json file and do math
+
     }
 
 }

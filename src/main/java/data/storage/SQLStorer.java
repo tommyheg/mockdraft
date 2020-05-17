@@ -19,7 +19,7 @@ public class SQLStorer extends DataStorer {
     private Statement statement;
 
     public SQLStorer(Site site, ScoreType scoreType){
-        super(site, scoreType);
+        super(site, scoreType, -1);
     }
 
     /**

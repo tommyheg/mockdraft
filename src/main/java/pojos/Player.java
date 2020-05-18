@@ -20,14 +20,14 @@ public class Player {
         this.team = team;
         this.ADP = adp;
         this.SDEV = sdev;
-        this.keys = new ArrayList<String>();
+        this.keys = new ArrayList<>();
         this.firstName = name.split(" ")[0];
         this.lastName = name.split(" ")[1];
         setProjections(projections);
     }
 
-    public Player(String name, String position, String team, double adp, double sdev) {
-        this.rank = 0;
+    public Player(int rank, String name, String position, String team, double adp, double sdev) {
+        this.rank = rank;
         this.name = name;
         this.position = position;
         this.team = team;
@@ -46,7 +46,7 @@ public class Player {
         this.team = team;
         this.ADP = -1;
         this.SDEV = -1;
-        this.keys = new ArrayList<String>();
+        this.keys = new ArrayList<>();
         this.firstName = name.split(" ")[0];
         this.lastName = name.split(" ")[1];
         setProjections(projections);
@@ -57,7 +57,7 @@ public class Player {
         this.name = "Sentinel Name";
         this.position = "";
         this.team = "";
-        this.keys = new ArrayList<String>();
+        this.keys = new ArrayList<>();
         this.firstName = name.split(" ")[0];
         this.lastName = name.split(" ")[1];
         setProjections(null);
@@ -98,7 +98,7 @@ public class Player {
         keys.add("Pass Ints");
         keys.add("Fumbles");
 
-        projections = new HashMap<String, Double>();
+        projections = new HashMap<>();
 
         //initialize all values to null (maybe 0 later- idk)
         Double val = null;

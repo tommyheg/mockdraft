@@ -51,7 +51,7 @@ public class FFScraper extends WebScraper{
             String team = player.getString("team");
             double adp = player.getDouble("adp");
             double sdev = player.getDouble("stdev");
-            playerList.add(new Player(name, position, team, adp, sdev));
+            playerList.add(new Player(i+1, name, position, team, adp, sdev));
          }
         return playerList;
     }

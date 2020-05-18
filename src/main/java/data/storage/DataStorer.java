@@ -17,8 +17,8 @@ public abstract class DataStorer {
 
     public DataStorer(ScoreType scoreType, int leagueSize){
         this.webScrapers = new ArrayList<>();
-        this.webScrapers.add(new WebScraperFactory().getWebScraper(Site.FANTASYPROS, scoreType, leagueSize));
         this.webScrapers.add(new WebScraperFactory().getWebScraper(Site.FFCALCULATOR, scoreType, leagueSize));
+        this.webScrapers.add(new WebScraperFactory().getWebScraper(Site.FANTASYPROS, scoreType, leagueSize));
     }
 
     public abstract void storeData(int limit);

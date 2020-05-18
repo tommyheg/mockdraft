@@ -98,9 +98,10 @@ Sims
             -maybe create an actual graph before draft if it is too 
              complicated
             -maybe every available player is a neighboring node, but only 
-             actually consider the players you would consider at the next 
+             actually consider the players who you would consider at the next 
              pick (their prob of being at the next pick is within 2 
-             arbitrary bounds)
+             arbitrary bounds. for example kickers are all available in 
+             the 2nd round but you wouldnt take them)
     -each node has its own value
         -recursively go thru a bfs, using each value to get the original 
          node's value (by adding, multiplying, not sure yet)

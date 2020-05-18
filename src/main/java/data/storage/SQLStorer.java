@@ -60,9 +60,7 @@ public class SQLStorer extends DataStorer {
         List<Player> players = webScrapers.get(1).getPlayers(limit);
 
         establishConnection();
-        for(Player p: players){
-            updatePlayer(p);
-        }
+        updateTable(null);
     }
 
     /**
@@ -71,25 +69,26 @@ public class SQLStorer extends DataStorer {
      */
     private void addPlayer(Player player){
         Map<String, Double> projections = player.getProjections();
-        String s = "insert into players values ("+
+        String s = "insert into players (ID, LastName, FirstName, Position," +
+                " Team, ADP, SDEV, FullName) values ("+
                 player.getRank()+", \""+
                 player.getLastName()+"\", \""+
                 player.getFirstName()+"\", \""+
                 player.getPosition()+"\", \""+
                 player.getTeam()+"\", "+
-                projections.get("Points")+", "+
-                projections.get("Rush Att")+", "+
-                projections.get("Rush Yds")+", "+
-                projections.get("Rush Tds")+", "+
-                projections.get("Recs")+", "+
-                projections.get("Rec Yds")+", "+
-                projections.get("Rec Tds")+", "+
-                projections.get("Pass Cmp")+", "+
-                projections.get("Pass Att")+", "+
-                projections.get("Pass Yds")+", "+
-                projections.get("Pass Tds")+", "+
-                projections.get("Pass Ints")+", "+
-                projections.get("Fumbles")+", "+
+//                projections.get("Points")+", "+
+//                projections.get("Rush Att")+", "+
+//                projections.get("Rush Yds")+", "+
+//                projections.get("Rush Tds")+", "+
+//                projections.get("Recs")+", "+
+//                projections.get("Rec Yds")+", "+
+//                projections.get("Rec Tds")+", "+
+//                projections.get("Pass Cmp")+", "+
+//                projections.get("Pass Att")+", "+
+//                projections.get("Pass Yds")+", "+
+//                projections.get("Pass Tds")+", "+
+//                projections.get("Pass Ints")+", "+
+//                projections.get("Fumbles")+", "+
                 player.getADP()+", "+
                 player.getSDEV()+", \""+
                 player.getName() +
@@ -117,7 +116,10 @@ public class SQLStorer extends DataStorer {
     /**
      * Update values in the players database with values from other sites
      */
-    private void updatePlayer(Player player) {
+    private void updateTable(Player player) {
+    //update players set Points = 200, RushAtt = 50, etc
+    //where (select FullName from players = player.getName());
+
 
     }
 

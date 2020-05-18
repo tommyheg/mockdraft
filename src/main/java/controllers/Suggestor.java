@@ -16,17 +16,11 @@ import java.util.Map;
 
 public class Suggestor {
 
-    double[][] probs;
-    int numPlayers = 213, picks = 213;
+    private double[][] probs;
+    private int numPlayers;
     int rb, wr, qb, te;
 
     public Suggestor(){
-        probs = new double[numPlayers][picks];
-        for(int i=0;i<numPlayers;i++){
-            for(int j = 0; j< picks; j++){
-                probs[i][j]=0;
-            }
-        }
         fillProbs();
     }
 
@@ -40,9 +34,9 @@ public class Suggestor {
      * @return the map of player suggestions
      */
     public Map<String, Double> getSuggestions(DataGetter dataGetter, int pick){
-        Map<String, Double> suggestions = new HashMap<String, Double>();    //final suggestions
+        Map<String, Double> suggestions = new HashMap<>();    //final suggestions
         List<Player> players = dataGetter.nextAvailablePlayers(numPlayers);    //next available players
-        List<Player> tempPlayers = new ArrayList<Player>();                 //add the players here temporarily
+        List<Player> tempPlayers = new ArrayList<>();                 //add the players here temporarily
 
         int i = 0;
         boolean complete = false;
@@ -60,7 +54,7 @@ public class Suggestor {
         //TODO: make this part concurrent
         // thinking each simulator is a thread
         Simulator[] sims = new Simulator[tempPlayers.size()];
-        List<Player> availablePlayers = new ArrayList<Player>(players);
+        List<Player> availablePlayers = new ArrayList<>(players);
         for(int j=0;j<sims.length;j++){
             sims[j] = new Simulator(tempPlayers.get(j), players, pick);
             sims[j].start();
@@ -71,9 +65,9 @@ public class Suggestor {
         //TODO: wait until all threads are done before finishing method
         // not sure how this is done
         //https://stackoverflow.com/questions/1252190/how-to-wait-for-a-number-of-threads-to-complete
-        for(int j=0;j<sims.length;j++){
+        for (Simulator sim : sims) {
             try {
-                sims[j].join();
+                sim.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -133,6 +127,7 @@ public class Suggestor {
      * Fill the probs 2-D array by parsing json file and doing math
      */
     private void fillProbs(){
+
         String text = "";
         try {
             BufferedReader br = new BufferedReader(new FileReader("players.json"));
@@ -149,14 +144,23 @@ public class Suggestor {
 
         JSONObject root = new JSONObject(text);
         JSONArray players = root.getJSONArray("players");
+        this.numPlayers = players.length();
+        probs = new double[numPlayers][numPlayers];
+        for(int i=0;i < numPlayers;i++){
+            for(int j = 0; j < numPlayers; j++){
+                probs[i][j]=0;
+            }
+        }
+
         for(int i=0;i<players.length();i++){
             JSONObject player = players.getJSONObject(i);
             double adp = player.getDouble("adp");
             double sdv = player.getDouble("stdev");
             double val = 100;
             double thresh = .001;
-            for(int j = 1; j<picks && (val<0 || (val > 0 && val > thresh)); j++){
+            for(int j = 1; j < numPlayers && (val<0 || (val > 0 && val > thresh)); j++){
                 val = algo(adp, sdv, j);
+
                 probs[i][j] = val;
             }
         }

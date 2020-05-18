@@ -46,7 +46,7 @@ public class Controller {
      * Copy over the data at the very beginning
      */
     private void setData(){
-        DataStorer dataStorer = new DataStorerFactory().getDataStorer(Site.FFCALCULATOR,
+        DataStorer dataStorer = new DataStorerFactory().getDataStorer(
                 ScoreType.STANDARD, DataType.SQL, leagueSize);
         dataStorer.copyData();
     }

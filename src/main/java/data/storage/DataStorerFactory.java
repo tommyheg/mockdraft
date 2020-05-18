@@ -6,9 +6,9 @@ import webscraping.Site;
 
 public class DataStorerFactory {
 
-    public DataStorer getDataStorer(Site site, ScoreType scoreType, DataType dataType, int leagueSize){
+    public DataStorer getDataStorer(ScoreType scoreType, DataType dataType, int leagueSize){
         if(dataType==DataType.SQL){
-            return new SQLStorer(site, scoreType, leagueSize);
+            return new SQLStorer(scoreType, leagueSize);
         } else if(dataType==DataType.JSON){
             return null;
         } else if(dataType==DataType.EXCEL){

@@ -18,8 +18,8 @@ public class SQLStorer extends DataStorer {
     private Connection connection;
     private Statement statement;
 
-    public SQLStorer(Site site, ScoreType scoreType, int leagueSize){
-        super(site, scoreType, leagueSize);
+    public SQLStorer(ScoreType scoreType, int leagueSize){
+        super(scoreType, leagueSize);
     }
 
     /**
@@ -41,8 +41,8 @@ public class SQLStorer extends DataStorer {
      */
     @Override
     public void storeData(int limit) {
-        //get the list of players by web scraping
-        List<Player> players = webScraper.getPlayers(limit);
+        //get the list of players and associated data from web scraping from FP (can be changed in future)
+        List<Player> players = webScrapers.get(0).getPlayers(limit);
 
         establishConnection();  //establish connection to the sql database
         createDatabase();        //first clear and create database
@@ -52,6 +52,15 @@ public class SQLStorer extends DataStorer {
         }
 
         createCopy();
+    }
+
+    @Override
+    public void updateData(int limit) {
+        //get the ADP and SDEV data from FFCalc and update data
+        List<Player> players = webScrapers.get(1).getPlayers(limit);
+
+        establishConnection();
+        updateTable();
     }
 
     /**
@@ -78,8 +87,10 @@ public class SQLStorer extends DataStorer {
                 projections.get("Pass Yds")+", "+
                 projections.get("Pass Tds")+", "+
                 projections.get("Pass Ints")+", "+
-                projections.get("Fumbles")+", \""+
-                player.getName()+
+                projections.get("Fumbles")+", "+
+                player.getADP()+", "+
+                player.getSDEV()+", \""+
+                player.getName() +
                 "\");";
         try {
             statement.executeUpdate(s);
@@ -99,6 +110,13 @@ public class SQLStorer extends DataStorer {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Update values in the players database with values from other sites
+     */
+    private void updateTable() {
+
     }
 
     /**

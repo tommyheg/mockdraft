@@ -10,12 +10,42 @@ public class Player {
     private final String team;
     private Map<String, Double> projections;
     private final List<String> keys;
+    private final double ADP;
+    private final double SDEV;
+
+    public Player(int rank, String name, String position, String team, Map<String, Double> projections, double adp, double sdev) {
+        this.rank = rank;
+        this.name = name;
+        this.position = position;
+        this.team = team;
+        this.ADP = adp;
+        this.SDEV = sdev;
+        this.keys = new ArrayList<String>();
+        this.firstName = name.split(" ")[0];
+        this.lastName = name.split(" ")[1];
+        setProjections(projections);
+    }
+
+    public Player(String name, String position, String team, double adp, double sdev) {
+        this.rank = 0;
+        this.name = name;
+        this.position = position;
+        this.team = team;
+        this.ADP = adp;
+        this.SDEV = sdev;
+        this.keys = new ArrayList<>();
+        this.firstName = name.split(" ")[0];
+        this.lastName = name.split(" ")[1];
+        setProjections(null);
+    }
 
     public Player(int rank, String name, String position, String team, Map<String, Double> projections) {
         this.rank = rank;
         this.name = name;
         this.position = position;
         this.team = team;
+        this.ADP = -1;
+        this.SDEV = -1;
         this.keys = new ArrayList<String>();
         this.firstName = name.split(" ")[0];
         this.lastName = name.split(" ")[1];
@@ -31,6 +61,8 @@ public class Player {
         this.firstName = name.split(" ")[0];
         this.lastName = name.split(" ")[1];
         setProjections(null);
+        this.ADP = -1;
+        this.SDEV = -1;
     }
 
     /**
@@ -118,5 +150,13 @@ public class Player {
     @Override
     public int hashCode() {
         return Objects.hash(name, position, lastName, firstName, team);
+    }
+
+    public double getADP() {
+        return ADP;
+    }
+
+    public double getSDEV() {
+        return SDEV;
     }
 }

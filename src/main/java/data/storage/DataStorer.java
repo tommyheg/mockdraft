@@ -7,18 +7,23 @@ import webscraping.Site;
 import webscraping.scrapers.WebScraperFactory;
 import webscraping.scrapers.WebScraper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public abstract class DataStorer {
 
-    protected WebScraper webScraper;
+    protected List<WebScraper> webScrapers;
 
-    public DataStorer(Site site, ScoreType scoreType, int leagueSize){
-        this.webScraper = new WebScraperFactory().getWebScraper(site, scoreType, leagueSize);
+    public DataStorer(ScoreType scoreType, int leagueSize){
+        this.webScrapers = new ArrayList<>();
+        this.webScrapers.add(new WebScraperFactory().getWebScraper(Site.FANTASYPROS, scoreType, leagueSize));
+        this.webScrapers.add(new WebScraperFactory().getWebScraper(Site.FFCALCULATOR, scoreType, leagueSize));
     }
 
     public abstract void storeData(int limit);
+
+    public abstract void updateData(int limit);
 
     public abstract void copyData();
 

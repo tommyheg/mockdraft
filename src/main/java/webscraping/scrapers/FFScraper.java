@@ -7,6 +7,7 @@ import pojos.ScoreType;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -40,15 +41,19 @@ public class FFScraper extends WebScraper{
         Response response = invocationBuilder.get(Response.class);
         String json = response.readEntity(String.class);
         storeJSON(json);
-
+        List<Player> playerList = new ArrayList<>();
         JSONObject root = new JSONObject(json);
         JSONArray players = root.getJSONArray("players");
         for(int i=0;i<players.length();i++){
             JSONObject player = players.getJSONObject(i);
+            String name = player.getString("name");
+            String position = player.getString("position");
+            String team = player.getString("team");
             double adp = player.getDouble("adp");
-            double sdv = player.getDouble("stdev");
+            double sdev = player.getDouble("stdev");
+            playerList.add(new Player(name, position, team, adp, sdev));
          }
-        return null;
+        return playerList;
     }
 
     /**

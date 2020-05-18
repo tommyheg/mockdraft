@@ -60,7 +60,9 @@ public class SQLStorer extends DataStorer {
         List<Player> players = webScrapers.get(1).getPlayers(limit);
 
         establishConnection();
-        updateTable();
+        for(Player p: players){
+            updatePlayer(p);
+        }
     }
 
     /**
@@ -115,7 +117,7 @@ public class SQLStorer extends DataStorer {
     /**
      * Update values in the players database with values from other sites
      */
-    private void updateTable() {
+    private void updatePlayer(Player player) {
 
     }
 

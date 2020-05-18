@@ -78,6 +78,8 @@ Draft
     -start draft
     -Controller gets players from DataGetter
     -Controller deletes players with DataStorer
+    -DataGetter and DataStorer determine which table to use by the score type
+        -constructor changes the url of the connection
     -each user pick gets suggestions
         -CLUI -> Controller -> Suggestor -> Simulator
         -Suggestor uses DataGetter to get all the players

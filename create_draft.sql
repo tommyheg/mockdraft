@@ -24,6 +24,8 @@ create table players(
     PassTds decimal(3, 1),
     PassInts decimal(3, 1),
     Fumbles decimal(2, 1),
+    ADP decimal(10,3),
+    SDEV decimal(10,3),
     FullName VarChar(255) NOT NULL
 );
 

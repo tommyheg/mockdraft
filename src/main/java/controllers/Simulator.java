@@ -34,6 +34,7 @@ public class Simulator extends Thread {
         // --in a json file
         // --for dynamic programming purposes
 
+
     }
 
     public double getVal(){

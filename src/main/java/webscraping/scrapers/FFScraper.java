@@ -1,5 +1,7 @@
 package webscraping.scrapers;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import pojos.Player;
 import pojos.ScoreType;
 
@@ -39,6 +41,13 @@ public class FFScraper extends WebScraper{
         String json = response.readEntity(String.class);
         storeJSON(json);
 
+        JSONObject root = new JSONObject(json);
+        JSONArray players = root.getJSONArray("players");
+        for(int i=0;i<players.length();i++){
+            JSONObject player = players.getJSONObject(i);
+            double adp = player.getDouble("adp");
+            double sdv = player.getDouble("stdev");
+         }
         return null;
     }
 

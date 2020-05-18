@@ -63,7 +63,7 @@ public class Suggestor {
         List<Player> availablePlayers = new ArrayList<Player>(players);
         for(int j=0;j<sims.length;j++){
             sims[j] = new Simulator(tempPlayers.get(j), players, pick);
-            sims[j].run();
+            sims[j].start();
             double val = sims[j].getVal();
             suggestions.put(tempPlayers.get(j).getName(), val);
         }

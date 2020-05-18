@@ -54,7 +54,7 @@ public class CommandLine {
         System.out.println("2. Half-PPR");
         System.out.println("3. PPR");
 //        String response = scanner.next();
-        String response = "1";
+        String response = "1    ";
         while(!choiceDecider.validScoreType(response)){
             System.out.println("Must choose one of the options presented.");
             response = scanner.next();

@@ -54,3 +54,60 @@ cpu.
     mysql:mysql-connector-java:8.0.16
     org.springframework:spring-test:4.2.4.RELEASE
     org.springframework:spring-jdbc:5.2.6.RELEASE
+    
+    
+## Outlook
+
+Data    
+
+    -get ADP/STDV data from FFCalculator
+        -place in draft data table and JSON file
+    -get Projection data from FantasyPros
+        -place in player table
+    -merge the two tables together
+        -this is for the gui
+    -ADP/STDV JSON file -> 2D Array of Player-Pick-Probs
+        -in Suggestor Class
+    
+    -do all of these 3 times (one for each scoring type)
+        -also make copies of gui table for drafting
+        
+Draft
+
+    -get score type, league size, user pick
+    -start draft
+    -Controller gets players from DataGetter
+    -Controller deletes players with DataStorer
+    -each user pick gets suggestions
+        -CLUI -> Controller -> Suggestor -> Simulator
+        -Suggestor uses DataGetter to get all the players
+        -Suggestor calls a bunch of threads to get vals for each player
+            -this is done in the Simulator class (concurrency)
+
+Sims
+    
+    -each sim is a thread, run concurrently
+        -in the Simulator class, simulate() method
+    -run a bfs for 5-6 levels (basically rounds)
+    -each player is a node
+        -outgoing edges to the next N players (or something like that, 
+         we could figure out which players to go to based on stdev or 
+         something)
+            -maybe create an actual graph before draft if it is too 
+             complicated
+    -each node has its own value
+        -recursively go thru a bfs, using each value to get the original 
+         node's value (by adding, multiplying, not sure yet)
+        -once value is found, store it
+            -stored in Hashmap, passed into function
+                -or Hashmap is owned by the Simulator class, which is 
+                 passed by reference in its constructor, so all the 
+                 threads share it
+            -because of concurrency, need locks for this
+         
+
+
+
+
+
+

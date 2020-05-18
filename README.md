@@ -101,7 +101,7 @@ Sims
         -once value is found, store it
             -stored in Hashmap, passed into function
                 -or Hashmap is owned by the Simulator class, which is 
-                 passed by reference in its constructor, so all the 
+                 passed by reference through its constructor, so all the 
                  threads share it
             -because of concurrency, need locks for this
          

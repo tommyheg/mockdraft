@@ -17,30 +17,44 @@ public class SQLStorer extends DataStorer {
 
     private Connection connection;
     private Statement statement;
-    private String tableName;
+    private String tableName, copyName;
 
     public SQLStorer(ScoreType scoreType, int leagueSize){
 
         super(scoreType, leagueSize);
-//        switch(scoreType){
-//            case STANDARD: tableName = "standardPlayers"; break;
-//            case HALF: tableName = "halfPlayers"; break;
-//            case PPR: tableName = "pprPlayers"; break;
-//        }
-        tableName = "players";
+        switch(scoreType){
+            case STANDARD: tableName = "standardPlayers"; copyName = "standardCopy"; break;
+            case HALF: tableName = "halfPlayers"; copyName = "halfCopy"; break;
+            case PPR: tableName = "pprPlayers"; copyName = "pprCopy"; break;
+        }
+//        tableName = "players";
     }
 
     /**
-     * Copy the full players table copy over to the players table
+     * Copy over the copyTable to the playersTable.
      */
     @Override
     public void copyData(){
         if(connection == null) establishConnection();
+        //do not delete this part yet
+//        try {
+//            ScriptUtils.executeSqlScript(connection,
+//                    new EncodedResource(new FileUrlResource("move_copy.sql")));
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+        //changed the previous method to this because the copyTable and
+        //playersTable have varying names.
+        String drop = "drop table if exists "+tableName+";";
+        String create = "create table "+tableName+" like "+copyName+";";
+        String s = "insert into "+tableName+" select * from "+copyName+";";
+
         try {
-            ScriptUtils.executeSqlScript(connection,
-                    new EncodedResource(new FileUrlResource("move_copy.sql")));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+            statement.executeUpdate(drop);
+            statement.executeUpdate(create);
+            statement.executeUpdate(s);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
@@ -84,19 +98,6 @@ public class SQLStorer extends DataStorer {
                 player.getFirstName()+"\", \""+
                 player.getPosition()+"\", \""+
                 player.getTeam()+"\", "+
-//                projections.get("Points")+", "+
-//                projections.get("Rush Att")+", "+
-//                projections.get("Rush Yds")+", "+
-//                projections.get("Rush Tds")+", "+
-//                projections.get("Recs")+", "+
-//                projections.get("Rec Yds")+", "+
-//                projections.get("Rec Tds")+", "+
-//                projections.get("Pass Cmp")+", "+
-//                projections.get("Pass Att")+", "+
-//                projections.get("Pass Yds")+", "+
-//                projections.get("Pass Tds")+", "+
-//                projections.get("Pass Ints")+", "+
-//                projections.get("Fumbles")+", "+
                 player.getADP()+", "+
                 player.getSDEV()+", \""+
                 player.getName() +
@@ -142,14 +143,47 @@ public class SQLStorer extends DataStorer {
 
     /**
      * Clear the database and create tables.
-     * Use create_draft.sql
      */
     private void createDatabase(){
+        //don't delete this yet
+//        try {
+//            ScriptUtils.executeSqlScript(connection,
+//                    new EncodedResource(new FileUrlResource("create_draft.sql")));
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+
+        String drop = "drop table if exists "+tableName+";";
+        String s = "create table "+tableName+"(\n" +
+                "\tID int(3) PRIMARY KEY NOT NULL,\n" +
+                "    LastName VarChar(255) NOT NULL,\n" +
+                "    FirstName VarChar(255) NOT NULL,\n" +
+                "    Position VarChar(5) NOT NULL,\n" +
+                "    Team VarChar(5) NOT NULL,\n" +
+                "    \n" +
+                "\tPoints decimal(4, 1),\n" +
+                "    RushAtt decimal(4, 1),\n" +
+                "    RushYds decimal(5, 1),\n" +
+                "    RushTds decimal(3, 1),\n" +
+                "    Recs decimal(4, 1),\n" +
+                "    RecYds decimal(5, 1),\n" +
+                "    RecTds decimal(3, 1),\n" +
+                "    PassComp decimal(4, 1),\n" +
+                "    PassAtt decimal(4, 1),\n" +
+                "    PassYds decimal(5, 1),\n" +
+                "    PassTds decimal(3, 1),\n" +
+                "    PassInts decimal(3, 1),\n" +
+                "    Fumbles decimal(3, 1),\n" +
+                "    ADP decimal(10,3),\n" +
+                "    SDEV decimal(10,3),\n" +
+                "    FullName VarChar(255) NOT NULL\n" +
+                ");\n" +
+                "\n";
         try {
-            ScriptUtils.executeSqlScript(connection,
-                    new EncodedResource(new FileUrlResource("create_draft.sql")));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+            statement.execute(drop);
+            statement.executeUpdate(s);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
@@ -157,11 +191,26 @@ public class SQLStorer extends DataStorer {
      * Create the copy database (only right after getting players)
      */
     public void createCopy(){
+        if(connection == null) establishConnection();
+        //do not delete this part yet
+//        try {
+//            ScriptUtils.executeSqlScript(connection,
+//                    new EncodedResource(new FileUrlResource("create_copy.sql")));
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+        //changed the previous method to this because the copyTable and
+        //playersTable have varying names.
+        String drop = "drop table if exists "+copyName+";";
+        String create = "create table "+copyName+" like "+tableName+";";
+        String s =  "insert into "+copyName+" select * from "+tableName+";";
+
         try {
-            ScriptUtils.executeSqlScript(connection,
-                    new EncodedResource(new FileUrlResource("create_copy.sql")));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+            statement.executeUpdate(drop);
+            statement.executeUpdate(create);
+            statement.executeUpdate(s);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 

@@ -107,18 +107,24 @@ public class FantasyProsScraper extends WebScraper {
         //go to the projections page within player page
         assert doc != null;
         String css = ".pills > li:nth-child(8) > a:nth-child(1)";
-        link = doc.select(css).get(0).attr("href");
-        path = domain + link;
+        Element table = null;
+        int size = 0;
         try {
+            link = doc.select(css).get(0).attr("href");
+            path = domain + link;
             doc = Jsoup.connect(path).get();
+            css = "div.subsection:nth-child(3) > div:nth-child(2) > div:nth-child(1) > table:nth-child(1)";
+            table = doc.select(css).get(0);
+            size = table.child(1).child(0).childNodeSize();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (IndexOutOfBoundsException e){
+//            e.printStackTrace();
+            System.out.println("Scraping did not work for: "+path);
         }
 
-        css = "div.subsection:nth-child(3) > div:nth-child(2) > div:nth-child(1) > table:nth-child(1)";
-        Element table = doc.select(css).get(0);
 
-        int size = table.child(1).child(0).childNodeSize();
+
 
         //get all of the projections of the player
         Map<String, Double> projections = new HashMap<>();

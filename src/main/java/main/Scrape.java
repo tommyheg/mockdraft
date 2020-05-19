@@ -79,18 +79,35 @@ public class Scrape {
         return DataType.SQL;
     }
 
-
-    public static void main(String[] args){
-
-        int leagueSize = 12;
-        ScoreType scoreType = promptScoreType();    //eventually scoretype will be obsolete here because we will use all 3. but not now
-        DataType dataType = promptDataType();
+    /**
+     * Store for the given score type and league size.
+     * Right now we are only storing data with sql.
+     * @param scoreType- Standard, Half, or PPR scoring type. Determines the table
+     * @param dataType- how the data will be stored (just sql for now)
+     * @param leagueSize- how big the league is (for scraping)
+     * @param limit- how many players to get (this will be eliminated later)
+     */
+    private static void storeData(ScoreType scoreType, DataType dataType, int leagueSize, int limit){
         DataStorer dataStorer = new DataStorerFactory().getDataStorer(scoreType, dataType, leagueSize);
-        int limit = 25;
         dataStorer.storeData(limit);
         dataStorer.updateData(limit);
         dataStorer.createCopy();
         logger.logWebScrape(limit);
-        //Suggestor suggestor = new Suggestor();
+    }
+
+    public static void main(String[] args){
+
+        long t1 = System.currentTimeMillis();
+        //limit will be removed once we are done. small for debugging purposes
+        //league size will just be 10 (i don't think that the data varies too much from size to size)
+            //this simplifies our tables. only 6 needed instead of 18
+        int limit = 200;
+        for(ScoreType st: ScoreType.values()){
+            System.out.println("Starting ScoreType "+st+"...");
+            storeData(st, DataType.SQL, 10, limit);
+        }
+        long time = System.currentTimeMillis() - t1;
+        time/=1000;
+        System.out.println("Time taken: "+time);
     }
 }

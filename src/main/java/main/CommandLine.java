@@ -22,28 +22,6 @@ public class CommandLine {
     private static Suggestor suggestor = new Suggestor();
     private static boolean suggestions = false;
 
-//    /**
-//     * Ask the user what site to get the data from
-//     * @return site to get data
-//     */
-//    private static Site promptSite(){
-//        System.out.println("\nWhich website would you like the ADP data from?");
-//        System.out.println("1. FantasyPros");
-//        System.out.println("2. ESPN");
-////        String response = scanner.next();
-//        String response = "1";
-//        while(!choiceDecider.validSite(response,2)){
-//            System.out.println("Must choose one of the options presented.");
-//            response = scanner.next();
-//        }
-//        int choice = Integer.parseInt(response);
-//        switch(choice){
-//            case 1: return Site.FANTASYPROS;
-//            case 2: return Site.ESPN;
-//            default: return null;
-//        }
-//    }
-
     /**
      * Ask the user what type of scoring they want
      * @return scoring type
@@ -54,7 +32,7 @@ public class CommandLine {
         System.out.println("2. Half-PPR");
         System.out.println("3. PPR");
 //        String response = scanner.next();
-        String response = "1    ";
+        String response = "1";
         while(!choiceDecider.validScoreType(response)){
             System.out.println("Must choose one of the options presented.");
             response = scanner.next();
@@ -67,20 +45,6 @@ public class CommandLine {
             default: return null;
         }
     }
-
-//    /**
-//     * Get what data type the players should be stored in
-//     * This might not be worth doing.
-//     * @return data type
-//     */
-//    private static DataType promptDataType(){
-//        //just a stub for now
-//        //thinking we could use sql, json, or excel data types
-////        String response = scanner.next();
-//        String response = "1";
-//        choiceDecider.validDataType(response, 3);
-//        return DataType.SQL;
-//    }
 
     /**
      * Get the size of the league from the user
@@ -169,9 +133,6 @@ public class CommandLine {
      */
     private static Player userDraft(){
         if(suggestions){
-            //TODO: make the suggestor simulate and shit
-            // return a list of players and values of those players
-            // maybe a map of players to values, then sort them
             Map<String, Double> suggestions = controller.getSuggestions();
             List<String> sorted = controller.sortSuggestions(suggestions);
             System.out.println("Here are the player suggestions: ");

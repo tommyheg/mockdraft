@@ -17,8 +17,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 public class FFScraper extends WebScraper{
 
+    private String type;
+
     public FFScraper(ScoreType scoreType, int leagueSize){
-        String type = "";
         switch (scoreType){
             case STANDARD: type = "standard"; break;
             case HALF: type = "half-ppr"; break;
@@ -46,7 +47,13 @@ public class FFScraper extends WebScraper{
         JSONArray players = root.getJSONArray("players");
         //limit can be changed to players.length eventually
         for(int i=0;i<limit;i++){
-            JSONObject player = players.getJSONObject(i);
+            //this try-catch is temporary while we have the limit
+            JSONObject player = null;
+            try{
+                player = players.getJSONObject(i);
+            } catch(org.json.JSONException e){
+                continue;
+            }
             String name = player.getString("name");
             String position = player.getString("position");
             String team = player.getString("team");
@@ -64,7 +71,8 @@ public class FFScraper extends WebScraper{
      */
     private void storeJSON(String json){
         try {
-            FileWriter fw = new FileWriter("players.json");
+            String filename = type+".json";
+            FileWriter fw = new FileWriter(filename);
             fw.write(json);
             fw.close();
         } catch (IOException e) {

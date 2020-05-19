@@ -63,14 +63,12 @@ Data
     -get ADP/STDV data from FFCalculator
         -place in draft data table and JSON file
     -get Projection data from FantasyPros
-        -place in player table
-    -merge the two tables together
-        -this is for the gui
+        -update draft table with data
     -ADP/STDV JSON file -> 2D Array of Player-Pick-Probs
         -in Suggestor Class
     
     -do all of these 3 times (one for each scoring type)
-        -also make copies of gui table for drafting
+        -also make copies for drafting
         
 Draft
 

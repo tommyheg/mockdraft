@@ -17,9 +17,17 @@ public class SQLStorer extends DataStorer {
 
     private Connection connection;
     private Statement statement;
+    private String tableName;
 
     public SQLStorer(ScoreType scoreType, int leagueSize){
+
         super(scoreType, leagueSize);
+//        switch(scoreType){
+//            case STANDARD: tableName = "standardPlayers"; break;
+//            case HALF: tableName = "halfPlayers"; break;
+//            case PPR: tableName = "pprPlayers"; break;
+//        }
+        tableName = "players";
     }
 
     /**
@@ -59,8 +67,10 @@ public class SQLStorer extends DataStorer {
         //get the ADP and SDEV data from FFCalc and update data
         List<Player> players = webScrapers.get(1).getPlayers(limit);
 
-        establishConnection();
-        updateTable(null);
+        if(connection == null) establishConnection();
+        for(Player player: players){
+            updatePlayer(player);
+        }
     }
 
     /**
@@ -68,8 +78,7 @@ public class SQLStorer extends DataStorer {
      * @param player- player to be added
      */
     private void addPlayer(Player player){
-        Map<String, Double> projections = player.getProjections();
-        String s = "insert into players (ID, LastName, FirstName, Position," +
+        String s = "insert into "+tableName+" (ID, LastName, FirstName, Position," +
                 " Team, ADP, SDEV, FullName) values ("+
                 player.getRank()+", \""+
                 player.getLastName()+"\", \""+
@@ -93,6 +102,38 @@ public class SQLStorer extends DataStorer {
                 player.getSDEV()+", \""+
                 player.getName() +
                 "\");";
+
+        try {
+            statement.executeUpdate(s);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    /**
+     * Update values in the players database with values from other sites
+     */
+    private void updatePlayer(Player player) {
+
+        Map<String, Double> projections = player.getProjections();
+        String fullName = player.getName();
+        String s = "update "+tableName+" set " +
+                "Points = " +projections.get("Points")+", "+
+                "RushAtt = " +projections.get("Rush Att")+", "+
+                "RushYds = " +projections.get("Rush Yds")+", "+
+                "Recs = " +projections.get("Recs")+", "+
+                "RecYds = " +projections.get("Rec Yds")+", "+
+                "RecTds = " +projections.get("Rec Tds")+", "+
+                "PassComp = " +projections.get("Pass Cmp")+", "+
+                "PassAtt = " +projections.get("Pass Att")+", "+
+                "PassYds = " +projections.get("Pass Yds")+", "+
+                "PassTds = " +projections.get("Pass Tds")+", "+
+                "PassInts = " +projections.get("Pass Ints")+", "+
+                "Fumbles = " +projections.get("Fumbles")+
+                " where " +
+                "FullName = \"" + fullName + "\";";
+
+        System.out.println(s);
         try {
             statement.executeUpdate(s);
         } catch (SQLException throwables) {
@@ -111,16 +152,6 @@ public class SQLStorer extends DataStorer {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Update values in the players database with values from other sites
-     */
-    private void updateTable(Player player) {
-    //update players set Points = 200, RushAtt = 50, etc
-    //where (select FullName from players = player.getName());
-
-
     }
 
     /**

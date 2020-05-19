@@ -18,7 +18,7 @@ public class Suggestor {
 
     private double[][] probs;
     private int numPlayers;
-    int rb, wr, qb, te;
+    private int rb, wr, qb, te;
 
     public Suggestor(){
         fillProbs();
@@ -160,7 +160,6 @@ public class Suggestor {
             double thresh = .001;
             for(int j = 1; j < numPlayers && (val<0 || (val > 0 && val > thresh)); j++){
                 val = algo(adp, sdv, j);
-
                 probs[i][j] = val;
             }
         }

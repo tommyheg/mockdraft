@@ -14,6 +14,9 @@ import java.util.List;
 public abstract class DataStorer {
 
     protected List<WebScraper> webScrapers;
+    //I think doing this would be better, unless we use other scrapers
+//    protected WebScraper ffc;
+//    protected WebScraper pro;
 
     public DataStorer(ScoreType scoreType, int leagueSize){
         this.webScrapers = new ArrayList<>();

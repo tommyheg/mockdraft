@@ -44,7 +44,8 @@ public class FFScraper extends WebScraper{
         List<Player> playerList = new ArrayList<>();
         JSONObject root = new JSONObject(json);
         JSONArray players = root.getJSONArray("players");
-        for(int i=0;i<players.length();i++){
+        //limit can be changed to players.length eventually
+        for(int i=0;i<limit;i++){
             JSONObject player = players.getJSONObject(i);
             String name = player.getString("name");
             String position = player.getString("position");

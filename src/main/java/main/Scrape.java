@@ -86,10 +86,11 @@ public class Scrape {
         ScoreType scoreType = promptScoreType();    //eventually scoretype will be obsolete here because we will use all 3. but not now
         DataType dataType = promptDataType();
         DataStorer dataStorer = new DataStorerFactory().getDataStorer(scoreType, dataType, leagueSize);
-        int limit = 50;
+        int limit = 25;
         dataStorer.storeData(limit);
+        dataStorer.updateData(limit);
         dataStorer.copyData();
-//        logger.logWebScrape(limit);
+        logger.logWebScrape(limit);
         //Suggestor suggestor = new Suggestor();
     }
 }

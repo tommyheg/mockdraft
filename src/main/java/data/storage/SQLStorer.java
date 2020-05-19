@@ -120,6 +120,7 @@ public class SQLStorer extends DataStorer {
                 "Points = " +projections.get("Points")+", "+
                 "RushAtt = " +projections.get("Rush Att")+", "+
                 "RushYds = " +projections.get("Rush Yds")+", "+
+                "RushTds = "+projections.get("Rush Tds")+", "+
                 "Recs = " +projections.get("Recs")+", "+
                 "RecYds = " +projections.get("Rec Yds")+", "+
                 "RecTds = " +projections.get("Rec Tds")+", "+

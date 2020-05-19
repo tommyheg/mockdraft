@@ -1,6 +1,6 @@
 use mockdraft;
 
-drop table if exists copy;
+drop table if exists players;
 
-create table copy like players;
-insert into copy select * from players;
+create table players like copy;
+insert into players select * from copy;

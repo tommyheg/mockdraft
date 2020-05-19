@@ -24,6 +24,7 @@ public class Controller {
 
     private DataGetter dataGetter;
     private Suggestor suggestor;
+    private DataStorer dataStorer;
     private final int leagueSize, rounds, totalPicks, userPick;
     private int pickNumber = 1, currentPick = 1, currentRound = 1, roundPick = 1;
     private List<Team> teams;
@@ -39,6 +40,7 @@ public class Controller {
         this.currentTeam = teams.get(0);
         this.dataGetter = new SQLGetter(scoreType);
         this.suggestor = new Suggestor();
+        this.dataStorer = new DataStorerFactory().getDataStorer(scoreType, DataType.SQL, leagueSize);
         setData();
     }
 
@@ -242,4 +244,8 @@ public class Controller {
     }
 
     public List<Team> getTeams() { return teams; }
+
+    public void cleanUp(){
+        dataStorer.copyData();
+    }
 }

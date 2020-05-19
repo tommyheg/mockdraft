@@ -59,7 +59,6 @@ public class SQLStorer extends DataStorer {
             addPlayer(player);
         }
 
-        createCopy();
     }
 
     @Override
@@ -156,7 +155,7 @@ public class SQLStorer extends DataStorer {
     /**
      * Create the copy database (only right after getting players)
      */
-    private void createCopy(){
+    public void createCopy(){
         try {
             ScriptUtils.executeSqlScript(connection,
                     new EncodedResource(new FileUrlResource("create_copy.sql")));

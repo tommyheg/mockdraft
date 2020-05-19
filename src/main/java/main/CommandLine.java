@@ -252,5 +252,7 @@ public class CommandLine {
 
         presentTeams();
 
+        controller.cleanUp();
+
     }
 }

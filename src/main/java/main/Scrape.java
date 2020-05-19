@@ -89,7 +89,7 @@ public class Scrape {
         int limit = 25;
         dataStorer.storeData(limit);
         dataStorer.updateData(limit);
-        dataStorer.copyData();
+        dataStorer.createCopy();
         logger.logWebScrape(limit);
         //Suggestor suggestor = new Suggestor();
     }

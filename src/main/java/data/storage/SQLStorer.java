@@ -133,7 +133,6 @@ public class SQLStorer extends DataStorer {
                 " where " +
                 "FullName = \"" + fullName + "\";";
 
-        System.out.println(s);
         try {
             statement.executeUpdate(s);
         } catch (SQLException throwables) {

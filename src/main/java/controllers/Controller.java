@@ -2,7 +2,7 @@ package controllers;
 
 import data.DataType;
 import data.getters.DataGetter;
-import data.getters.SQLGetter;
+import data.getters.LocalGetter;
 import data.storage.DataStorer;
 import data.storage.DataStorerFactory;
 import logger.Logger;
@@ -25,8 +25,6 @@ public class Controller {
     private int pickNumber = 1, currentPick = 1, currentRound = 1, roundPick = 1;
     private List<Team> teams;
     private Team currentTeam;
-    private List<Player> players;
-    private Map<String, Player> mapPlayers;
     private final Logger logger = Logger.getLogger();
 
     public Controller(ScoreType scoreType, int leagueSize, int userPick, Difficulty difficulty){
@@ -36,12 +34,9 @@ public class Controller {
         this.totalPicks = rounds * leagueSize;
         initializeTeams(difficulty, userPick);
         this.currentTeam = teams.get(0);
-        this.dataGetter = new SQLGetter(scoreType);
+        this.dataGetter = new LocalGetter();
         this.suggestor = new Suggestor(scoreType);
         this.dataStorer = new DataStorerFactory().getDataStorer(scoreType, DataType.SQL, leagueSize);
-        this.players = new ArrayList<>();
-        this.mapPlayers = new HashMap<>();
-        populatePlayers();
 //        this.dataStorer.copyData();
     }
 
@@ -188,10 +183,4 @@ public class Controller {
         dataStorer.cleanUp();
     }
 
-    private void populatePlayers(){
-        players = dataGetter.nextAvailablePlayers(240);
-        for(Player p: players){
-            mapPlayers.put(p.getName(), p);
-        }
-    }
 }

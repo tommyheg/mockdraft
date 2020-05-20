@@ -16,5 +16,6 @@ public abstract class DataGetter {
 
     public abstract Player getNextPlayer(int count);
 
+    public abstract List<Player> getAllPlayers();
 
 }

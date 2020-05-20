@@ -21,7 +21,7 @@ public class RandomCPUTeam extends CPUTeam{
         int range = 10;
         Player player = selectPlayerHelper(dataGetter, range);
         int count = 1;
-        while(!roomForPlayer(player.getPosition()) || unavailablePlayers.containsKey(player.getName()) || player == null){
+        while(!roomForPlayer(player.getPosition()) || unavailablePlayers.containsKey(player.getName()) || player.getTeamNum() != -1){
             if(count>range) range*=2;
             player = selectPlayerHelper(dataGetter, range);
             unavailablePlayers.put(player.getName(), true);

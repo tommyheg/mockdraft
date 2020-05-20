@@ -73,7 +73,7 @@ public abstract class Team {
             return teLimit>tes;
         } else if(position.startsWith("D")){
             return dstLimit>dsts;
-        } else if(position.startsWith("K")){
+        } else if(position.startsWith("PK")){
             return kLimit>ks;
         }
         return false;

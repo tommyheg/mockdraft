@@ -241,7 +241,7 @@ public class SQLStorer extends DataStorer {
      */
     private void closeConnection(){
         try {
-            connection.close();
+            if(connection!=null) connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

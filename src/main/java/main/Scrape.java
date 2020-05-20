@@ -100,7 +100,7 @@ public class Scrape {
         //limit will be removed once we are done. small for debugging purposes
         //league size will just be 10 (i don't think that the data varies too much from size to size)
             //this simplifies our tables. only 6 needed instead of 18
-        int limit = 420;
+        int limit = 230;
         for(ScoreType st: ScoreType.values()){
             System.out.println("Starting ScoreType "+st+"...");
             storeData(st, DataType.SQL, 12, limit);

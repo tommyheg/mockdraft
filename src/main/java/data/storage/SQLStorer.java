@@ -75,6 +75,10 @@ public class SQLStorer extends DataStorer {
 
     }
 
+    /**
+     * Update the table with each player's projections
+     * @param limit- number of players to get (will be removed soon)
+     */
     @Override
     public void updateData(int limit) {
         //get the ADP and SDEV data from FFCalc and update data
@@ -117,6 +121,8 @@ public class SQLStorer extends DataStorer {
 
         Map<String, Double> projections = player.getProjections();
         String fullName = player.getName();
+        String first = player.getFirstName();
+        String last = player.getLastName();
         String s = "update "+tableName+" set " +
                 "Points = " +projections.get("Points")+", "+
                 "RushAtt = " +projections.get("Rush Att")+", "+
@@ -132,7 +138,9 @@ public class SQLStorer extends DataStorer {
                 "PassInts = " +projections.get("Pass Ints")+", "+
                 "Fumbles = " +projections.get("Fumbles")+
                 " where " +
-                "FullName = \"" + fullName + "\";";
+                "FullName = \"" + fullName + "\" " +
+                "or (FirstName = \""+first+"\" " +
+                "and LastName = \""+last+"\");";
 
         try {
             statement.executeUpdate(s);
@@ -244,6 +252,14 @@ public class SQLStorer extends DataStorer {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    /**
+     * Clean up (in this case, close the connection)
+     */
+    @Override
+    public void cleanUp(){
+        closeConnection();
     }
 
 

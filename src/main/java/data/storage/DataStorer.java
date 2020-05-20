@@ -32,4 +32,6 @@ public abstract class DataStorer {
 
     public abstract void copyData();
 
+    public abstract void cleanUp();
+
 }

@@ -39,7 +39,7 @@ public class Controller {
         initializeTeams(difficulty, userPick);
         this.currentTeam = teams.get(0);
         this.dataGetter = new SQLGetter(scoreType);
-        this.suggestor = new Suggestor();
+        this.suggestor = new Suggestor(scoreType);
         this.dataStorer = new DataStorerFactory().getDataStorer(scoreType, DataType.SQL, leagueSize);
         setData();
     }
@@ -247,5 +247,6 @@ public class Controller {
 
     public void cleanUp(){
         dataStorer.copyData();
+        dataStorer.cleanUp();
     }
 }

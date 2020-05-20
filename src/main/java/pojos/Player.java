@@ -183,4 +183,8 @@ public class Player {
         this.teamNum = teamNum;
     }
 
+    public int getTeamNum(){
+        return teamNum;
+    }
+
 }

@@ -8,7 +8,7 @@ public abstract class DataGetter {
 
     public abstract List<Player> nextAvailablePlayers(int limit);
 
-    public abstract void removePlayer(Player player);
+    public abstract void removePlayer(Player player, int teamNum);
 
     public abstract Player getPlayer(String name);
 

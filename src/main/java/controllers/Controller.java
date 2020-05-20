@@ -81,9 +81,8 @@ public class Controller {
         if(!currentTeam.addPlayer(player)){
             return false;
         }
-        player.setTeamNum(currentPick-1);
         advanceTurn();
-        removePlayer(player);
+        removePlayer(player, currentPick - 1);
         return true;
     }
 
@@ -110,8 +109,8 @@ public class Controller {
      * Remove a player from the database
      * @param player- the player to remove
      */
-    private void removePlayer(Player player){
-        dataGetter.removePlayer(player);
+    private void removePlayer(Player player, int teamNum){
+        dataGetter.removePlayer(player, teamNum);
     }
 
     /**

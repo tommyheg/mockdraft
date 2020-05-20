@@ -2,6 +2,7 @@ package data.getters;
 
 import pojos.Player;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,11 @@ public class LocalGetter extends DataGetter {
     }
 
     private void populate(){
-        this.availablePlayers = getAllPlayers();
+        availablePlayers = getAllPlayers();
+        playerMap = new HashMap<>();
+        for(Player p: availablePlayers){
+            playerMap.put(p.getName(), p);
+        }
     }
 
     @Override
@@ -29,23 +34,23 @@ public class LocalGetter extends DataGetter {
     }
 
     @Override
-    public void removePlayer(Player player) {
-
+    public void removePlayer(Player player, int teamNum) {
+        player.setTeamNum(teamNum);
     }
 
     @Override
     public Player getPlayer(String name) {
-        return null;
+        return playerMap.get(name);
     }
 
     @Override
     public Player getRandomPlayer(int range) {
         int random = (int) (Math.random()*range) + 1;
-        return getNextPlayer(random);
+        return availablePlayers.get(random);
     }
 
     @Override
     public Player getNextPlayer(int count) {
-        return null;
+        return availablePlayers.get(count);
     }
 }

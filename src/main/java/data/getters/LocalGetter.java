@@ -119,7 +119,7 @@ public class LocalGetter extends DataGetter {
      */
     @Override
     public Player getPlayer(String name) {
-        return playerMap.get(name.toLowerCase());
+        return playerMap.get(name.toLowerCase().replace(".","").replace("'",""));
     }
 
     /**

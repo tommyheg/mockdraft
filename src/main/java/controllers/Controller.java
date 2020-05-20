@@ -82,8 +82,9 @@ public class Controller {
         if(!currentTeam.addPlayer(player)){
             return false;
         }
-        advanceTurn();
+        player.setPick(currentRound, currentPick);
         removePlayer(player, currentPick - 1);
+        advanceTurn();
         return true;
     }
 
@@ -174,6 +175,10 @@ public class Controller {
     }
 
     public List<Team> getTeams() { return teams; }
+
+    public int getRound(){
+        return currentRound;
+    }
 
     /**
      * Finish the draft by resetting the data and closing connections, etc.

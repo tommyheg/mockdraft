@@ -128,6 +128,7 @@ public class CommandLine {
      * @return the player that the user selected
      */
     private static Player userDraft(){
+        System.out.println("\nRound "+controller.getRound()+": ");
         if(suggestions){
             Map<String, Double> suggestions = controller.getSuggestions();
             List<String> sorted = controller.sortSuggestions(suggestions);
@@ -135,7 +136,9 @@ public class CommandLine {
             for(String s: sorted){
                 System.out.println(s+": "+suggestions.get(s));
             }
-        } else presentPlayers(controller.nextAvailablePlayers(10));
+        } else {
+            presentPlayers(controller.nextAvailablePlayers(10));
+        }
         System.out.println("Enter the name of the player you want: ");
         String name = scanner.nextLine();
         Player player = controller.draftPlayer(name);

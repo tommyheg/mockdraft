@@ -117,7 +117,7 @@ public abstract class Team {
         sb.append("Team "+position+": ");
         for(Player player: players){
             sb.append("\n");
-            sb.append(player.toString());
+            sb.append(player.finishedString());
         }
 
         return sb.toString();

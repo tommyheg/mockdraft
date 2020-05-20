@@ -12,7 +12,7 @@ public class Player {
     private final List<String> keys;
     private final double ADP;
     private final double SDEV;
-    private int teamNum = -1;
+    private int teamNum = -1, roundNum = -1, pickNum = -1;
 
     public Player(int rank, String name, String position, String team, Map<String, Double> projections, double adp, double sdev) {
         this.rank = rank;
@@ -187,6 +187,14 @@ public class Player {
         return teamNum;
     }
 
+    public void setPick(int round, int pick){
+        this.pickNum = pick;
+        this.roundNum = round;
+    }
+
+    public String finishedString(){
+        return "Round "+roundNum+", Pick "+pickNum+": "+name+", "+position+", "+team;
+    }
     public List<String> getKeys() {
         return keys;
     }

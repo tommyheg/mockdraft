@@ -26,6 +26,7 @@ public class Controller {
     private List<Team> teams;
     private Team currentTeam;
     private List<Player> players;
+    private Map<String, Player> mapPlayers;
     private final Logger logger = Logger.getLogger();
 
     public Controller(ScoreType scoreType, int leagueSize, int userPick, Difficulty difficulty){
@@ -39,6 +40,8 @@ public class Controller {
         this.suggestor = new Suggestor(scoreType);
         this.dataStorer = new DataStorerFactory().getDataStorer(scoreType, DataType.SQL, leagueSize);
         this.players = new ArrayList<>();
+        this.mapPlayers = new HashMap<>();
+        populatePlayers();
 //        this.dataStorer.copyData();
     }
 
@@ -83,6 +86,7 @@ public class Controller {
         if(!currentTeam.addPlayer(player)){
             return false;
         }
+        player.setTeamNum(currentPick-1);
         advanceTurn();
         removePlayer(player);
         return true;
@@ -182,5 +186,12 @@ public class Controller {
     public void cleanUp(){
 //        dataStorer.copyData();
         dataStorer.cleanUp();
+    }
+
+    private void populatePlayers(){
+        players = dataGetter.nextAvailablePlayers(240);
+        for(Player p: players){
+            mapPlayers.put(p.getName(), p);
+        }
     }
 }

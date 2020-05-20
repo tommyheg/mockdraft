@@ -14,12 +14,12 @@ public class SQLGetter extends DataGetter{
     private String table;
 
     public SQLGetter(ScoreType scoreType){
-//        switch (scoreType){
-//            case STANDARD: table = "standard"; break;
-//            case HALF: table = "half"; break;
-//            case PPR: table = "ppr"; break;
-//        }
-        table = "players";  //go thru each method and change 'players' to table
+        switch (scoreType){
+            case STANDARD: table = "standardPlayers"; break;
+            case HALF: table = "halfPlayers"; break;
+            case PPR: table = "pprPlayers"; break;
+        }
+//        table = "players";  //go thru each method and change 'players' to table
     }
 
     /**
@@ -30,7 +30,7 @@ public class SQLGetter extends DataGetter{
     @Override
     public Player getNextPlayer(int count){
         if(connection == null) establishConnection();
-        String s = "select * from players limit "+count+", 1";
+        String s = "select * from "+table+" limit "+count+", 1";
         Player player = null;
         try{
             ResultSet rs = statement.executeQuery(s);
@@ -70,8 +70,7 @@ public class SQLGetter extends DataGetter{
         if(connection == null) establishConnection();
         String first = name.split(" ")[0];
         String last = name.split(" ")[1];
-        //must include or condition for players like Mark Ingram II or Odell Beckham Jr.
-        String s = "select * from players where FullName = \""+name+"\"" +
+        String s = "select * from "+table+" where FullName = \""+name+"\"" +
                 " or (FirstName = \""+first+"\" and LastName = \"" +
                 last+"\");";
         Player player = null;
@@ -102,7 +101,7 @@ public class SQLGetter extends DataGetter{
         String name = player.getName();
         String first = player.getFirstName();
         String last = player.getLastName();
-        String s = "delete from players where FullName = \""+name+"\"" +
+        String s = "delete from "+table+" where FullName = \""+name+"\"" +
                 " or (FirstName = \""+first+"\" and LastName = \"" +
                 last+"\");";
         try{

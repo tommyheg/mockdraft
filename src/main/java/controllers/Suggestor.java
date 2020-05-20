@@ -5,6 +5,7 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import pojos.Player;
+import pojos.ScoreType;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -19,8 +20,14 @@ public class Suggestor {
     private double[][] probs;
     private int numPlayers;
     private int rb, wr, qb, te;
+    private String jsonName;
 
-    public Suggestor(){
+    public Suggestor(ScoreType scoreType){
+        switch(scoreType){
+            case STANDARD: jsonName = "./json/standard.json"; break;
+            case HALF: jsonName = "./json/half-ppr.json"; break;
+            case PPR: jsonName = "./json/ppr.json"; break;
+        }
         fillProbs();
     }
 
@@ -130,7 +137,7 @@ public class Suggestor {
 
         String text = "";
         try {
-            BufferedReader br = new BufferedReader(new FileReader("players.json"));
+            BufferedReader br = new BufferedReader(new FileReader(jsonName));
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
             while (line != null) {

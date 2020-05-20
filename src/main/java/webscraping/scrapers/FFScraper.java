@@ -71,7 +71,7 @@ public class FFScraper extends WebScraper{
      */
     private void storeJSON(String json){
         try {
-            String filename = type+".json";
+            String filename = "./json/"+type+".json";
             FileWriter fw = new FileWriter(filename);
             fw.write(json);
             fw.close();

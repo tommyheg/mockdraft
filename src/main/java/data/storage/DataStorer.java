@@ -28,9 +28,9 @@ public abstract class DataStorer {
 
     public abstract void updateData(int limit);
 
-    public abstract void createCopy();
+//    public abstract void createCopy();
 
-    public abstract void copyData();
+//    public abstract void copyData();
 
     public abstract void cleanUp();
 

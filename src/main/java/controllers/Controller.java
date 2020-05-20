@@ -25,6 +25,7 @@ public class Controller {
     private int pickNumber = 1, currentPick = 1, currentRound = 1, roundPick = 1;
     private List<Team> teams;
     private Team currentTeam;
+    private List<Player> players;
     private final Logger logger = Logger.getLogger();
 
     public Controller(ScoreType scoreType, int leagueSize, int userPick, Difficulty difficulty){
@@ -37,16 +38,8 @@ public class Controller {
         this.dataGetter = new SQLGetter(scoreType);
         this.suggestor = new Suggestor(scoreType);
         this.dataStorer = new DataStorerFactory().getDataStorer(scoreType, DataType.SQL, leagueSize);
-        setData();
-    }
-
-    /**
-     * Copy over the data at the very beginning
-     */
-    private void setData(){
-        DataStorer dataStorer = new DataStorerFactory().getDataStorer(
-                ScoreType.STANDARD, DataType.SQL, leagueSize);
-        dataStorer.copyData();
+        this.players = new ArrayList<>();
+//        this.dataStorer.copyData();
     }
 
     public Map<String, Double> getSuggestions(){
@@ -187,7 +180,7 @@ public class Controller {
      * Finish the draft by resetting the data and closing connections, etc.
      */
     public void cleanUp(){
-        dataStorer.copyData();
+//        dataStorer.copyData();
         dataStorer.cleanUp();
     }
 }

@@ -12,6 +12,7 @@ public class Player {
     private final List<String> keys;
     private final double ADP;
     private final double SDEV;
+    private int teamNum = -1;
 
     public Player(int rank, String name, String position, String team, Map<String, Double> projections, double adp, double sdev) {
         this.rank = rank;
@@ -176,6 +177,10 @@ public class Player {
 
     private void setName(){
         if(lastName.equals("Mahomes")) firstName = "Pat";
+    }
+
+    public void setTeamNum(int teamNum){
+        this.teamNum = teamNum;
     }
 
 }

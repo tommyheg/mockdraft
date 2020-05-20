@@ -90,7 +90,7 @@ public class Scrape {
         DataStorer dataStorer = new DataStorerFactory().getDataStorer(scoreType, dataType, leagueSize);
         dataStorer.storeData(limit);
         dataStorer.updateData(limit);
-        dataStorer.createCopy();
+//        dataStorer.createCopy();
         logger.logWebScrape(limit);
     }
 

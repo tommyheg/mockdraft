@@ -17,7 +17,6 @@ public class CommandLine {
     private static Controller controller;
     private static final ChoiceDecider choiceDecider = new ChoiceDecider();
     private static final Scanner scanner = new Scanner(System.in);
-    private static Suggestor suggestor;
     private static boolean suggestions = false;
 
     /**
@@ -205,7 +204,6 @@ public class CommandLine {
         //cpu difficulty will eventually be defaulted to 'smart' cpu
         Difficulty difficulty = promptCPUDifficulty();
 
-        suggestor = new Suggestor(scoreType);
         controller = new Controller(scoreType, leagueSize, userPick, difficulty);
 
         draft();

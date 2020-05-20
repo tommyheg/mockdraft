@@ -46,6 +46,10 @@ public class LocalGetter extends DataGetter {
         }
     }
 
+    /**
+     * Gets all of the players from SQL table and adds them to a list
+     * @return List of players from SQL table
+     */
     @Override
     public List<Player> getAllPlayers() {
         if(connection == null) establishConnection();
@@ -128,6 +132,9 @@ public class LocalGetter extends DataGetter {
         return availablePlayers.get(count);
     }
 
+    /**
+     * connects to sql table
+     */
     private void establishConnection(){
         //this is just a local connection but it could eventually be to a server or something
         String url = "jdbc:mysql://localhost:3306/mockdraft?useTimezone=true&serverTimezone=UTC";

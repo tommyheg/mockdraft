@@ -10,12 +10,13 @@ public class RandomCPUTeam extends CPUTeam{
         super(position);
     }
 
-    @Override
+
     /**
      * Randomly choose one of the next X players, expanding the range as needed
-     * @param dataStorer- database connector
+     * @param dataGetter- database connector
      * @return the random player selected
      */
+    @Override
     public Player selectPlayer(DataGetter dataGetter) {
         int range = 10;
         Player player = selectPlayerHelper(dataGetter, range);

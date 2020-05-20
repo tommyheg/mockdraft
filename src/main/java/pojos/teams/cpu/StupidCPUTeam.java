@@ -11,16 +11,17 @@ public class StupidCPUTeam extends CPUTeam{
         super(position);
     }
 
-    @Override
+
     /**
      * Just choose the next available player
-     * @param dataStorer- database connector
+     * @param dataGetter- database connector
      * @return the player selected
      */
+    @Override
     public Player selectPlayer(DataGetter dataGetter) {
         int count = 0;
         Player player = dataGetter.getNextPlayer(count);
-        while(!roomForPlayer(player.getPosition()) || unavailablePlayers.containsKey(player.getName())){
+        while(!roomForPlayer(player.getPosition()) || unavailablePlayers.containsKey(player.getName()) || player.getTeamNum() != -1){
             count++;
             player = dataGetter.getNextPlayer(count);
         }

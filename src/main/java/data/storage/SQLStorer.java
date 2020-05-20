@@ -255,5 +255,4 @@ public class SQLStorer extends DataStorer {
         closeConnection();
     }
 
-
 }

@@ -34,9 +34,10 @@ public class Controller {
         this.totalPicks = rounds * leagueSize;
         initializeTeams(difficulty, userPick);
         this.currentTeam = teams.get(0);
-        this.dataGetter = new LocalGetter();
+
         this.suggestor = new Suggestor(scoreType);
         this.dataStorer = new DataStorerFactory().getDataStorer(scoreType, DataType.SQL, leagueSize);
+        this.dataGetter = new LocalGetter(scoreType);
 //        this.dataStorer.copyData();
     }
 
@@ -50,11 +51,11 @@ public class Controller {
      */
     public List<String> sortSuggestions(Map<String, Double> map){
         //copy over everything into another map
-        Map<String, Double> suggestions = new HashMap<String, Double>();
+        Map<String, Double> suggestions = new HashMap<>();
         for(String s: map.keySet()){
             suggestions.put(s, map.get(s));
         }
-        List<String> sorted = new ArrayList<String>();
+        List<String> sorted = new ArrayList<>();
 
         while(suggestions.size() > 0){
             String player = "";

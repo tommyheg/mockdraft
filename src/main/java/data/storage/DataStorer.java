@@ -7,6 +7,7 @@ import webscraping.Site;
 import webscraping.scrapers.WebScraperFactory;
 import webscraping.scrapers.WebScraper;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 

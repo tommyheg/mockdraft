@@ -1,8 +1,11 @@
 package data.getters;
 
 import pojos.Player;
+import pojos.ScoreType;
 
 import java.util.HashMap;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,8 +14,22 @@ public class LocalGetter extends DataGetter {
 
     private List<Player> availablePlayers;
     private Map<String, Player> playerMap;
+    private Statement statement;
+    private Connection connection;
+    private String table;
 
-    public LocalGetter(){
+    public LocalGetter(ScoreType scoreType){
+        establishConnection();
+        switch(scoreType){
+            case STANDARD: table = "standardPlayers"; break;
+            case HALF: table = "halfPlayers"; break;
+            case PPR: table = "pprPlayers"; break;
+        }
+        try {
+            this.statement = this.connection.createStatement();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         populate();
     }
 
@@ -29,10 +46,28 @@ public class LocalGetter extends DataGetter {
         }
     }
 
-
     @Override
-    public List<Player> getAllPlayers(){
-        return null;
+    public List<Player> getAllPlayers() {
+        if(connection == null) establishConnection();
+        String s = "select * from "+table;
+        List<Player> players = new ArrayList<>();
+        try {
+            ResultSet rs = statement.executeQuery(s);
+            if (!rs.isBeforeFirst()) return null;
+            while(rs.next()){
+                int rank = rs.getInt(1);
+                String lastName = rs.getString(2);
+                String firstName = rs.getString(3);
+                String fullName = firstName+" "+lastName;
+                String position = rs.getString(4);
+                String team = rs.getString(5);
+                players.add(new Player(rank, fullName, position, team, null)); //fix projections and ADP
+            }
+        }
+         catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return players;
     }
 
     /**
@@ -91,5 +126,23 @@ public class LocalGetter extends DataGetter {
     @Override
     public Player getNextPlayer(int count) {
         return availablePlayers.get(count);
+    }
+
+    private void establishConnection(){
+        //this is just a local connection but it could eventually be to a server or something
+        String url = "jdbc:mysql://localhost:3306/mockdraft?useTimezone=true&serverTimezone=UTC";
+        String user = "root";
+        String password = "root";
+
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            connection = DriverManager.getConnection(url, user, password);
+
+            statement = connection.createStatement();
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

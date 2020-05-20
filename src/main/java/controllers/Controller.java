@@ -180,6 +180,10 @@ public class Controller {
         return currentRound;
     }
 
+    public int getCurrentPick(){
+        return currentPick;
+    }
+
     /**
      * Finish the draft by resetting the data and closing connections, etc.
      */

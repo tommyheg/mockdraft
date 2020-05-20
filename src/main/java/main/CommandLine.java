@@ -128,7 +128,7 @@ public class CommandLine {
      * @return the player that the user selected
      */
     private static Player userDraft(){
-        System.out.println("\nRound "+controller.getRound()+": ");
+        System.out.println("\nRound "+controller.getRound()+", Pick "+controller.getCurrentPick()+": ");
         if(suggestions){
             Map<String, Double> suggestions = controller.getSuggestions();
             List<String> sorted = controller.sortSuggestions(suggestions);

@@ -118,7 +118,6 @@ public class SQLStorer extends DataStorer {
      * Update values in the players database with values from other sites
      */
     private void updatePlayer(Player player) {
-
         Map<String, Double> projections = player.getProjections();
         String fullName = player.getName();
         String first = player.getFirstName();

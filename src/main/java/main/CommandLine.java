@@ -3,12 +3,10 @@ package main;
 import controllers.ChoiceDecider;
 import controllers.Controller;
 import controllers.Suggestor;
-import data.DataType;
 import pojos.Player;
 import pojos.ScoreType;
 import pojos.teams.Team;
 import pojos.teams.cpu.Difficulty;
-import webscraping.Site;
 
 import java.util.List;
 import java.util.Map;
@@ -204,6 +202,7 @@ public class CommandLine {
         ScoreType scoreType = promptScoreType();
         int leagueSize = promptLeagueSize();
         int userPick = promptUserPick(leagueSize);
+        //cpu difficulty will eventually be defaulted to 'smart' cpu
         Difficulty difficulty = promptCPUDifficulty();
 
         suggestor = new Suggestor(scoreType);

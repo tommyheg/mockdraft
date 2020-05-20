@@ -5,7 +5,6 @@ import data.getters.DataGetter;
 import data.getters.SQLGetter;
 import data.storage.DataStorer;
 import data.storage.DataStorerFactory;
-import data.storage.SQLStorer;
 import logger.Logger;
 import pojos.Player;
 import pojos.ScoreType;
@@ -14,10 +13,7 @@ import pojos.teams.UserTeam;
 import pojos.teams.cpu.CPUTeam;
 import pojos.teams.cpu.CPUTeamFactory;
 import pojos.teams.cpu.Difficulty;
-import webscraping.Site;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Controller {
@@ -127,11 +123,10 @@ public class Controller {
     }
 
     /**
-     * Advance to the next team after a player is selected
+     * Advance to the next team after a player is selected.
+     * Maybe figure out a more elegant way to do this. rn this looks like shit
      */
     public void advanceTurn(){
-//        System.out.println("\nRound "+currentRound+", Pick "+roundPick+", Team "+currentPick);
-
         pickNumber += 1;
 
         if(currentRound % 2 == 1){
@@ -178,63 +173,6 @@ public class Controller {
         teams.set(userPick-1, new UserTeam(userPick));
     }
 
-//    /**
-//     * Have the data storer get the data, but only if not done that day
-//     */
-//    public void setData(){
-//        int limit = rounds * leagueSize;  //this will be done later
-//        limit = 250;
-//        GregorianCalendar lastDate = lastDate();
-////        if(updateNeeded(lastDate, limit)){
-////            logger.logWebScrape(limit);
-////            dataStorer.storeData(limit);
-////        }
-//        dataStorer.copyData();
-//    }
-
-//    /**
-//     * Decide whether an update of the data is required. Update if the
-//     * last update is over a day old or I am updating more players.
-//     * @param date- previous update date
-//     * @param limit- roughly how many players that will be gotten
-//     * @return whether or not an update is required
-//     */
-//    private boolean updateNeeded(GregorianCalendar date, int limit){
-//        GregorianCalendar currentDate = new GregorianCalendar();
-//        if(currentDate.get(Calendar.YEAR) > date.get(Calendar.YEAR)) return true;
-//        if(currentDate.get(Calendar.MONTH) > date.get(Calendar.MONTH)) return true;
-//        if(currentDate.get(Calendar.DAY_OF_MONTH) > date.get(Calendar.DAY_OF_MONTH)) return true;
-//
-//        int lastLimit = -1;
-//        try{
-//            Scanner fileReader = new Scanner(new File("web_scraping.txt"));
-//            fileReader.nextLine();
-//            lastLimit = fileReader.nextInt();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return limit > lastLimit;
-////        return false;
-//    }
-
-//    /**
-//     * Get the last date that the data was updated
-//     * @return the date from web_scraping.txt
-//     */
-//    private GregorianCalendar lastDate(){
-//        GregorianCalendar date = null;
-//        try{
-//            Scanner fileReader = new Scanner(new File("web_scraping.txt"));
-//            String line = fileReader.next();
-//            String[] contents = line.split("/");
-//            date = new GregorianCalendar(Integer.parseInt(contents[0]), Integer.parseInt(contents[1])-1, Integer.parseInt(contents[2]));
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        return date;
-//    }
-
     /**
      * Check to see if the draft is complete
      * @return whether or not the draft is complete
@@ -245,6 +183,9 @@ public class Controller {
 
     public List<Team> getTeams() { return teams; }
 
+    /**
+     * Finish the draft by resetting the data and closing connections, etc.
+     */
     public void cleanUp(){
         dataStorer.copyData();
         dataStorer.cleanUp();

@@ -5,8 +5,8 @@ import java.util.*;
 public class Player {
 
     private final int rank;
-    private final String name, position;
-    private final String lastName, firstName;
+    private final String position;
+    private String lastName, firstName, name;
     private final String team;
     private Map<String, Double> projections;
     private final List<String> keys;
@@ -24,6 +24,8 @@ public class Player {
         this.firstName = name.split(" ")[0];
         this.lastName = name.split(" ")[1];
         setProjections(projections);
+        setName();
+        updateName();
     }
 
     public Player(int rank, String name, String position, String team, double adp, double sdev) {
@@ -37,6 +39,8 @@ public class Player {
         this.firstName = name.split(" ")[0];
         this.lastName = name.split(" ")[1];
         setProjections(null);
+        setName();
+        updateName();
     }
 
     public Player(int rank, String name, String position, String team, Map<String, Double> projections) {
@@ -50,6 +54,8 @@ public class Player {
         this.firstName = name.split(" ")[0];
         this.lastName = name.split(" ")[1];
         setProjections(projections);
+        setName();
+        updateName();
     }
 
     public Player(){
@@ -159,4 +165,17 @@ public class Player {
     public double getSDEV() {
         return SDEV;
     }
+
+    private void updateName(){
+        firstName = firstName.replaceAll("\\.", "");
+        firstName = firstName.replaceAll("'", "");
+        lastName = lastName.replaceAll("\\.", "");
+        lastName = lastName.replaceAll("'", "");
+        name = firstName + " " + lastName;
+    }
+
+    private void setName(){
+        if(lastName.equals("Mahomes")) firstName = "Pat";
+    }
+
 }

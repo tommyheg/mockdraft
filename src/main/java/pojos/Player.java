@@ -187,4 +187,7 @@ public class Player {
         return teamNum;
     }
 
+    public List<String> getKeys() {
+        return keys;
+    }
 }

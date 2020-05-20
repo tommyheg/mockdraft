@@ -65,7 +65,20 @@ public class LocalGetter extends DataGetter {
                 String fullName = firstName+" "+lastName;
                 String position = rs.getString(4);
                 String team = rs.getString(5);
-                players.add(new Player(rank, fullName, position, team, null)); //fix projections and ADP
+                Map<String, Double> projections = new HashMap<>();
+                List<String> keys = new Player().getKeys();
+                for(int i = 0; i < keys.size(); i++){
+                    String temp = rs.getString(i+6);
+                    if(temp == null){
+                        projections.put(keys.get(i), null);
+                    }
+                    else {
+                        projections.put(keys.get(i), Double.parseDouble(temp.strip()));
+                    }
+                }
+
+                players.add(new Player(rank, fullName, position, team, projections,rs.getDouble(19),rs.getDouble(20))); //fix projections and ADP
+
             }
         }
          catch (SQLException throwables) {

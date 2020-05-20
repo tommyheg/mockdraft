@@ -54,7 +54,12 @@ cpu.
     mysql:mysql-connector-java:8.0.16
     org.springframework:spring-test:4.2.4.RELEASE
     org.springframework:spring-jdbc:5.2.6.RELEASE
-    
+    org.apache.commons:commons-math3':3.0
+    org.glassfish.jersey.containers:jersey-container-servlet:2.25.1
+    org.glassfish.jersey.media:jersey-media-json-jackson:2.25.1
+    javax.activation:activation:1.1
+    jakarta.xml.bind:jakarta.xml.bind-api:2.3.2
+    org.glassfish.jaxb:jaxb-runtime:2.3.2
     
 ## Outlook
 

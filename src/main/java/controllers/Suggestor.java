@@ -50,7 +50,7 @@ public class Suggestor {
         //loop through players until 3 rbs gotten, 3 wrs, 2 qbs, 2 tes, etc
         while(!complete){     //repeat until all those requirements met
             Player player = players.get(i);
-            if(roomForPlayer(player, tempPlayers)) {
+            if(roomForPlayer(player)) {
                 updatePositions(player.getPosition());
                 tempPlayers.add(player);
                 complete = gottenPlayers(tempPlayers);
@@ -80,7 +80,7 @@ public class Suggestor {
             }
         }
 
-        rb = 0; wr = 0; qb = 0; te = 0;
+        rb = 0; wr = 0; qb = 0; te = 0; //reset player limits to 0 for next sim
         return suggestions;
     }
 
@@ -103,7 +103,7 @@ public class Suggestor {
      * @param player- player to be added
      * @return if there is room for the player
      */
-    private boolean roomForPlayer(Player player, List<Player> tempPlayers){
+    private boolean roomForPlayer(Player player){
         //TODO: discuss positions and position limits
         String position = player.getPosition();
         if(position.startsWith("RB")){
@@ -118,6 +118,10 @@ public class Suggestor {
         return true;
     }
 
+    /**
+     * Update the current number of players at that position
+     * @param position- position to be added
+     */
     private void updatePositions(String position){
         if(position.startsWith("RB")){
             rb++;

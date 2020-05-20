@@ -41,8 +41,7 @@ public class CommandLine {
         switch (choice){
             case 1: return ScoreType.STANDARD;
             case 2: return ScoreType.HALF;
-            case 3: return ScoreType.PPR;
-            default: return null;
+            default: return ScoreType.PPR;
         }
     }
 

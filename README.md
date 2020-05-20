@@ -71,9 +71,15 @@ Data
         -update draft table with data
     -ADP/STDV JSON file -> 2D Array of Player-Pick-Probs
         -in Suggestor Class
-    
     -do all of these 3 times (one for each scoring type)
-        -also make copies for drafting
+        -store these on server
+        -these tables read-only, except for scraping
+
+    -when draft starts, copy entire table to local arraylist from server
+    -each player starts with team # -1
+        -updated once drafted
+    -use arraylist stream to present players
+    
         
 Draft
 

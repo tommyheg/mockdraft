@@ -42,7 +42,7 @@ public class LocalGetter extends DataGetter {
         availablePlayers = getAllPlayers();
         playerMap = new HashMap<>();
         for(Player p: availablePlayers){
-            playerMap.put(p.getName(), p);
+            playerMap.put(p.getName().toLowerCase(), p);
         }
     }
 
@@ -106,7 +106,7 @@ public class LocalGetter extends DataGetter {
      */
     @Override
     public Player getPlayer(String name) {
-        return playerMap.get(name);
+        return playerMap.get(name.toLowerCase());
     }
 
     /**

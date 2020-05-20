@@ -185,7 +185,8 @@ public class CommandLine {
     /**
      * Begin the draft
      */
-    private static void draft(){
+    private static void draft(int size, ScoreType scoreType){
+        System.out.println("\nThe " + size + " team " + scoreType.toString().toLowerCase() + " scoring type draft is beginning:");
         while(!controller.finished()){
             Player player = draftPlayer();
             while(!controller.draft(player)){
@@ -206,7 +207,7 @@ public class CommandLine {
 
         controller = new Controller(scoreType, leagueSize, userPick, difficulty);
 
-        draft();
+        draft(leagueSize, scoreType);
 
         presentTeams();
 

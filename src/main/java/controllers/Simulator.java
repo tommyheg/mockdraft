@@ -57,14 +57,16 @@ public class Simulator extends Thread {
         if(player == null) return 0;
         playerMap.remove(player.getName());
         if(values.containsKey(player.getName())) return values.get(player.getName());
-        if(round > this.round + 5) return 0;
+//        if(round > this.round + 5) return 0;
 
         //this is where we need to figure out the value variable
         //how is it weighted??
         //divided by adp of player because smaller adp is better??
         //or something else??
+        double prob = getProb(player, pick);
+        if(prob == 100) return 0;
         double weight = 1/player.getADP();
-        double curVal = getProb(player, pick) * weight;
+        double curVal = prob * weight;
         //https://www.javacodegeeks.com/2011/05/avoid-concurrentmodificationexception.html
         Iterator<String> it = playerMap.keySet().iterator();
         while(it.hasNext()){
@@ -86,6 +88,7 @@ public class Simulator extends Thread {
      * @return the value in the probs table
      */
     private double getProb(Player player, int pick){
+        if(player.getRank() >= probs.length || pick >= probs[0].length) return 100;
         return probs[player.getRank()][pick];
     }
 

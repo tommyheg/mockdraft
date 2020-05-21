@@ -38,9 +38,20 @@ public class Controller {
         this.dataStorer = new DataStorerFactory().getDataStorer(scoreType, DataType.SQL, leagueSize);
         this.dataGetter = new LocalGetter(scoreType);
     }
+//
+//    public Map<String, Double> getSuggestions(){
+//        return suggestor.getSuggestions(dataGetter, currentRound, pickNumber);
+//    }
 
-    public Map<String, Double> getSuggestions(){
-        return suggestor.getSuggestions(dataGetter, currentRound, pickNumber);
+    public List<Player> getSuggestions(){
+        List<Player> suggestions = suggestor.getSuggestions(dataGetter, currentRound, pickNumber);
+        suggestions.sort(new Comparator<Player>() {
+            @Override
+            public int compare(Player player, Player t1) {
+                return (int) (player.getValue()*1000 - t1.getValue()*1000);
+            }
+        });
+        return suggestions;
     }
 
     /**

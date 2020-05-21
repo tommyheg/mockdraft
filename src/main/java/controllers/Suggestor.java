@@ -43,8 +43,10 @@ public class Suggestor {
      * @param dataGetter- used to get the list of players
      * @return the map of player suggestions
      */
-    public Map<String, Double> getSuggestions(DataGetter dataGetter, int round, int pick){
-        Map<String, Double> suggestions = new HashMap<>();    //final suggestions
+//    public Map<String, Double> getSuggestions(DataGetter dataGetter, int round, int pick){
+    public List<Player> getSuggestions(DataGetter dataGetter, int round, int pick){
+//        Map<String, Double> suggestions = new HashMap<>();    //final suggestions
+        List<Player> suggestions = new ArrayList<>();
         List<Player> players = dataGetter.nextAvailablePlayers(numPlayers);    //next available players
         Map<String, Player> playerMap = new ConcurrentHashMap<>();
         for(Player p: players){
@@ -85,7 +87,9 @@ public class Suggestor {
             try {
                 sims[j].join();
                 double val = sims[j].getVal();
-                suggestions.put(tempPlayers.get(j).getName(), val);
+//                suggestions.put(tempPlayers.get(j).getName(), val);
+                tempPlayers.get(j).setValue(val);
+                suggestions.add(tempPlayers.get(j));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

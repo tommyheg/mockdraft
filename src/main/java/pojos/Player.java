@@ -13,6 +13,7 @@ public class Player {
     private final double ADP;
     private final double SDEV;
     private int teamNum = -1, roundNum = -1, pickNum = -1;
+    private double value = -1;
 
     public Player(int rank, String name, String position, String team, Map<String, Double> projections, double adp, double sdev) {
         this.rank = rank;
@@ -190,6 +191,14 @@ public class Player {
     public void setPick(int round, int pick){
         this.pickNum = pick;
         this.roundNum = round;
+    }
+
+    public void setValue(double value){
+        this.value = value;
+    }
+
+    public double getValue(){
+        return value;
     }
 
     public String finishedString(){

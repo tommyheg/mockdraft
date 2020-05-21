@@ -18,4 +18,6 @@ public abstract class DataGetter {
 
     public abstract List<Player> getAllPlayers();
 
+    public abstract void cleanUp();
+
 }

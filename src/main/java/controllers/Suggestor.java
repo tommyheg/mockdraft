@@ -14,20 +14,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Suggestor {
 
     private double[][] probs;
-    private int numPlayers;
+    private int numPlayers, userPick, leagueSize;
     private int rb, wr, qb, te;
     private String jsonName;
 
-    public Suggestor(ScoreType scoreType){
+    public Suggestor(ScoreType scoreType, int userPick, int leagueSize){
         switch(scoreType){
             case STANDARD: jsonName = "./json/standard.json"; break;
             case HALF: jsonName = "./json/half-ppr.json"; break;
             case PPR: jsonName = "./json/ppr.json"; break;
         }
+        this.userPick = userPick;
+        this.leagueSize = leagueSize;
         fillProbs();
     }
 
@@ -40,9 +43,13 @@ public class Suggestor {
      * @param dataGetter- used to get the list of players
      * @return the map of player suggestions
      */
-    public Map<String, Double> getSuggestions(DataGetter dataGetter, int pick){
+    public Map<String, Double> getSuggestions(DataGetter dataGetter, int round, int pick){
         Map<String, Double> suggestions = new HashMap<>();    //final suggestions
         List<Player> players = dataGetter.nextAvailablePlayers(numPlayers);    //next available players
+        Map<String, Player> playerMap = new ConcurrentHashMap<>();
+        for(Player p: players){
+            playerMap.put(p.getName(), p);
+        }
         List<Player> tempPlayers = new ArrayList<>();                 //add the players here temporarily
 
         int i = 0;
@@ -62,19 +69,23 @@ public class Suggestor {
         // thinking each simulator is a thread
         Simulator[] sims = new Simulator[tempPlayers.size()];
         List<Player> availablePlayers = new ArrayList<>(players);
+        Map<String, Double> values = new HashMap<>();
         for(int j=0;j<sims.length;j++){
-            sims[j] = new Simulator(tempPlayers.get(j), players, pick);
+            sims[j] = new Simulator(tempPlayers.get(j), playerMap, values, round,
+                    userPick, leagueSize, pick, probs);
             sims[j].start();
-            double val = sims[j].getVal();
-            suggestions.put(tempPlayers.get(j).getName(), val);
+//            double val = sims[j].getVal();
+//            suggestions.put(tempPlayers.get(j).getName(), val);
         }
 
         //TODO: wait until all threads are done before finishing method
         // not sure how this is done
         //https://stackoverflow.com/questions/1252190/how-to-wait-for-a-number-of-threads-to-complete
-        for (Simulator sim : sims) {
+        for (int j=0;j<sims.length;j++){
             try {
-                sim.join();
+                sims[j].join();
+                double val = sims[j].getVal();
+                suggestions.put(tempPlayers.get(j).getName(), val);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -112,7 +123,7 @@ public class Suggestor {
             return wr < 3;
         } else if(position.startsWith("QB")){
             return qb < 2;
-        } else if(position.startsWith("TE")){
+        } else if(position.startsWith("TE")) {
             return te < 2;
         }
         return true;

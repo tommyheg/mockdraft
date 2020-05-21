@@ -165,4 +165,12 @@ public class LocalGetter extends DataGetter {
             e.printStackTrace();
         }
     }
+
+    public void cleanUp(){
+        try {
+            if(connection!=null) connection.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
 }

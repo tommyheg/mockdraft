@@ -8,6 +8,7 @@ import pojos.ScoreType;
 import pojos.teams.Team;
 import pojos.teams.cpu.Difficulty;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -201,7 +202,8 @@ public class CommandLine {
 
     public static void main(String[] args){
 
-        suggestions = promptSuggestions();
+//        suggestions = promptSuggestions();
+        suggestions = true;
         ScoreType scoreType = promptScoreType();
         int leagueSize = promptLeagueSize();
         int userPick = promptUserPick(leagueSize);

@@ -25,7 +25,6 @@ public class Controller {
     private int pickNumber = 1, currentPick = 1, currentRound = 1, roundPick = 1;
     private List<Team> teams;
     private Team currentTeam;
-    private final Logger logger = Logger.getLogger();
 
     public Controller(ScoreType scoreType, int leagueSize, int userPick, Difficulty difficulty){
         this.leagueSize = leagueSize;
@@ -35,14 +34,13 @@ public class Controller {
         initializeTeams(difficulty, userPick);
         this.currentTeam = teams.get(0);
 
-        this.suggestor = new Suggestor(scoreType);
+        this.suggestor = new Suggestor(scoreType, userPick, leagueSize);
         this.dataStorer = new DataStorerFactory().getDataStorer(scoreType, DataType.SQL, leagueSize);
         this.dataGetter = new LocalGetter(scoreType);
-//        this.dataStorer.copyData();
     }
 
     public Map<String, Double> getSuggestions(){
-        return suggestor.getSuggestions(dataGetter, userPick);
+        return suggestor.getSuggestions(dataGetter, currentRound, pickNumber);
     }
 
     /**
@@ -82,7 +80,7 @@ public class Controller {
         if(!currentTeam.addPlayer(player)){
             return false;
         }
-        player.setPick(currentRound, currentPick);
+        player.setPick(currentRound, roundPick);
         removePlayer(player, currentPick - 1);
         advanceTurn();
         return true;
@@ -163,7 +161,7 @@ public class Controller {
         for(int i=0;i<leagueSize;i++){
             teams.add(new CPUTeamFactory().getCPUTeam(i+1, difficulty));
         }
-        teams.set(userPick-1, new UserTeam(userPick));
+        teams.set(userPick-1, new UserTeam(userPick, leagueSize));
     }
 
     /**
@@ -172,6 +170,7 @@ public class Controller {
      */
     public boolean finished(){
         return pickNumber>totalPicks;
+//        return pickNumber > 50;
     }
 
     public List<Team> getTeams() { return teams; }
@@ -181,15 +180,15 @@ public class Controller {
     }
 
     public int getCurrentPick(){
-        return currentPick;
+        return roundPick;
     }
 
     /**
      * Finish the draft by resetting the data and closing connections, etc.
      */
     public void cleanUp(){
-//        dataStorer.copyData();
         dataStorer.cleanUp();
+        dataGetter.cleanUp();
     }
 
 }

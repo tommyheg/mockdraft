@@ -16,7 +16,7 @@ public abstract class Team {
 
     public Team(int position){
         this.position = position;
-        this.players = new ArrayList<Player>();
+        this.players = new ArrayList<>();
         this.setLimits();
     }
 

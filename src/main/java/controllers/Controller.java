@@ -25,6 +25,7 @@ public class Controller {
     private int pickNumber = 1, currentPick = 1, currentRound = 1, roundPick = 1;
     private List<Team> teams;
     private Team currentTeam;
+    private boolean started;
 
     public Controller(ScoreType scoreType, int leagueSize, int userPick, Difficulty difficulty){
         this.leagueSize = leagueSize;
@@ -33,7 +34,6 @@ public class Controller {
         this.totalPicks = rounds * leagueSize;
         initializeTeams(difficulty, userPick);
         this.currentTeam = teams.get(0);
-
         this.suggestor = new Suggestor(scoreType, userPick, leagueSize);
         this.dataStorer = new DataStorerFactory().getDataStorer(scoreType, DataType.SQL, leagueSize);
         this.dataGetter = new LocalGetter(scoreType);
@@ -41,12 +41,7 @@ public class Controller {
 
     public List<Player> getSuggestions(){
         List<Player> suggestions = suggestor.getSuggestions(dataGetter, currentRound, pickNumber);
-        suggestions.sort(new Comparator<Player>() {
-            @Override
-            public int compare(Player player, Player t1) {
-                return (int) (player.getValue()*1000 - t1.getValue()*1000);
-            }
-        });
+        suggestions.sort((player, t1) -> (int) (player.getValue()*1000 - t1.getValue()*1000));
         return suggestions;
     }
 
@@ -59,6 +54,7 @@ public class Controller {
         if(!currentTeam.addPlayer(player)){
             return false;
         }
+        if(!started) started = true;
         player.setPick(currentRound, roundPick);
         removePlayer(player, currentPick - 1);
         advanceTurn();
@@ -152,6 +148,10 @@ public class Controller {
     public boolean finished(){
         return pickNumber>totalPicks;
 //        return pickNumber > 50;
+    }
+
+    public boolean started(){
+        return started;
     }
 
     public List<Team> getTeams() { return teams; }

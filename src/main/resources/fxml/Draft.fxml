@@ -25,7 +25,8 @@
       <Label fx:id="playerLabel" layoutX="211.0" layoutY="322.0" prefHeight="55.0" prefWidth="255.0" />
       <Label fx:id="roundLabel" layoutX="104.0" layoutY="329.0" text="Round: " />
       <Label fx:id="pickLabel" layoutX="104.0" layoutY="354.0" text="Pick: " />
-      <TextField fx:id="searchBar" layoutX="8.0" layoutY="69.0" onAction="#search" promptText="search" />
+      <TextField fx:id="searchBar" layoutX="126.0" layoutY="75.0" promptText="search" />
       <Button fx:id="selectButton" layoutX="496.0" layoutY="337.0" mnemonicParsing="false" onAction="#selectPlayer" text="select player" />
+      <ComboBox fx:id="fieldBox" layoutX="4.0" layoutY="75.0" prefHeight="25.0" prefWidth="122.0" promptText="field" />
    </children>
 </AnchorPane>

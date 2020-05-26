@@ -37,11 +37,12 @@ public class Simulator extends Thread {
     /**
      * Simulate 5 rounds deep and return the value you get with that player
      */
-    private void simulate(){
+    public void simulate(){
         //TODO: run a bfs to get all paths
         // update the total val along the way
         // store in hashmap
         // --for dynamic programming purposes
+        System.out.println("Simming on "+player.getName());
         val = simHelper(player, round, pick);
 //        System.out.println("Val in simulate: "+val);
     }
@@ -51,13 +52,14 @@ public class Simulator extends Thread {
      * @param player- player to start bfs at
      * @param round- starting round number
      * @param pick- starting pick number
-     * @return
+     * @return the value of that player at that round
      */
     private double simHelper(Player player, int round, int pick){
         if(player == null) return 0;
-        playerMap.remove(player.getName());
-        if(values.containsKey(player.getName())) return values.get(player.getName());
-//        if(round > this.round + 5) return 0;
+//        System.out.println(player.getName() + ", "+ round);
+        playerMap.remove(player.getName() + round);
+        if(values.containsKey(player.getName() + round)) return values.get(player.getName() + round);
+        if(round > this.round + 16) return 0;
 
         //this is where we need to figure out the value variable
         //how is it weighted??
@@ -65,7 +67,7 @@ public class Simulator extends Thread {
         //or something else??
         double prob = getProb(player, pick);
         if(prob == 100) return 0;
-        double weight = 1/player.getADP();
+        double weight = 1/(player.getADP());
         double curVal = prob * weight;
         //https://www.javacodegeeks.com/2011/05/avoid-concurrentmodificationexception.html
         Iterator<String> it = playerMap.keySet().iterator();
@@ -76,7 +78,7 @@ public class Simulator extends Thread {
         //this will require locks because of concurrency
         //https://stackoverflow.com/questions/5861894/how-to-synchronize-or-lock-upon-variables-in-java
         synchronized (lock) {
-            values.put(player.getName(), curVal);
+            values.put(player.getName() + round, curVal);
         }
         return curVal;
     }

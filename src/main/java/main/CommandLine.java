@@ -131,14 +131,13 @@ public class CommandLine {
     private static Player userDraft(){
         System.out.println("\nRound "+controller.getRound()+", Pick "+controller.getCurrentPick()+": ");
         if(suggestions){
-//            Map<String, Double> suggestions = controller.getSuggestions();
-//            List<String> sorted = controller.sortSuggestions(suggestions);
             List<Player> sorted = controller.getSuggestions();
             System.out.println("Here are the player suggestions: ");
             for(Player s: sorted){
-//                System.out.println(s+": "+suggestions.get(s));
                 System.out.println(s.getName()+": "+s.getValue());
             }
+//            presentPlayers(controller.nextAvailablePlayers(10));
+
         } else {
             presentPlayers(controller.nextAvailablePlayers(10));
         }

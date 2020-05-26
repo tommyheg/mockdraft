@@ -41,11 +41,11 @@ public class Suggestor {
      * start a sim for each player,
      * add that player's value to the map.
      * @param dataGetter- used to get the list of players
+     * @param round- current round
+     * @param pick- current pick
      * @return the map of player suggestions
      */
-//    public Map<String, Double> getSuggestions(DataGetter dataGetter, int round, int pick){
     public List<Player> getSuggestions(DataGetter dataGetter, int round, int pick){
-//        Map<String, Double> suggestions = new HashMap<>();    //final suggestions
         List<Player> suggestions = new ArrayList<>();
         List<Player> players = dataGetter.nextAvailablePlayers(numPlayers);    //next available players
         Map<String, Player> playerMap = new ConcurrentHashMap<>();
@@ -58,11 +58,12 @@ public class Suggestor {
         boolean complete = false;
         //loop through players until 3 rbs gotten, 3 wrs, 2 qbs, 2 tes, etc
         while(!complete){     //repeat until all those requirements met
+            if(i == players.size()) break;
             Player player = players.get(i);
             if(roomForPlayer(player)) {
                 updatePositions(player.getPosition());
                 tempPlayers.add(player);
-                complete = gottenPlayers(tempPlayers);
+                complete = gottenPlayers();
             }
             i++;
         }
@@ -70,14 +71,13 @@ public class Suggestor {
         //TODO: make this part concurrent
         // thinking each simulator is a thread
         Simulator[] sims = new Simulator[tempPlayers.size()];
-        List<Player> availablePlayers = new ArrayList<>(players);
-        Map<String, Double> values = new HashMap<>();
+        Map<String, Double> values = new ConcurrentHashMap<>();
         for(int j=0;j<sims.length;j++){
-            sims[j] = new Simulator(tempPlayers.get(j), playerMap, values, round,
+            Map<String, Player> copyMap = new ConcurrentHashMap<>(playerMap);
+            sims[j] = new Simulator(tempPlayers.get(j), copyMap, values, round,
                     userPick, leagueSize, pick, probs);
-            sims[j].start();
-//            double val = sims[j].getVal();
-//            suggestions.put(tempPlayers.get(j).getName(), val);
+//            sims[j].start();
+            sims[j].simulate();
         }
 
         //TODO: wait until all threads are done before finishing method
@@ -85,12 +85,12 @@ public class Suggestor {
         //https://stackoverflow.com/questions/1252190/how-to-wait-for-a-number-of-threads-to-complete
         for (int j=0;j<sims.length;j++){
             try {
-                sims[j].join();
+//                sims[j].join();
                 double val = sims[j].getVal();
-//                suggestions.put(tempPlayers.get(j).getName(), val);
                 tempPlayers.get(j).setValue(val);
                 suggestions.add(tempPlayers.get(j));
-            } catch (InterruptedException e) {
+            }
+            catch(Exception e){ //should be interrupted exception if we do concurrency
                 e.printStackTrace();
             }
         }
@@ -102,13 +102,12 @@ public class Suggestor {
     /**
      * Check to see if the temporary list of players has all
      * the requirements to sim
-     * @param players- temporary list of players
      * @return whether the requirements are met
      */
-    private boolean gottenPlayers(List<Player> players){
+    private boolean gottenPlayers(){
         //TODO: discuss position and position limits
-//        return rb == 3 && wr == 3 && qb == 2 && te == 2;
-        return players.size()>8;
+        return rb == 4 && wr == 4 && qb == 2 && te == 2;
+//        return players.size()>8;
     }
 
     /**
@@ -122,15 +121,15 @@ public class Suggestor {
         //TODO: discuss positions and position limits
         String position = player.getPosition();
         if(position.startsWith("RB")){
-            return rb < 3;
+            return rb < 4;
         } else if(position.startsWith("WR")){
-            return wr < 3;
+            return wr < 4;
         } else if(position.startsWith("QB")){
             return qb < 2;
         } else if(position.startsWith("TE")) {
             return te < 2;
         }
-        return true;
+        return false;
     }
 
     /**

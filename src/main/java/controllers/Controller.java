@@ -38,10 +38,6 @@ public class Controller {
         this.dataStorer = new DataStorerFactory().getDataStorer(scoreType, DataType.SQL, leagueSize);
         this.dataGetter = new LocalGetter(scoreType);
     }
-//
-//    public Map<String, Double> getSuggestions(){
-//        return suggestor.getSuggestions(dataGetter, currentRound, pickNumber);
-//    }
 
     public List<Player> getSuggestions(){
         List<Player> suggestions = suggestor.getSuggestions(dataGetter, currentRound, pickNumber);
@@ -52,34 +48,6 @@ public class Controller {
             }
         });
         return suggestions;
-    }
-
-    /**
-     * Get the player-to-value suggestions from the suggestor
-     * @return a sorted map of players to values
-     */
-    public List<String> sortSuggestions(Map<String, Double> map){
-        //copy over everything into another map
-        Map<String, Double> suggestions = new HashMap<>();
-        for(String s: map.keySet()){
-            suggestions.put(s, map.get(s));
-        }
-        List<String> sorted = new ArrayList<>();
-
-        while(suggestions.size() > 0){
-            String player = "";
-            double max = -1;
-            for(String s: suggestions.keySet()){
-                double val = suggestions.get(s);
-                if(val > max){
-                    player = s;
-                    max = val;
-                }
-            }
-            sorted.add(player);
-            suggestions.remove(player);
-        }
-        return sorted;
     }
 
     /**
@@ -162,6 +130,8 @@ public class Controller {
         return dataGetter.nextAvailablePlayers(limit);
     }
 
+    public List<Player> nextAvailablePlayers(){ return dataGetter.nextAvailablePlayers(250);}
+
     /**
      * Initialize the teams to all be CPU except the user pick
      * @param difficulty- the difficulty each CPU team will be drafting with
@@ -193,6 +163,8 @@ public class Controller {
     public int getCurrentPick(){
         return roundPick;
     }
+
+    public Team getCurrentTeam(){ return currentTeam; }
 
     /**
      * Finish the draft by resetting the data and closing connections, etc.

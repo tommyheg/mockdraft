@@ -1,13 +1,37 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
 group 'org.example'
 version '1.0-SNAPSHOT'
 
+//sourceCompatibility = 11
+
 repositories {
     mavenCentral()
 }
+
+javafx{
+    version = "11";
+    modules = ['javafx.controls', 'javafx.fxml']
+}
+
+sourceSets{
+    main{
+        java{
+            srcDirs=["src/main/java"]
+            includes=["**/*.java"]
+        }
+        resources{
+            srcDirs=["src/main/resources"]
+            includes=["**/*.fxml"]
+        }
+    }
+}
+
+
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -22,6 +46,7 @@ dependencies {
     compile group: 'javax.activation', name: 'activation', version: '1.1'
     compile group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.2'
     compile group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
-
-
 }
+
+
+//mainClassName = 'main.Gui'

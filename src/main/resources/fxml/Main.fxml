@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainController">
+   <children>
+      <Label alignment="CENTER" layoutX="83.0" layoutY="14.0" prefHeight="72.0" prefWidth="434.0" text="welcome to mockdraft" />
+      <Label layoutX="67.0" layoutY="79.0" text="league size" />
+      <Label layoutX="202.0" layoutY="79.0" text="scoring" />
+      <Label layoutX="316.0" layoutY="79.0" text="user pick" />
+      <Label layoutX="437.0" layoutY="79.0" text="suggestions" />
+      <RadioButton fx:id="eightSize" layoutX="67.0" layoutY="113.0" mnemonicParsing="false" text="8">
+         <toggleGroup>
+            <ToggleGroup fx:id="sizeGroup" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="tenSize" layoutX="67.0" layoutY="149.0" mnemonicParsing="false" selected="true" text="10" toggleGroup="$sizeGroup" />
+      <RadioButton fx:id="twelveSize" layoutX="67.0" layoutY="182.0" mnemonicParsing="false" text="12" toggleGroup="$sizeGroup" />
+      <RadioButton fx:id="standardScore" layoutX="199.0" layoutY="113.0" mnemonicParsing="false" text="standard">
+         <toggleGroup>
+            <ToggleGroup fx:id="scoreGroup" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="halfScore" layoutX="199.0" layoutY="149.0" mnemonicParsing="false" selected="true" text="half ppr" toggleGroup="$scoreGroup" />
+      <RadioButton fx:id="pprScore" layoutX="199.0" layoutY="182.0" mnemonicParsing="false" text="ppr" toggleGroup="$scoreGroup" />
+      <TextField fx:id="userPickText" layoutX="316.0" layoutY="110.0" prefHeight="15.0" prefWidth="60.0" text="5" />
+      <RadioButton fx:id="yesSuggestion" layoutX="437.0" layoutY="113.0" mnemonicParsing="false" text="yes">
+         <toggleGroup>
+            <ToggleGroup fx:id="suggestionGroup" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="noSuggestion" layoutX="437.0" layoutY="149.0" mnemonicParsing="false" selected="true" text="no" toggleGroup="$suggestionGroup" />
+      <Button fx:id="startButton" layoutX="353.0" layoutY="310.0" mnemonicParsing="false" onAction="#start" text="start draft" />
+      <Button fx:id="exitButton" layoutX="191.0" layoutY="310.0" mnemonicParsing="false" onAction="#exit" prefHeight="25.0" prefWidth="74.0" text="exit" />
+      <Label fx:id="warningLabel" alignment="CENTER" layoutX="55.0" layoutY="236.0" prefHeight="32.0" prefWidth="522.0" />
+   </children>
+</AnchorPane>

@@ -2,6 +2,7 @@ package main;
 
 
 import gui.DraftController;
+import gui.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,14 +17,14 @@ public class Gui extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         root = stage;
-//        Parent start = FXMLLoader.load(((getClass()
-//                .getResource("/fxml/main.fxml"))));
+        Parent start = FXMLLoader.load(((getClass()
+                .getResource("/fxml/Welcome.fxml"))));
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Draft.fxml"));
-        Parent start = loader.load();
-        DraftController draftController = loader.getController();
-        draftController.construct(ScoreType.HALF, 10, 5, false);
-        loader.setController(draftController);
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
+//        Parent start = loader.load();
+//        MainController mainController = loader.getController();
+//        mainController.construct(ScoreType.HALF, 10, 5, false);
+//        loader.setController(mainController);
         root.setTitle("Welcome to your Mock Draft!");
         root.setScene(new Scene(start));
         root.show();

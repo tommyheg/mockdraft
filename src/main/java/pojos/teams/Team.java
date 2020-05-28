@@ -133,5 +133,7 @@ public abstract class Team {
         return "";
     }
 
+    public List<Player> getPlayers() { return this.players; }
+
 
 }

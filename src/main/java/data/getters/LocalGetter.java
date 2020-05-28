@@ -142,6 +142,7 @@ public class LocalGetter extends DataGetter {
      */
     @Override
     public Player getNextPlayer(int count) {
+        if(count == availablePlayers.size()) return null;
         return availablePlayers.get(count);
     }
 

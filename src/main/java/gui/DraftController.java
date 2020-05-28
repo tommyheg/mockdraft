@@ -1,6 +1,7 @@
 package gui;
 
 import controllers.Controller;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -8,11 +9,14 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import main.Gui;
 import pojos.Player;
@@ -25,71 +29,72 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
-public class DraftController {
+public class DraftController extends GodController {
 
     private Controller controller;
-    private boolean suggestions;
     private FilteredList<Player> filteredList;
     private ObservableList<Player> observableList;
 
-    @FXML TableView<Player> playerTable;
-    @FXML TableColumn<Player, String> firstName, lastName, position, team;
-    @FXML TableColumn<Player, Integer> rank;
-    @FXML Button start, mainMenu, exit, selectButton;
-    @FXML Label playerLabel, roundLabel, pickLabel;
-    @FXML TextField searchBar;
-    @FXML ComboBox<String> fieldBox;
+    @FXML
+    TableView<Player> playerTable;
+    @FXML
+    TableColumn<Player, String> firstName, lastName, position, team;
+    @FXML
+    TableColumn<Player, Integer> rank;
+    @FXML
+    TableColumn<Player, Double> points, rushAtt;
+    @FXML
+    Button start, selectButton;
+    @FXML
+    Label playerLabel, roundLabel, pickLabel;
+    @FXML
+    TextField searchBar;
 
-    //this acts as a constructor. need this to pass in parameters
-    public void construct(ScoreType scoreType, int size, int userPick, boolean suggestions) {
-        controller = new Controller(scoreType, size, userPick, Difficulty.STUPID);
-        this.suggestions = suggestions;
+    //pseudo constructor called when loading initial fxml
+    public void construct(Controller controller) {
+        this.controller = controller;
         setUp();
     }
 
     //set up the gui. this acts as initialize(). needed bc of constructor
     private void setUp() {
-        //declare the values for each column
+        setUpColumns();
+        //get the players from the controller
+        List<Player> playersList = controller.nextAvailablePlayers();
+        observableList = FXCollections.observableList(playersList);
+        //initialize the table
+        playerTable.getItems().setAll(observableList);
+        filteredList = new FilteredList<>(observableList);
+        //filter function
+        searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredList.setPredicate(p -> Integer.toString(p.getRank()).contains(searchBar.getText().trim()) ||
+                    p.getName().toLowerCase().contains(searchBar.getText().toLowerCase().trim()) ||
+                    p.getPosition().toLowerCase().contains(searchBar.getText().toLowerCase().trim()) ||
+                    p.getTeam().toLowerCase().contains(searchBar.getText().toLowerCase().trim()));
+            playerTable.getItems().setAll(filteredList);
+        });
+        //TODO: this only works if you click the button first. fix that
+        selectButton.setOnKeyReleased(event -> {
+            if (event.getCode() == KeyCode.ENTER) selectPlayer();
+        });
+    }
+
+    //just called in setUp()
+    private void setUpColumns() {
         rank.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getRank()).asObject());
         firstName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFirstName()));
         lastName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getLastName()));
         position.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getPosition()));
         team.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getTeam()));
-        //get the players from the controller
-        List<Player> playersList = controller.nextAvailablePlayers(40);
-        observableList = FXCollections.observableList(playersList);
-        //initalize the table
-        playerTable.getItems().setAll(observableList);
-        filteredList = new FilteredList<>(observableList);
-        fieldBox.getItems().addAll(Arrays.asList("rank", "name", "position", "team"));
-        fieldBox.getSelectionModel().select("name");
-        //enable the filtering through the search bar
-        searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
-                    switch (fieldBox.getValue()) {
-                        case "rank":
-                            filteredList.setPredicate(p -> Integer.toString(p.getRank()).contains(searchBar.getText().trim()));
-                            break;
-                        case "name":
-                            filteredList.setPredicate(p -> p.getName().toLowerCase().contains(searchBar.getText().toLowerCase().trim()));
-                            break;
-                        case "position":
-                            filteredList.setPredicate(p -> p.getPosition().toLowerCase().contains(searchBar.getText().toLowerCase().trim()));
-                            break;
-                        case "team":
-                            filteredList.setPredicate(p -> p.getTeam().toLowerCase().contains(searchBar.getText().toLowerCase().trim()));
-                            break;
-                    }
-                    //refresh the table
-                    playerTable.getItems().setAll(filteredList);
-                }
-        );
+        points.setCellValueFactory(c -> new SimpleDoubleProperty(c.getValue().getProjections().get("Points")).asObject());
+        rushAtt.setCellValueFactory(c -> new SimpleDoubleProperty(c.getValue().getProjections().get("Rush Att")).asObject());
 
     }
 
     //start the draft when the button is clicked
     public void start() {
         //this should never happen bc of this method but just in case
-        if(controller.started()) return;
+        if (controller.started()) return;
         //draft until the user pick
         cpuDraft();
         //change the design of the button
@@ -103,6 +108,13 @@ public class DraftController {
         //draft the player for the cpu, remove from table
         while (!controller.getCurrentTeam().isUser()) {
             Player player = controller.draftPlayerCPU();
+            //only way this happens is if draft is null
+            if (player == null) {
+                playerLabel.setText("draft is done mofo");
+                //TODO: do something when draft is done
+                //maybe show full table?
+                //automatically go to team tab?
+            }
             observableList.remove(player);
             filteredList = new FilteredList<>(observableList);
             playerTable.getItems().setAll(observableList);
@@ -113,17 +125,16 @@ public class DraftController {
         pickLabel.setText("Pick: " + controller.getCurrentPick());
     }
 
+    //select the current player then the user presses the button
+    //TODO: call this when they press enter- in setUp()
     public void selectPlayer() {
         //they clicked the button when it wasn't there turn (doubt this would ever happen bc cpu is fast)
         if (!controller.getCurrentTeam().isUser()) {
             System.out.println("e: button click during cpu turn");
             return;
         }
-        //TODO: run the suggestions
-        // probably in another tab
         //get the player they have selected
         String name = playerLabel.getText();
-        System.out.println("player attempting to draft " + name);
         Player player = controller.draftPlayer(name);
         if (player == null) {
             System.out.println("e: select valid player. inside userDraft()");
@@ -140,32 +151,11 @@ public class DraftController {
     }
 
     //update the player label when the table is clicked
+    //TODO: call this when they use up and down keys to select a player- in setUp()
     public void updatePlayer() {
         Player player = playerTable.getSelectionModel().getSelectedItem();
-        if(player == null) return;  //needed for sorting columns. it calls this method by default
+        if (player == null) return;  //needed for when user sorts a column. it calls this method by default
         playerLabel.setText(player.getName());
     }
-
-    //go back to the main screen
-    public void goToMain() {
-        Scene main;
-        try {
-            Parent parent = FXMLLoader.load(((getClass()
-                    .getResource("/fxml/Main.fxml"))));
-            main = new Scene(parent);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-        Stage root = Gui.getRoot();
-        root.setTitle("mock draft");
-        root.setScene(main);
-        root.show();
-    }
-
-    public void exit() {
-        System.exit(0);
-    }
-
 
 }

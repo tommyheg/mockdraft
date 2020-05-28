@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.TeamController">
+   <children>
+      <Button fx:id="showButton" layoutX="534.0" layoutY="276.0" mnemonicParsing="false" onAction="#showTeam" text="show" />
+      <TableView fx:id="playerTable" layoutY="62.0" prefHeight="207.0" prefWidth="600.0">
+         <columns>
+            <TableColumn fx:id="round" prefWidth="53.0" text="round" />
+            <TableColumn fx:id="pick" prefWidth="52.0" text="pick" />
+            <TableColumn fx:id="firstName" prefWidth="108.0" text="first name" />
+            <TableColumn fx:id="lastName" prefWidth="114.0" text="last name" />
+            <TableColumn fx:id="position" prefWidth="67.0" text="position" />
+            <TableColumn fx:id="team" prefWidth="63.0" text="team" />
+            <TableColumn fx:id="selection" prefWidth="77.0" text="selection" />
+            <TableColumn fx:id="adp" minWidth="0.0" prefWidth="65.0" text="adp" />
+         </columns>
+      </TableView>
+   </children>
+</AnchorPane>

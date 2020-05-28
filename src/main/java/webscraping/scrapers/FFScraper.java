@@ -48,7 +48,7 @@ public class FFScraper extends WebScraper{
         //limit can be changed to players.length eventually
         for(int i=0;i<limit;i++){
             //this try-catch is temporary while we have the limit
-            JSONObject player = null;
+            JSONObject player;
             try{
                 player = players.getJSONObject(i);
             } catch(org.json.JSONException e){

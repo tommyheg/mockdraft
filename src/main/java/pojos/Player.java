@@ -12,7 +12,7 @@ public class Player {
     private final List<String> keys;
     private final double ADP;
     private final double SDEV;
-    private int teamNum = -1, roundNum = -1, pickNum = -1;
+    private int teamNum = -1, roundNum = -1, pickNum = -1, selection = -1;
     private double value = -1;
 
     public Player(int rank, String name, String position, String team, Map<String, Double> projections, double adp, double sdev) {
@@ -108,8 +108,8 @@ public class Player {
 
         projections = new HashMap<>();
 
-        //initialize all values to null (maybe 0 later- idk)
-        Double val = null;
+        //initialize all values to 0
+        Double val = 0.0;
         for(String s: keys){
             projections.put(s, val);
         }
@@ -188,9 +188,10 @@ public class Player {
         return teamNum;
     }
 
-    public void setPick(int round, int pick){
+    public void setPick(int round, int pick, int selection){
         this.pickNum = pick;
         this.roundNum = round;
+        this.selection = selection;
     }
 
     public void setValue(double value){
@@ -200,6 +201,12 @@ public class Player {
     public double getValue(){
         return value;
     }
+
+    public int getSelection() { return selection; }
+
+    public int getRoundNum() { return roundNum; }
+
+    public int getPickNum() { return pickNum; }
 
     public String finishedString(){
         return "Round "+roundNum+", Pick "+pickNum+": "+name+", "+position+", "+team;

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SuggestionsController">
+   <children>
+      <Label fx:id="disrespectLabel" alignment="CENTER" layoutX="158.0" layoutY="52.0" prefHeight="220.0" prefWidth="261.0" textAlignment="CENTER" wrapText="true" />
+      <TableView fx:id="playerTable" layoutX="3.0" layoutY="78.0" prefHeight="207.0" prefWidth="600.0">
+         <columns>
+            <TableColumn fx:id="value" prefWidth="117.0" text="value" />
+            <TableColumn fx:id="firstName" prefWidth="104.0" text="first name" />
+            <TableColumn fx:id="lastName" prefWidth="104.0" text="last name" />
+            <TableColumn fx:id="position" prefWidth="77.0" text="position" />
+            <TableColumn fx:id="team" minWidth="4.0" prefWidth="59.0" text="team" />
+            <TableColumn fx:id="rank" minWidth="0.0" prefWidth="82.0" text="rank" />
+         </columns>
+      </TableView>
+   </children>
+</AnchorPane>

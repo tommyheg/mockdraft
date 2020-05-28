@@ -24,10 +24,10 @@ public class Controller {
     private final int leagueSize, rounds, totalPicks, userPick;
     private int pickNumber = 1, currentPick = 1, currentRound = 1, roundPick = 1;
     private List<Team> teams;
-    private Team currentTeam;
+    private Team currentTeam, userTeam;
     private boolean started;
 
-    public Controller(ScoreType scoreType, int leagueSize, int userPick, Difficulty difficulty){
+    public Controller(ScoreType scoreType, int leagueSize, int userPick, Difficulty difficulty) {
         this.leagueSize = leagueSize;
         this.rounds = 16;
         this.userPick = userPick;
@@ -39,23 +39,24 @@ public class Controller {
         this.dataGetter = new LocalGetter(scoreType);
     }
 
-    public List<Player> getSuggestions(){
+    public List<Player> getSuggestions() {
         List<Player> suggestions = suggestor.getSuggestions(dataGetter, currentRound, pickNumber);
-        suggestions.sort((player, t1) -> (int) (player.getValue()*1000 - t1.getValue()*1000));
+        suggestions.sort((player, t1) -> (int) (player.getValue() * 1000 - t1.getValue() * 1000));
         return suggestions;
     }
 
     /**
      * Add the player to the team, advance the turn, and remove the player from database
+     *
      * @param player- player to be added
      * @return whether the player was added or not
      */
-    public boolean draft(Player player){
-        if(!currentTeam.addPlayer(player)){
+    public boolean draft(Player player) {
+        if (!currentTeam.addPlayer(player)) {
             return false;
         }
-        if(!started) started = true;
-        player.setPick(currentRound, roundPick);
+        if (!started) started = true;
+        player.setPick(currentRound, roundPick, pickNumber);
         removePlayer(player, currentPick - 1);
         advanceTurn();
         return true;
@@ -63,28 +64,34 @@ public class Controller {
 
     /**
      * get the player from the database
+     *
      * @param name- name of the player to get
      * @return the player (null if he isn't available)
      */
-    public Player draftPlayer(String name){
-        if(name.split(" ").length < 2) return null;
-        return dataGetter.getPlayer(name);
+    public Player draftPlayer(String name) {
+        if (name.split(" ").length < 2) return null;
+        Player player = dataGetter.getPlayer(name);
+        if (player == null) return null;
+        if (player.getTeamNum() == -1) return player;
+        else return null;
     }
 
     /**
      * Select a player for the cpu team
+     *
      * @return the player the cpu team drafted
      */
-    public Player draftPlayerCPU(){
+    public Player draftPlayerCPU() {
         CPUTeam cpuTeam = (CPUTeam) currentTeam;
         return cpuTeam.selectPlayer(dataGetter);
     }
 
     /**
      * Remove a player from the database
+     *
      * @param player- the player to remove
      */
-    private void removePlayer(Player player, int teamNum){
+    private void removePlayer(Player player, int teamNum) {
         dataGetter.removePlayer(player, teamNum);
     }
 
@@ -92,84 +99,101 @@ public class Controller {
      * Advance to the next team after a player is selected.
      * Maybe figure out a more elegant way to do this. rn this looks like shit
      */
-    public void advanceTurn(){
+    public void advanceTurn() {
         pickNumber += 1;
 
-        if(currentRound % 2 == 1){
+        if (currentRound % 2 == 1) {
             currentPick += 1;
-            if(currentPick > leagueSize) currentPick -= 1;
-        } else{
+            if (currentPick > leagueSize) currentPick -= 1;
+        } else {
             currentPick -= 1;
-            if(currentPick == 0) currentPick += 1;
+            if (currentPick == 0) currentPick += 1;
         }
 
-        currentRound = (pickNumber-1) / leagueSize + 1;
-        if(currentRound % 2 == 0) roundPick = (leagueSize + 1) - currentPick;
+        currentRound = (pickNumber - 1) / leagueSize + 1;
+        if (currentRound % 2 == 0) roundPick = (leagueSize + 1) - currentPick;
         else roundPick = currentPick;
-        currentTeam = teams.get(currentPick-1);
+        currentTeam = teams.get(currentPick - 1);
     }
 
     /**
      * Check if the current team is a user or not
+     *
      * @return whether or not the current team is a user
      */
-    public boolean userTurn(){
+    public boolean userTurn() {
         return currentTeam.isUser();
     }
 
     /**
      * Get the next X available players from the data storer
+     *
      * @param limit- number of players to get
      * @return list of available players
      */
-    public List<Player> nextAvailablePlayers(int limit){
+    public List<Player> nextAvailablePlayers(int limit) {
         return dataGetter.nextAvailablePlayers(limit);
     }
 
-    public List<Player> nextAvailablePlayers(){ return dataGetter.nextAvailablePlayers(250);}
+    public List<Player> nextAvailablePlayers() {
+        return dataGetter.nextAvailablePlayers(250);
+    }
 
     /**
      * Initialize the teams to all be CPU except the user pick
+     *
      * @param difficulty- the difficulty each CPU team will be drafting with
-     * @param userPick- the pick that the user holds
+     * @param userPick-   the pick that the user holds
      */
-    private void initializeTeams(Difficulty difficulty, int userPick){
+    private void initializeTeams(Difficulty difficulty, int userPick) {
         this.teams = new ArrayList<>(leagueSize);
-        for(int i=0;i<leagueSize;i++){
-            teams.add(new CPUTeamFactory().getCPUTeam(i+1, difficulty));
+        for (int i = 0; i < leagueSize; i++) {
+            teams.add(new CPUTeamFactory().getCPUTeam(i + 1, difficulty));
         }
-        teams.set(userPick-1, new UserTeam(userPick, leagueSize));
+        teams.set(userPick - 1, new UserTeam(userPick, leagueSize));
+        userTeam = teams.get(userPick - 1);
     }
 
     /**
      * Check to see if the draft is complete
+     *
      * @return whether or not the draft is complete
      */
-    public boolean finished(){
-        return pickNumber>totalPicks;
+    public boolean finished() {
+        return pickNumber > totalPicks;
 //        return pickNumber > 50;
     }
 
-    public boolean started(){
+    public boolean started() {
         return started;
     }
 
-    public List<Team> getTeams() { return teams; }
+    public List<Team> getTeams() {
+        return teams;
+    }
 
-    public int getRound(){
+    public int getRound() {
         return currentRound;
     }
 
-    public int getCurrentPick(){
+    public int getCurrentPick() {
         return roundPick;
     }
 
-    public Team getCurrentTeam(){ return currentTeam; }
+    public Team getCurrentTeam() {
+        return currentTeam;
+    }
+
+    public Team getUserTeam() {
+        return userTeam;
+    }
+
+    public int getPickNumber() { return pickNumber; }
 
     /**
      * Finish the draft by resetting the data and closing connections, etc.
      */
-    public void cleanUp(){
+    public void cleanUp() {
         dataStorer.cleanUp();
         dataGetter.cleanUp();
     }

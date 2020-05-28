@@ -1,80 +1,87 @@
 package gui;
 
+import controllers.Controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
-import main.Gui;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import pojos.ScoreType;
+import pojos.teams.cpu.Difficulty;
 
 import java.io.IOException;
-import java.util.Objects;
 
-public class MainController {
+public class MainController extends GodController {
 
-    @FXML Label warningLabel;
-    @FXML RadioButton eightSize, tenSize, twelveSize, standardScore, halfScore, pprScore, yesSuggestion, noSuggestion;
-    @FXML ToggleGroup sizeGroup, scoreGroup, suggestionGroup;
-    @FXML TextField userPickText;
-    @FXML Button exitButton, startButton;
-    private int size = 10, userPick = 5;
-    private ScoreType scoreType = ScoreType.HALF;
-    private boolean suggestions = false;
+    private Controller controller;
+    private boolean suggestions;
 
-    public void initialize(){
-        eightSize.setOnAction(e -> size = 8);
-        tenSize.setOnAction(e -> size = 10);
-        twelveSize.setOnAction(e -> size = 12);
+    @FXML
+    TabPane tabPane;
+    @FXML
+    Tab draftTab, teamTab, suggestionsTab;
 
-        standardScore.setOnAction(e -> scoreType = ScoreType.STANDARD);
-        halfScore.setOnAction(e -> scoreType = ScoreType.HALF);
-        pprScore.setOnAction(e -> scoreType = ScoreType.PPR);
-
-        yesSuggestion.setOnAction(e -> suggestions = true);
-        noSuggestion.setOnAction(e -> suggestions = false);
-
+    public void construct(ScoreType scoreType, int size, int userPick, boolean suggestions) {
+        this.controller = new Controller(scoreType, size, userPick, Difficulty.STUPID);
+        this.suggestions = suggestions;
+        createDraftTab();
+        createTeamTab();
+        createSuggestionsTab();
     }
 
-    public void start(){
-        try{
-            String text = userPickText.getText();
-            userPick = Integer.parseInt(text);
-        } catch(NumberFormatException e){
-            userPick = 0;
-        }
-        if(size == 0 || scoreType == null || userPick == 0){
-            warningLabel.setText("set all of the configurations first");
-            System.out.println("check labels dummy");
-            return;
-        }
-        Scene draft;
+    //dynamically create a draft tab
+    //https://stackoverflow.com/questions/37439213/load-new-tab-dynamically-with-own-fxmls
+    private void createDraftTab() {
         try {
-            //https://stackoverflow.com/questions/30814258/javafx-pass-parameters-while-instantiating-controller-class
-            //get the loader so you can load and construct
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Draft.fxml"));
-            //load the page (this calls initialize)
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/Draft.fxml"));
             Parent parent = loader.load();
-            //get the draftController
             DraftController draftController = loader.getController();
-            //basically just a constructor (needed so we can make the real controller
-            draftController.construct(scoreType, size, userPick, suggestions);
-            loader.setController(draftController);
-            draft = new Scene(parent);
-
+            draftController.construct(controller);
+            draftTab = new Tab("draft");
+            draftTab.setClosable(true);
+            draftTab.setContent(parent);
+            tabPane.getTabs().add(draftTab);
         } catch (IOException e) {
-            warningLabel.setText("Something went wrong");
             e.printStackTrace();
-            return;
         }
-        Stage root = Gui.getRoot();
-        root.setTitle("mock draft");
-        root.setScene(draft);
-        root.show();
     }
 
-    public void exit(){
-        System.exit(0);
+    //dynamically create a team tab
+    private void createTeamTab() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/Team.fxml"));
+            Parent parent = loader.load();
+            TeamController teamController = loader.getController();
+            teamController.construct(controller);
+            teamTab = new Tab("team");
+            teamTab.setClosable(true);
+            teamTab.setContent(parent);
+            teamTab.setOnSelectionChanged(e -> teamController.showTeam());
+            tabPane.getTabs().add(teamTab);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    //dynamically create a suggestions tab
+    private void createSuggestionsTab() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/Suggestions.fxml"));
+            Parent parent = loader.load();
+            SuggestionsController suggestionsController = loader.getController();
+            suggestionsController.construct(controller, suggestions);
+            suggestionsTab = new Tab("suggestions");
+            suggestionsTab.setClosable(true);
+            suggestionsTab.setContent(parent);
+            suggestionsTab.setOnSelectionChanged(e -> suggestionsController.setUp());
+            tabPane.getTabs().add(suggestionsTab);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

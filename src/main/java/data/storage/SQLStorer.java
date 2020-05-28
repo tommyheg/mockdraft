@@ -61,13 +61,26 @@ public class SQLStorer extends DataStorer {
      * @param player- player to be added
      */
     private void addPlayer(Player player){
-        String s = "insert into "+tableName+" (ID, LastName, FirstName, Position," +
-                " Team, ADP, SDEV, FullName) values ("+
+        Map<String, Double> projections = player.getProjections();
+        String s = "insert into "+tableName+" values ("+
                 player.getRank()+", \""+
                 player.getLastName()+"\", \""+
                 player.getFirstName()+"\", \""+
                 player.getPosition()+"\", \""+
                 player.getTeam()+"\", "+
+                projections.get("Points")+", "+
+                projections.get("Rush Att")+", "+
+                projections.get("Rush Yds")+", "+
+                projections.get("Rush Tds")+", "+
+                projections.get("Recs")+", "+
+                projections.get("Rec Yds")+", "+
+                projections.get("Rec Tds")+", "+
+                projections.get("Pass Cmp")+", "+
+                projections.get("Pass Att")+", "+
+                projections.get("Pass Yds")+", "+
+                projections.get("Pass Tds")+", "+
+                projections.get("Pass Ints")+", "+
+                projections.get("Fumbles")+", "+
                 player.getADP()+", "+
                 player.getSDEV()+", \""+
                 player.getName() +

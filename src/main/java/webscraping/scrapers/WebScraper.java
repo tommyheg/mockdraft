@@ -1,8 +1,6 @@
 package webscraping.scrapers;
 
-import logger.Logger;
 import pojos.Player;
-import pojos.ScoreType;
 
 import java.util.List;
 

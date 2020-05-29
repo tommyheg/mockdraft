@@ -17,21 +17,22 @@ import java.util.Map;
 public class FantasyProsScraper extends WebScraper {
 
     public FantasyProsScraper(ScoreType scoreType) {
-        switch (scoreType){
-            case STANDARD: url = "https://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php"; break;
-            case HALF: url = "https://www.fantasypros.com/nfl/rankings/half-point-ppr-cheatsheets.php"; break;
-            case PPR: url = "https://www.fantasypros.com/nfl/rankings/ppr-cheatsheets.php"; break;
+        switch (scoreType) {
+            case STANDARD:
+                url = "https://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php";
+                break;
+            case HALF:
+                url = "https://www.fantasypros.com/nfl/rankings/half-point-ppr-cheatsheets.php";
+                break;
+            case PPR:
+                url = "https://www.fantasypros.com/nfl/rankings/ppr-cheatsheets.php";
+                break;
         }
     }
 
-    /**
-     * Loop through the list of players at fantasypros.com
-     * @param limit- number of players you want to get (roughly)
-     * @return  list of players to be added to database
-     */
+    //get a list of N players on fantasy pros
     @Override
     public List<Player> getPlayers(int limit) {
-
         //connect to page with all the player data
         Document doc = null;
         try {
@@ -45,7 +46,6 @@ public class FantasyProsScraper extends WebScraper {
         Element table = doc.select(css).get(0);
         Elements rows = table.children();
 
-        System.out.println();
         //add each player
         List<Player> players = new ArrayList<>();
         for (int i = 0; i < limit; i++) {
@@ -54,20 +54,13 @@ public class FantasyProsScraper extends WebScraper {
             if (!type.endsWith("player-row")) continue;  //1st row and tier rows invalid
             Player player = getPlayer(row);
             players.add(player);
-//            System.out.println(player);
         }
-        System.out.println();
 
         return players;
     }
 
-    /**
-     * Create a new player with the data from the row
-     * @param row- the html row that contains the player
-     * @return a new player to be added to the list
-     */
+    //create a new player from the row element
     private Player getPlayer(Element row) {
-
         //get player information
         int rank = Integer.parseInt(row.child(0).ownText());
         String name = row.child(2).children().get(0).children().get(0).ownText();
@@ -78,7 +71,7 @@ public class FantasyProsScraper extends WebScraper {
         String link = row.child(2).child(0).attr("href");
 
         Map<String, Double> projections;
-        if(position.startsWith("K")||position.startsWith("D")){ //don't get projections for kickers or defense
+        if (position.startsWith("K") || position.startsWith("D")) { //don't get projections for kickers or defense
             projections = new HashMap<>();
         } else {
             projections = getProjections(link);
@@ -87,12 +80,7 @@ public class FantasyProsScraper extends WebScraper {
         return new Player(rank, name, position, team, projections);
     }
 
-    /**
-     * Get the projections for each stat of the player
-     *
-     * @param link- link of player page
-     * @return map of player projections
-     */
+    //get the player's projections with his href link
     private Map<String, Double> getProjections(String link) {
         //go to the player page
         String domain = "https://www.fantasypros.com";
@@ -118,13 +106,9 @@ public class FantasyProsScraper extends WebScraper {
             size = table.child(1).child(0).childNodeSize();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (IndexOutOfBoundsException e){
-//            e.printStackTrace();
-            System.out.println("Scraping did not work for: "+path);
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Scraping did not work for: " + path);
         }
-
-
-
 
         //get all of the projections of the player
         Map<String, Double> projections = new HashMap<>();
@@ -133,7 +117,7 @@ public class FantasyProsScraper extends WebScraper {
             try {
                 Double value = Double.parseDouble(table.child(2).child(0).child(i).ownText());
                 projections.put(stat, value);
-            } catch(NumberFormatException | IndexOutOfBoundsException ignored){
+            } catch (NumberFormatException | IndexOutOfBoundsException ignored) {
 
             }
 

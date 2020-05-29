@@ -40,11 +40,9 @@ public class SuggestionsController extends GodController {
 
     //called every time the tab is opened
     public void setUp() {
-        //only make update suggestions if it a new pick
-        if(controller.getPickNumber() == pickNumber) return;
+        if (controller.getPickNumber() == pickNumber) return;   //only make update suggestions if it a new pick
         pickNumber = controller.getPickNumber();
-        //only show suggestions if they want you to
-        if (!suggestions) {
+        if (!suggestions) { //only show suggestions if they want you to
             String s = "how dare you not take our suggestions. very disrespectful of you";
             disrespectLabel.setText(s);
             playerTable.setVisible(false);
@@ -54,14 +52,14 @@ public class SuggestionsController extends GodController {
         }
     }
 
-    //this populates the table with the suggestions for the current pick
+    //populate the table with the suggestions for the current pick
     private void getSuggestions() {
         List<Player> players = controller.getSuggestions();
         ObservableList<Player> observableList = FXCollections.observableList(players);
         playerTable.getItems().setAll(observableList);
     }
 
-    //called in the constructor, initially sets up the table
+    //called in the constructor. initially sets up the table
     private void setUpTable() {
         value.setCellValueFactory(c -> new SimpleDoubleProperty(c.getValue().getValue()).asObject());
         firstName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFirstName()));
@@ -70,14 +68,6 @@ public class SuggestionsController extends GodController {
         team.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getTeam()));
         rank.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getRank()).asObject());
     }
-
-
-
-
-
-
-
-
 
 
 }

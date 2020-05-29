@@ -6,8 +6,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import pojos.Player;
@@ -15,7 +13,7 @@ import pojos.teams.Team;
 
 import java.util.List;
 
-public class TeamController extends GodController{
+public class TeamController extends GodController {
 
     private Team userTeam;
 
@@ -27,20 +25,20 @@ public class TeamController extends GodController{
     TableColumn<Player, Integer> round, pick, selection, adp;
 
     //pseudo constructor called when loading initial fxml
-    public void construct(Controller controller){
-        this.userTeam = controller.getUserTeam();
+    public void construct(Controller controller) {
+        userTeam = controller.getUserTeam();
         setUpTable();
     }
 
     //show their team when tab is opened
-    public void showTeam(){
+    public void showTeam() {
         List<Player> playersList = userTeam.getPlayers();
         ObservableList<Player> observableList = FXCollections.observableList(playersList);
         playerTable.getItems().setAll(observableList);
     }
 
-    //called in the constructor, initially sets up the table
-    private void setUpTable(){
+    //called in the constructor. initially sets up the table
+    private void setUpTable() {
         round.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getRoundNum()).asObject());
         pick.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getPickNum()).asObject());
         firstName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFirstName()));

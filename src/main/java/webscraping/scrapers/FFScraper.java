@@ -15,25 +15,18 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-public class FFScraper extends WebScraper{
 
-    private String type;
+public class FFScraper extends WebScraper {
 
-    public FFScraper(ScoreType scoreType, int leagueSize){
-        switch (scoreType){
-            case STANDARD: type = "standard"; break;
-            case HALF: type = "half-ppr"; break;
-            case PPR: type = "ppr"; break;
-        }
+    private String type = "standard";
 
-        url = "https://fantasyfootballcalculator.com/api/v1/adp/"+type+"?teams="+leagueSize+"&year=2020&position=all";
+    public FFScraper(ScoreType scoreType, int leagueSize) {
+        if (scoreType == ScoreType.HALF) type = "half-ppr";
+        else if (scoreType == ScoreType.PPR) type = "ppr";
+        url = "https://fantasyfootballcalculator.com/api/v1/adp/" + type + "?teams=" + leagueSize + "&year=2020&position=all";
     }
 
-    /**
-     * This one doesn't actually webscrape. Use the
-     * site's API to get a JSON file, then parse the
-     * JSON file.
-     */
+    //get json file from ffc, parse file and fill our own json file. return a list of the players
     @Override
     public List<Player> getPlayers(int limit) {
         Client client = ClientBuilder.newClient();
@@ -46,12 +39,12 @@ public class FFScraper extends WebScraper{
         JSONObject root = new JSONObject(json);
         JSONArray players = root.getJSONArray("players");
         //limit can be changed to players.length eventually
-        for(int i=0;i<limit;i++){
+        for (int i = 0; i < limit; i++) {
             //this try-catch is temporary while we have the limit
             JSONObject player;
-            try{
+            try {
                 player = players.getJSONObject(i);
-            } catch(org.json.JSONException e){
+            } catch (org.json.JSONException e) {
                 continue;
             }
             String name = player.getString("name");
@@ -59,19 +52,15 @@ public class FFScraper extends WebScraper{
             String team = player.getString("team");
             double adp = player.getDouble("adp");
             double sdev = player.getDouble("stdev");
-            playerList.add(new Player(i+1, name, position, team, adp, sdev));
-         }
+            playerList.add(new Player(i + 1, name, position, team, adp, sdev));
+        }
         return playerList;
     }
 
-    /**
-     * Store the json file locally so it can be
-     * used later when storing probs
-     * @param json- the json text
-     */
-    private void storeJSON(String json){
+    //store the json file locally
+    private void storeJSON(String json) {
         try {
-            String filename = "./json/"+type+".json";
+            String filename = "./json/" + type + ".json";
             FileWriter fw = new FileWriter(filename);
             fw.write(json);
             fw.close();

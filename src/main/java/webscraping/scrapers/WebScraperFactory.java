@@ -5,15 +5,15 @@ import webscraping.Site;
 
 public class WebScraperFactory {
 
-    public WebScraper getWebScraper(Site site, ScoreType scoreType, int leagueSize){
-        if(site==Site.FANTASYPROS){
-            return new FantasyProsScraper(scoreType);
-        } else if(site==Site.ESPN){
-            return new ESPNScraper(scoreType);
-        } else if(site == Site.FFCALCULATOR){
-            return new FFScraper(scoreType, leagueSize);
+    public WebScraper getWebScraper(Site site, ScoreType scoreType, int leagueSize) {
+        switch (site) {
+            case FANTASYPROS:
+                return new FantasyProsScraper(scoreType);
+            case FFCALCULATOR:
+                return new FFScraper(scoreType, leagueSize);
+            case ESPN:
+                return new ESPNScraper(scoreType);
         }
-
         return null;
     }
 }

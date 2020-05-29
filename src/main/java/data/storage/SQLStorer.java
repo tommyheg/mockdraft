@@ -11,81 +11,64 @@ public class SQLStorer extends DataStorer {
 
     private Connection connection;
     private Statement statement;
-    private String tableName, copyName;
+    private String tableName = "standardPlayers";
 
-    public SQLStorer(ScoreType scoreType, int leagueSize){
-
+    public SQLStorer(ScoreType scoreType, int leagueSize) {
         super(scoreType, leagueSize);
-        switch(scoreType){
-            case STANDARD: tableName = "standardPlayers"; copyName = "standardCopy"; break;
-            case HALF: tableName = "halfPlayers"; copyName = "halfCopy"; break;
-            case PPR: tableName = "pprPlayers"; copyName = "pprCopy"; break;
-        }
-//        tableName = "players";
+        if (scoreType == ScoreType.HALF) tableName = "halfPlayers";
+        else if (scoreType == ScoreType.PPR) tableName = "pprPlayers";
     }
 
-    /**
-     * Store the list of players from the website in an sql database
-     */
+    //store players from ffc that have adp/stdev data
     @Override
-    public void storeData(int limit) {
-        //get the list of players and associated data from web scraping from FP (can be changed in future)
+    public void storePlayers(int limit) {
         List<Player> players = webScrapers.get(0).getPlayers(limit);
 
-        establishConnection();  //establish connection to the sql database
-        createDatabase();        //first clear and create database
+        if (connection == null) establishConnection();
+        createDatabase();
 
         for (Player player : players) {
             addPlayer(player);
         }
-
     }
 
-    /**
-     * Update the table with each player's projections
-     * @param limit- number of players to get (will be removed soon)
-     */
+    //update the players with projections
     @Override
-    public void updateData(int limit) {
-        //get the ADP and SDEV data from FFCalc and update data
+    public void updatePlayers(int limit) {
         List<Player> players = webScrapers.get(1).getPlayers(limit);
 
-        if(connection == null) establishConnection();
-        for(Player player: players){
+        if (connection == null) establishConnection();
+        for (Player player : players) {
             updatePlayer(player);
         }
     }
 
-    /**
-     * Add a player to the players table
-     * @param player- player to be added
-     */
-    private void addPlayer(Player player){
+    //add a player to the sql table. the projections will be 0
+    private void addPlayer(Player player) {
         Map<String, Double> projections = player.getProjections();
-        String s = "insert into "+tableName+" values ("+
-                player.getRank()+", \""+
-                player.getLastName()+"\", \""+
-                player.getFirstName()+"\", \""+
-                player.getPosition()+"\", \""+
-                player.getTeam()+"\", "+
-                projections.get("Points")+", "+
-                projections.get("Rush Att")+", "+
-                projections.get("Rush Yds")+", "+
-                projections.get("Rush Tds")+", "+
-                projections.get("Recs")+", "+
-                projections.get("Rec Yds")+", "+
-                projections.get("Rec Tds")+", "+
-                projections.get("Pass Cmp")+", "+
-                projections.get("Pass Att")+", "+
-                projections.get("Pass Yds")+", "+
-                projections.get("Pass Tds")+", "+
-                projections.get("Pass Ints")+", "+
-                projections.get("Fumbles")+", "+
-                player.getADP()+", "+
-                player.getSDEV()+", \""+
+        String s = "insert into " + tableName + " values (" +
+                player.getRank() + ", \"" +
+                player.getLastName() + "\", \"" +
+                player.getFirstName() + "\", \"" +
+                player.getPosition() + "\", \"" +
+                player.getTeam() + "\", " +
+                projections.get("Points") + ", " +
+                projections.get("Rush Att") + ", " +
+                projections.get("Rush Yds") + ", " +
+                projections.get("Rush Tds") + ", " +
+                projections.get("Recs") + ", " +
+                projections.get("Rec Yds") + ", " +
+                projections.get("Rec Tds") + ", " +
+                projections.get("Pass Cmp") + ", " +
+                projections.get("Pass Att") + ", " +
+                projections.get("Pass Yds") + ", " +
+                projections.get("Pass Tds") + ", " +
+                projections.get("Pass Ints") + ", " +
+                projections.get("Fumbles") + ", " +
+                player.getADP() + ", " +
+                player.getSDEV() + ", \"" +
                 player.getName() +
                 "\");";
-
         try {
             statement.executeUpdate(s);
         } catch (SQLException throwables) {
@@ -93,33 +76,30 @@ public class SQLStorer extends DataStorer {
         }
     }
 
-    /**
-     * Update values in the players database with values from other sites
-     */
+    //update the player in the table with their projections
     private void updatePlayer(Player player) {
         Map<String, Double> projections = player.getProjections();
         String fullName = player.getName();
         String first = player.getFirstName();
         String last = player.getLastName();
-        String s = "update "+tableName+" set " +
-                "Points = " +projections.get("Points")+", "+
-                "RushAtt = " +projections.get("Rush Att")+", "+
-                "RushYds = " +projections.get("Rush Yds")+", "+
-                "RushTds = "+projections.get("Rush Tds")+", "+
-                "Recs = " +projections.get("Recs")+", "+
-                "RecYds = " +projections.get("Rec Yds")+", "+
-                "RecTds = " +projections.get("Rec Tds")+", "+
-                "PassComp = " +projections.get("Pass Cmp")+", "+
-                "PassAtt = " +projections.get("Pass Att")+", "+
-                "PassYds = " +projections.get("Pass Yds")+", "+
-                "PassTds = " +projections.get("Pass Tds")+", "+
-                "PassInts = " +projections.get("Pass Ints")+", "+
-                "Fumbles = " +projections.get("Fumbles")+
+        String s = "update " + tableName + " set " +
+                "Points = " + projections.get("Points") + ", " +
+                "RushAtt = " + projections.get("Rush Att") + ", " +
+                "RushYds = " + projections.get("Rush Yds") + ", " +
+                "RushTds = " + projections.get("Rush Tds") + ", " +
+                "Recs = " + projections.get("Recs") + ", " +
+                "RecYds = " + projections.get("Rec Yds") + ", " +
+                "RecTds = " + projections.get("Rec Tds") + ", " +
+                "PassComp = " + projections.get("Pass Cmp") + ", " +
+                "PassAtt = " + projections.get("Pass Att") + ", " +
+                "PassYds = " + projections.get("Pass Yds") + ", " +
+                "PassTds = " + projections.get("Pass Tds") + ", " +
+                "PassInts = " + projections.get("Pass Ints") + ", " +
+                "Fumbles = " + projections.get("Fumbles") +
                 " where " +
                 "FullName = \"" + fullName + "\" " +
-                "or (FirstName = \""+first+"\" " +
-                "and LastName = \""+last+"\");";
-
+                "or (FirstName = \"" + first + "\" " +
+                "and LastName = \"" + last + "\");";
         try {
             statement.executeUpdate(s);
         } catch (SQLException throwables) {
@@ -127,12 +107,10 @@ public class SQLStorer extends DataStorer {
         }
     }
 
-    /**
-     * Clear the database and create tables.
-     */
-    private void createDatabase(){
-        String drop = "drop table if exists "+tableName+";";
-        String s = "create table "+tableName+"(\n" +
+
+    private void createDatabase() {
+        String drop = "drop table if exists " + tableName + ";";
+        String s = "create table " + tableName + "(\n" +
                 "\tID int(3) PRIMARY KEY NOT NULL,\n" +
                 "    LastName VarChar(255) NOT NULL,\n" +
                 "    FirstName VarChar(255) NOT NULL,\n" +
@@ -165,43 +143,31 @@ public class SQLStorer extends DataStorer {
         }
     }
 
-    /**
-     * Establish connection to sql database
-     */
-    private void establishConnection(){
-        //this is just a local connection but it could eventually be to a server or something
+    private void establishConnection() {
+        //local server for now
         String url = "jdbc:mysql://localhost:3306/mockdraft?useTimezone=true&serverTimezone=UTC";
         String user = "root";
         String password = "root";
 
-        try{
+        try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-
             connection = DriverManager.getConnection(url, user, password);
-
             statement = connection.createStatement();
-
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * Close connection to sql database
-     */
-    private void closeConnection(){
+    private void closeConnection() {
         try {
-            if(connection!=null) connection.close();
+            if (connection != null) connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
-    /**
-     * Clean up (in this case, close the connection)
-     */
     @Override
-    public void cleanUp(){
+    public void cleanUp() {
         closeConnection();
     }
 

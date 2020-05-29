@@ -4,25 +4,35 @@ import java.util.*;
 
 public class Player {
 
-    private final int rank;
-    private final String position;
+    private final int RANK;
+    private final String POSITION, TEAM;
     private String lastName, firstName, name;
-    private final String team;
     private Map<String, Double> projections;
-    private final List<String> keys;
-    private final double ADP;
-    private final double SDEV;
+    private final List<String> KEYS;
+    private double adp, sdev;
     private int teamNum = -1, roundNum = -1, pickNum = -1, selection = -1;
     private double value = -1;
 
-    public Player(int rank, String name, String position, String team, Map<String, Double> projections, double adp, double sdev) {
-        this.rank = rank;
+    public Player(int RANK, String name, String POSITION, String TEAM, Map<String, Double> projections, double adp, double sdev) {
+        this(RANK, name, POSITION, TEAM, projections);
+        this.adp = adp;
+        this.sdev = sdev;
+    }
+
+    public Player(int RANK, String name, String POSITION, String TEAM, double adp, double sdev) {
+        this(RANK, name, POSITION, TEAM, null);
+        this.adp = adp;
+        this.sdev = sdev;
+    }
+
+    public Player(int RANK, String name, String POSITION, String TEAM, Map<String, Double> projections) {
+        this.RANK = RANK;
         this.name = name;
-        this.position = position;
-        this.team = team;
-        this.ADP = adp;
-        this.SDEV = sdev;
-        this.keys = new ArrayList<>();
+        this.POSITION = POSITION;
+        this.TEAM = TEAM;
+        this.adp = -1;
+        this.sdev = -1;
+        this.KEYS = new ArrayList<>();
         this.firstName = name.split(" ")[0];
         this.lastName = name.split(" ")[1];
         setProjections(projections);
@@ -30,113 +40,88 @@ public class Player {
         updateName();
     }
 
-    public Player(int rank, String name, String position, String team, double adp, double sdev) {
-        this.rank = rank;
-        this.name = name;
-        this.position = position;
-        this.team = team;
-        this.ADP = adp;
-        this.SDEV = sdev;
-        this.keys = new ArrayList<>();
-        this.firstName = name.split(" ")[0];
-        this.lastName = name.split(" ")[1];
-        setProjections(null);
-        setName();
-        updateName();
-    }
-
-    public Player(int rank, String name, String position, String team, Map<String, Double> projections) {
-        this.rank = rank;
-        this.name = name;
-        this.position = position;
-        this.team = team;
-        this.ADP = -1;
-        this.SDEV = -1;
-        this.keys = new ArrayList<>();
-        this.firstName = name.split(" ")[0];
-        this.lastName = name.split(" ")[1];
-        setProjections(projections);
-        setName();
-        updateName();
-    }
-
-    public Player(){
-        this.rank = 0;
+    public Player() {
+        this.RANK = -1;
         this.name = "Sentinel Name";
-        this.position = "";
-        this.team = "";
-        this.keys = new ArrayList<>();
+        this.POSITION = "";
+        this.TEAM = "";
+        this.KEYS = new ArrayList<>();
         this.firstName = name.split(" ")[0];
         this.lastName = name.split(" ")[1];
         setProjections(null);
-        this.ADP = -1;
-        this.SDEV = -1;
+        this.adp = -1;
+        this.sdev = -1;
     }
 
-    /**
-     * Set the player's projections
-     * @param projections- projections to be added
-     */
-    private void setProjections(Map<String, Double> projections){
+    private void setProjections(Map<String, Double> projections) {
         //set every projection to nothing
         initializeProjections();
 
         //update player's projections
-        if(projections == null) return;
-        for(String stat: projections.keySet()){
+        if (projections == null) return;
+        for (String stat : projections.keySet()) {
             this.projections.put(stat, projections.get(stat));
         }
     }
 
-    /**
-     * Initalize all projections to null so all stats show up in table
-     */
-    public void initializeProjections(){
-        keys.add("Points");
-        keys.add("Rush Att");
-        keys.add("Rush Yds");
-        keys.add("Rush Tds");
-        keys.add("Recs");
-        keys.add("Rec Yds");
-        keys.add("Rec Tds");
-        keys.add("Pass Cmp");
-        keys.add("Pass Att");
-        keys.add("Pass Yds");
-        keys.add("Pass Tds");
-        keys.add("Pass Ints");
-        keys.add("Fumbles");
+    public void initializeProjections() {
+        KEYS.add("Points");
+        KEYS.add("Rush Att");
+        KEYS.add("Rush Yds");
+        KEYS.add("Rush Tds");
+        KEYS.add("Recs");
+        KEYS.add("Rec Yds");
+        KEYS.add("Rec Tds");
+        KEYS.add("Pass Cmp");
+        KEYS.add("Pass Att");
+        KEYS.add("Pass Yds");
+        KEYS.add("Pass Tds");
+        KEYS.add("Pass Ints");
+        KEYS.add("Fumbles");
 
         projections = new HashMap<>();
 
         //initialize all values to 0
         Double val = 0.0;
-        for(String s: keys){
+        for (String s : KEYS) {
             projections.put(s, val);
         }
     }
 
+    private void updateName() {
+        firstName = firstName.replaceAll("\\.", "");
+        firstName = firstName.replaceAll("'", "");
+        lastName = lastName.replaceAll("\\.", "");
+        lastName = lastName.replaceAll("'", "");
+        name = firstName + " " + lastName;
+    }
+
     public String toString() {
-        return rank + ": " + name + ", " + team + ", " + position;
+        return RANK + ": " + name + ", " + TEAM + ", " + POSITION;
     }
 
     public int getRank() {
-        return rank;
+        return RANK;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getLastName() { return lastName; }
+    public String getLastName() {
+        return lastName;
+    }
 
-    public String getFirstName() { return firstName; }
+    public String getFirstName() {
+        return firstName;
+    }
 
     public String getPosition() {
-        return position;
+        return POSITION;
     }
 
     public String getTeam() {
-        return team;
+        return TEAM;
     }
 
     public Map<String, Double> getProjections() {
@@ -149,69 +134,68 @@ public class Player {
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
         return name.equals(player.name) &&
-                position.equals(player.position) &&
+                POSITION.equals(player.POSITION) &&
                 lastName.equals(player.lastName) &&
                 firstName.equals(player.firstName) &&
-                team.equals(player.team);
+                TEAM.equals(player.TEAM);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, position, lastName, firstName, team);
+        return Objects.hash(name, POSITION, lastName, firstName, TEAM);
     }
 
     public double getADP() {
-        return ADP;
+        return adp;
     }
 
     public double getSDEV() {
-        return SDEV;
+        return sdev;
     }
 
-    private void updateName(){
-        firstName = firstName.replaceAll("\\.", "");
-        firstName = firstName.replaceAll("'", "");
-        lastName = lastName.replaceAll("\\.", "");
-        lastName = lastName.replaceAll("'", "");
-        name = firstName + " " + lastName;
+    private void setName() {
+        if (lastName.equals("Mahomes")) firstName = "Pat";
     }
 
-    private void setName(){
-        if(lastName.equals("Mahomes")) firstName = "Pat";
-    }
-
-    public void setTeamNum(int teamNum){
+    public void setTeamNum(int teamNum) {
         this.teamNum = teamNum;
     }
 
-    public int getTeamNum(){
+    public int getTeamNum() {
         return teamNum;
     }
 
-    public void setPick(int round, int pick, int selection){
-        this.pickNum = pick;
-        this.roundNum = round;
+    public void setPick(int round, int pick, int selection) {
+        pickNum = pick;
+        roundNum = round;
         this.selection = selection;
     }
 
-    public void setValue(double value){
+    public void setValue(double value) {
         this.value = value;
     }
 
-    public double getValue(){
+    public double getValue() {
         return value;
     }
 
-    public int getSelection() { return selection; }
-
-    public int getRoundNum() { return roundNum; }
-
-    public int getPickNum() { return pickNum; }
-
-    public String finishedString(){
-        return "Round "+roundNum+", Pick "+pickNum+": "+name+", "+position+", "+team;
+    public int getSelection() {
+        return selection;
     }
-    public List<String> getKeys() {
-        return keys;
+
+    public int getRoundNum() {
+        return roundNum;
+    }
+
+    public int getPickNum() {
+        return pickNum;
+    }
+
+    public String finishedString() {
+        return "Round " + roundNum + ", Pick " + pickNum + ": " + name + ", " + POSITION + ", " + TEAM;
+    }
+
+    public List<String> getKEYS() {
+        return KEYS;
     }
 }

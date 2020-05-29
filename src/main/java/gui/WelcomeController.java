@@ -12,18 +12,23 @@ import pojos.ScoreType;
 import java.io.IOException;
 import java.util.Objects;
 
-public class WelcomeController extends GodController{
+public class WelcomeController extends GodController {
 
-    @FXML Label warningLabel;
-    @FXML RadioButton eightSize, tenSize, twelveSize, standardScore, halfScore, pprScore, yesSuggestion, noSuggestion;
-    @FXML ToggleGroup sizeGroup, scoreGroup, suggestionGroup;
-    @FXML TextField userPickText;
-    @FXML Button exitButton, startButton;
-    private int size = 10, userPick = 5;
+    @FXML
+    Label warningLabel;
+    @FXML
+    RadioButton eightSize, tenSize, twelveSize, standardScore, halfScore, pprScore, yesSuggestion, noSuggestion;
+    @FXML
+    ToggleGroup sizeGroup, scoreGroup, suggestionGroup;
+    @FXML
+    TextField userPickText;
+    @FXML
+    Button exitButton, startButton;
+    private int size = 10;
     private ScoreType scoreType = ScoreType.HALF;
     private boolean suggestions = true;
 
-    public void initialize(){
+    public void initialize() {
         eightSize.setOnAction(e -> size = 8);
         tenSize.setOnAction(e -> size = 10);
         twelveSize.setOnAction(e -> size = 12);
@@ -38,16 +43,16 @@ public class WelcomeController extends GodController{
     }
 
     //go to the draft when they press the start button
-    public void start(){
-        try{
+    public void start() {
+        int userPick = 5;
+        try {
             String text = userPickText.getText();
             userPick = Integer.parseInt(text);
-        } catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             userPick = 0;
         }
-        if(size == 0 || scoreType == null || userPick == 0){
+        if (size == 0 || scoreType == null || userPick == 0) {
             warningLabel.setText("set all of the configurations first");
-            System.out.println("check labels dummy");
             return;
         }
         Scene draft;
@@ -63,7 +68,6 @@ public class WelcomeController extends GodController{
             mainController.construct(scoreType, size, userPick, suggestions);
             loader.setController(mainController);
             draft = new Scene(parent);
-
         } catch (IOException e) {
             warningLabel.setText("Something went wrong");
             e.printStackTrace();

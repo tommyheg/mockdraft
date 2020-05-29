@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public abstract class GodController {
 
-    public void goToWelcome(){
+    public void goToWelcome() {
         confirm();
         Scene main;
         try {
@@ -26,11 +26,11 @@ public abstract class GodController {
         root.show();
     }
 
-    private void confirm(){
+    private void confirm() {
         //TODO: make a popup window confirming they want to leave
     }
 
-    public void exit(){
+    public void exit() {
         System.exit(0);
     }
 }

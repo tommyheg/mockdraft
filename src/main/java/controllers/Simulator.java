@@ -2,18 +2,16 @@ package controllers;
 
 import pojos.Player;
 
-import java.text.DecimalFormat;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Simulator extends Thread {
 
-    private Player player;
+    private final Player player;
     private double val;
-    private Map<String, Player> playerMap;
-    private int userPick, round, leagueSize, pick;
-    private Map<String, Double> values;
-    private double[][] probs;
+    private final Map<String, Player> playerMap;
+    private final int userPick, round, leagueSize, pick;
+    private final Map<String, Double> values;
+    private final double[][] probs;
     private final Object lock = new Object();
 
     public Simulator(Player player, Map<String, Player> playerMap, Map<String, Double> values,
@@ -29,51 +27,32 @@ public class Simulator extends Thread {
         this.playerMap.remove(player.getName());
     }
 
+    //we may want to make this class run in parallel with other simulators
     @Override
     public void run() {
         simulate();
     }
 
-    /**
-     * Simulate 5 rounds deep and return the value you get with that player
-     */
     public void simulate(){
-        //TODO: run a bfs to get all paths
-        // update the total val along the way
-        // store in hashmap
-        // --for dynamic programming purposes
-        System.out.println("Simming on "+player.getName());
         val = simHelper(player, round, pick);
-//        System.out.println("Val in simulate: "+val);
     }
 
-    /**
-     * Run a bfs starting at that player and pick.
-     * @param player- player to start bfs at
-     * @param round- starting round number
-     * @param pick- starting pick number
-     * @return the value of that player at that round
-     */
+    //run a bfs starting at that player, pick, and round
     private double simHelper(Player player, int round, int pick){
+        //run base cases by updating cache and checking for rounds
         if(player == null) return 0;
-//        System.out.println(player.getName() + ", "+ round);
         playerMap.remove(player.getName() + round);
         if(values.containsKey(player.getName() + round)) return values.get(player.getName() + round);
-        if(round > this.round + 16) return 0;
+        if(round > this.round + 16) return 0;   //maybe don't need this
 
-        //this is where we need to figure out the value variable
-        //how is it weighted??
-        //divided by adp of player because smaller adp is better??
-        //or something else??
-        double prob = getProb(player, pick);
-        if(prob == 100) return 0;
+        //TODO: fix the algorithm, it is pretty fucked up
+        Double prob = getProb(player, pick);
+        if(prob == null) return 0;   //if outside the array, the prob doesn't exist
         double weight = 1/(player.getADP());
         double curVal = prob * weight;
         //https://www.javacodegeeks.com/2011/05/avoid-concurrentmodificationexception.html
-        Iterator<String> it = playerMap.keySet().iterator();
-        while(it.hasNext()){
-            String key = it.next();
-            curVal+=simHelper(playerMap.get(key), round + 1, getPick(round));
+        for (String key : playerMap.keySet()) {
+            curVal += simHelper(playerMap.get(key), round + 1, nextUserPick(round));
         }
         //this will require locks because of concurrency
         //https://stackoverflow.com/questions/5861894/how-to-synchronize-or-lock-upon-variables-in-java
@@ -83,25 +62,13 @@ public class Simulator extends Thread {
         return curVal;
     }
 
-    /**
-     * Get the probability of that player being there at that pick
-     * @param player- player to get prob of
-     * @param pick- pick to get prob of
-     * @return the value in the probs table
-     */
-    private double getProb(Player player, int pick){
-        if(player.getRank() >= probs.length || pick >= probs[0].length) return 100;
+    private Double getProb(Player player, int pick){
+        if(player.getRank() >= probs.length || pick >= probs[0].length) return null;
         return probs[player.getRank()][pick];
     }
 
-    /**
-     * Get the next pick based on round, userPick, and leagueSizes
-     * @param round- current round
-     * @return the next pick that the user has
-     */
-    private int getPick(int round){
-        if(round % 2 == 1) return round * leagueSize + userPick;
-        return (round+1) * leagueSize - userPick + 1;
+    private int nextUserPick(int round){
+        return round % 2 == 1 ? round * leagueSize + userPick : (round + 1) * leagueSize - userPick + 1;
     }
 
     public double getVal(){

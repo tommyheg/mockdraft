@@ -22,14 +22,14 @@ public class MainController extends GodController {
     Tab draftTab, teamTab, suggestionsTab;
 
     public void construct(ScoreType scoreType, int size, int userPick, boolean suggestions) {
-        this.controller = new Controller(scoreType, size, userPick, Difficulty.STUPID);
+        controller = new Controller(scoreType, size, userPick, Difficulty.STUPID);
         this.suggestions = suggestions;
+        //create the tabs during runtime so they can be constructed
         createDraftTab();
         createTeamTab();
         createSuggestionsTab();
     }
 
-    //dynamically create a draft tab
     //https://stackoverflow.com/questions/37439213/load-new-tab-dynamically-with-own-fxmls
     private void createDraftTab() {
         try {
@@ -47,7 +47,6 @@ public class MainController extends GodController {
         }
     }
 
-    //dynamically create a team tab
     private void createTeamTab() {
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -65,7 +64,6 @@ public class MainController extends GodController {
         }
     }
 
-    //dynamically create a suggestions tab
     private void createSuggestionsTab() {
         try {
             FXMLLoader loader = new FXMLLoader();

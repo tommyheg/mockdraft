@@ -1,6 +1,7 @@
 package gui;
 
 import controllers.Controller;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import main.Gui;
 import pojos.Player;
@@ -24,6 +26,7 @@ import pojos.ScoreType;
 import pojos.teams.cpu.Difficulty;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +37,7 @@ public class DraftController extends GodController {
     private Controller controller;
     private FilteredList<Player> filteredList;
     private ObservableList<Player> observableList;
+    private String[] projectionNames;
 
     @FXML
     TableView<Player> playerTable;
@@ -42,29 +46,34 @@ public class DraftController extends GodController {
     @FXML
     TableColumn<Player, Integer> rank;
     @FXML
-    TableColumn<Player, Double> points, rushAtt;
-    @FXML
     Button start, selectButton;
     @FXML
     Label playerLabel, roundLabel, pickLabel;
     @FXML
     TextField searchBar;
+    @FXML
+    List<TableColumn<Player, Double>> projectionColumns;
 
     //pseudo constructor called when loading initial fxml
     public void construct(Controller controller) {
         this.controller = controller;
+        this.projectionNames = new String[]{
+                "Points", "Rush Att", "Rush Yds", "Rush Tds",
+                "Recs", "Rec Yds", "Rec Tds", "Pass Cmp",
+                "Pass Att", "Pass Yds", "Pass Tds",
+                "Pass Ints", "Fumbles"
+        };
         setUp();
     }
 
     //set up the gui. this acts as initialize(). needed bc of constructor
     private void setUp() {
+        //set up the table
         setUpColumns();
-        //get the players from the controller
         List<Player> playersList = controller.nextAvailablePlayers();
         observableList = FXCollections.observableList(playersList);
-        //initialize the table
-        playerTable.getItems().setAll(observableList);
         filteredList = new FilteredList<>(observableList);
+        playerTable.getItems().setAll(observableList);
         //filter function
         searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredList.setPredicate(p -> Integer.toString(p.getRank()).contains(searchBar.getText().trim()) ||
@@ -81,14 +90,31 @@ public class DraftController extends GodController {
 
     //just called in setUp()
     private void setUpColumns() {
+        //set all the values of the columns
         rank.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getRank()).asObject());
         firstName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFirstName()));
         lastName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getLastName()));
         position.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getPosition()));
         team.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getTeam()));
-        points.setCellValueFactory(c -> new SimpleDoubleProperty(c.getValue().getProjections().get("Points")).asObject());
-        rushAtt.setCellValueFactory(c -> new SimpleDoubleProperty(c.getValue().getProjections().get("Rush Att")).asObject());
 
+        //set projection values
+        projectionColumns = new ArrayList<TableColumn<Player, Double>>();
+        for (int i = 0; i < projectionNames.length; i++) {
+            TableColumn<Player, Double> column = new TableColumn<Player, Double>(projectionNames[i]);
+            projectionColumns.add(column);
+            int finalI = i;
+            column.setCellValueFactory(c -> new SimpleDoubleProperty(c.getValue()
+                    .getProjections().get(projectionNames[finalI])).asObject());
+            //change all 0s to null
+            column.setCellFactory(param -> new TableCell<Player, Double>(){
+                @Override
+                protected void updateItem(Double val, boolean empty) {
+                    if (empty || val.equals(0.0)) setText("");
+                    else setText(val.toString());
+                }
+            });
+        }
+        playerTable.getColumns().addAll(projectionColumns);
     }
 
     //start the draft when the button is clicked
@@ -108,11 +134,12 @@ public class DraftController extends GodController {
         //draft the player for the cpu, remove from table
         while (!controller.getCurrentTeam().isUser()) {
             Player player = controller.draftPlayerCPU();
-            //only way this happens is if draft is null
+            //only way this happens is if draft is done
             if (player == null) {
                 playerLabel.setText("draft is done mofo");
                 //TODO: do something when draft is done
-                //maybe show full table?
+                //maybe show full table of players ordered by draft selection?
+                    //that means we will have to keep another list of drafted players
                 //automatically go to team tab?
             }
             observableList.remove(player);

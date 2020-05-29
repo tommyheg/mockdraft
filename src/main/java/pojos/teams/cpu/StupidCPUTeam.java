@@ -24,6 +24,7 @@ public class StupidCPUTeam extends CPUTeam{
         while(!roomForPlayer(player.getPosition()) || unavailablePlayers.containsKey(player.getName()) || player.getTeamNum() != -1){
             count++;
             player = dataGetter.getNextPlayer(count);
+            if(player == null) return null;
         }
         unavailablePlayers.clear();
         return player;

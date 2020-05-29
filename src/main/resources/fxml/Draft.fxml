@@ -15,8 +15,6 @@
             <TableColumn fx:id="lastName" prefWidth="92.0" text="last name" />
             <TableColumn fx:id="position" prefWidth="87.0" text="position" />
             <TableColumn fx:id="team" prefWidth="67.0" text="team" />
-            <TableColumn fx:id="points" prefWidth="69.0" text="points" />
-            <TableColumn fx:id="rushAtt" prefWidth="78.0" text="rush att" />
          </columns>
       </TableView>
       <Button fx:id="start" layoutX="498.0" layoutY="247.0" mnemonicParsing="false" onAction="#start" prefHeight="25.0" prefWidth="89.0" text="start draft" />
